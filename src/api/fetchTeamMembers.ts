@@ -1,9 +1,16 @@
 import { fetchData } from '@/api';
-import { TeamMembers } from '@/types';
+
+type DataProps = {
+  teamMembers: {
+    id: string;
+    names: string;
+  }[];
+};
 
 export const fetchTeamMembers = async () => {
-  const res = await fetchData<TeamMembers>(`{
+  const res = await fetchData<DataProps>(`{
     teamMembers {
+      id
       names
     }
   }`);
