@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.ico', 'apple-touc-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'React-vite-app',
-        short_name: 'react-vite-app',
-        description: 'I am a simple vite app',
+        name: 'АВК Цунами',
+        short_name: 'Цунами',
+        description: 'Сайт на АВК Цунами',
         icons: [
           {
             src: '/android-chrome-192x192.png',
@@ -39,8 +39,8 @@ export default defineConfig({
             purpose: 'any maskable',
           },
         ],
-        theme_color: '#171717',
-        background_color: '#f0e7db',
+        theme_color: '#00157F',
+        background_color: '#00157F',
         display: 'standalone',
         scope: '/',
         start_url: '/',

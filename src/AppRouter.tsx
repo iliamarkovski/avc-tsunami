@@ -1,4 +1,4 @@
-import { HomePage, Layout, TeamPage } from '@/components';
+import { HomePage, Layout, TeamPage, LoginPage } from '@/components';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const AppRouter = () => {
@@ -13,6 +13,10 @@ const AppRouter = () => {
         {
           path: '/team',
           element: <TeamPage />,
+        },
+        {
+          path: '/login',
+          element: <LoginPage />,
         },
         {
           path: '*',
