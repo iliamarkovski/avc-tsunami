@@ -1,0 +1,167 @@
+import {
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  PasswordInput,
+} from '@/components';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '@/contexts';
+import { UserForm } from '@/components';
+import { useState } from 'react';
+import { useToast } from '@/hooks';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { FirebaseError } from 'firebase/app';
+import { Loader2 } from 'lucide-react';
+
+const formSchema = z.object({
+  email: z.string().min(1, { message: 'Задължително поле' }).email({ message: 'Невалиден имейл' }),
+  password: z
+    .string()
+    .min(1, { message: 'Задължително поле' })
+    .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
+});
+
+export type LoginSchema = z.infer<typeof formSchema>;
+
+const LoginForm = () => {
+  const { login, isUserExist } = useAuth();
+  const [showUserForm, setShowUserForm] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const isUserExistMutation = useMutation({
+    mutationFn: async (data: LoginSchema) => {
+      return await isUserExist(data.email);
+    },
+    onSuccess: (userExist) => {
+      if (userExist) {
+        form.setError('password', {
+          type: 'manual',
+          message: 'Грешна парола',
+        });
+      } else {
+        setShowUserForm(true);
+      }
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Възникна грешка',
+        description: 'Моля, опитайте отново по-късно.',
+      });
+    },
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async (data: LoginSchema) => {
+      return await login(data.email, data.password);
+    },
+    onSuccess: () => {
+      navigate('/');
+    },
+    onError: (data: FirebaseError) => {
+      console.log('data.code: ', data.code);
+      switch (data.code) {
+        case 'auth/wrong-password':
+          form.setError('password', {
+            type: 'manual',
+            message: 'Грешна парола',
+          });
+          break;
+
+        case 'auth/user-not-found':
+          toast({
+            variant: 'destructive',
+            title: 'Потребител с такъв имейл не е намерен',
+            description: 'Моля, проверете имейла си и опитайте отново',
+          });
+          break;
+
+        case 'auth/too-many-requests':
+          toast({
+            variant: 'destructive',
+            title: 'Твърде много опити за влизане',
+            description: 'Моля, опитайте отново по-късно',
+          });
+          break;
+
+        default:
+          toast({
+            variant: 'destructive',
+            title: 'Възникна грешка',
+            description: 'Моля, опитайте отново по-късно',
+          });
+          break;
+      }
+    },
+  });
+
+  const isLoading = isUserExistMutation.isPending || loginMutation.isPending;
+
+  const handleSubmit = (values: LoginSchema) => {
+    if (values.password === import.meta.env.VITE_UNI_PASS) {
+      isUserExistMutation.mutate(values);
+    } else {
+      loginMutation.mutate(values);
+    }
+  };
+
+  if (showUserForm) {
+    return <UserForm email={form.watch('email')} />;
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Имейл</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Парола</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={isLoading} className="!mt-8 w-full">
+          {isLoading ? <Loader2 className="animate-spin" /> : null}
+          Вход
+        </Button>
+      </form>
+    </Form>
+  );
+};
+
+export { LoginForm };

@@ -12,7 +12,7 @@ import {
 } from '@/components';
 import { EventState, EventType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import { addDays, format, isBefore, parseISO } from 'date-fns';
+import { addDays, format, isBefore } from 'date-fns';
 import { Archive, CalendarX2 } from 'lucide-react';
 
 type Props = {
@@ -25,8 +25,7 @@ const separateEvents = (events: Event[]) => {
   const futureEvents: Event[] = [];
 
   events.forEach((event) => {
-    const eventDate = parseISO(event.date);
-    if (isBefore(eventDate, addDays(today, 0)) || event.winOrLose) {
+    if (isBefore(event.date, addDays(today, -1)) || event.winOrLose) {
       pastEvents.push(event);
     } else {
       futureEvents.push(event);
