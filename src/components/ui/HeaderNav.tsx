@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Button, buttonVariants } from '@/components';
+import { buttonVariants } from '@/components';
 import { cn } from '@/lib';
 
 const links = [

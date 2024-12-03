@@ -7,7 +7,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
+  PasswordInput,
   Select,
   SelectContent,
   SelectItem,
@@ -29,14 +29,21 @@ type Props = {
 
 const formSchema = z
   .object({
-    password: z
-      .string()
-      .min(1, { message: 'Задължително поле' })
-      .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
-    confirmPassword: z.string().min(1, { message: 'Задължително поле' }),
     selectedName: z.string({
       required_error: 'Задължително поле',
     }),
+    password: z
+      .string({
+        required_error: 'Задължително поле',
+      })
+      .min(1, { message: 'Задължително поле' })
+      .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
+    confirmPassword: z
+      .string({
+        required_error: 'Задължително поле',
+      })
+      .min(1, { message: 'Задължително поле' })
+      .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Паролите не съвпадат',
@@ -92,9 +99,9 @@ const UserForm = ({ email }: Props) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      selectedName: undefined,
       password: '',
       confirmPassword: '',
-      selectedName: '',
     },
   });
 
@@ -112,8 +119,8 @@ const UserForm = ({ email }: Props) => {
             <FormItem>
               <FormLabel>Име</FormLabel>
               <FormControl>
-                <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
-                  <SelectTrigger>
+                <Select onValueChange={(value) => field.onChange(value)} value={field.value} name={field.name}>
+                  <SelectTrigger id="selectedName">
                     <SelectValue placeholder="Избери име" />
                   </SelectTrigger>
                   <SelectContent>
@@ -137,7 +144,7 @@ const UserForm = ({ email }: Props) => {
             <FormItem>
               <FormLabel>Парола</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <PasswordInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -150,7 +157,7 @@ const UserForm = ({ email }: Props) => {
             <FormItem>
               <FormLabel>Повтори парола</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <PasswordInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

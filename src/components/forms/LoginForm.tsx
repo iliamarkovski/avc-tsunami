@@ -86,10 +86,9 @@ const LoginForm = () => {
           break;
 
         case 'auth/user-not-found':
-          toast({
-            variant: 'destructive',
-            title: 'Потребител с такъв имейл не е намерен',
-            description: 'Моля, проверете имейла си и опитайте отново',
+          form.setError('email', {
+            type: 'manual',
+            message: 'Потребител с такъв имейл не е намерен',
           });
           break;
 
@@ -136,7 +135,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Имейл</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} type="email" />
               </FormControl>
               <FormMessage />
             </FormItem>
