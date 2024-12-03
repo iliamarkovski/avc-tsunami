@@ -64,6 +64,10 @@
     @apply border-border;
   }
 
+  html {
+    @apply text-[18px];
+  }
+
   body {
     @apply overflow-y-scroll bg-background text-foreground;
   }
