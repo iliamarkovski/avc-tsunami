@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components';
+import { Button, buttonVariants } from '@/components';
+import { cn } from '@/lib';
 
 const links = [
   {
@@ -21,13 +22,14 @@ const HeaderNav = () => {
         const isActive = location.pathname === link.url;
 
         return (
-          <Button
-            asChild
-            variant="ghost"
-            className={isActive ? 'bg-accent text-accent-foreground' : undefined}
-            key={link.title}>
-            <Link to={link.url}>{link.title}</Link>
-          </Button>
+          <Link
+            key={link.url}
+            to={link.url}
+            className={cn(buttonVariants({ variant: 'ghost' }), {
+              'bg-accent text-accent-foreground': isActive,
+            })}>
+            {link.title}
+          </Link>
         );
       })}
     </nav>
