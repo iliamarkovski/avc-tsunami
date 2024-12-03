@@ -111,7 +111,7 @@ const UserForm = ({ email }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4" autoComplete="off">
         <FormField
           control={form.control}
           name="selectedName"
