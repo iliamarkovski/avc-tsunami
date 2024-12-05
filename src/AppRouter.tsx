@@ -1,7 +1,10 @@
 import { HomePage, Layout, TeamPage, LoginPage } from '@/components';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { useAuth } from '@/contexts';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 
 const AppRouter = () => {
+  const { user } = useAuth();
+
   const router = createBrowserRouter([
     {
       element: <Layout />,
@@ -16,7 +19,7 @@ const AppRouter = () => {
         },
         {
           path: '/login',
-          element: <LoginPage />,
+          element: !!user ? <Navigate to="/" replace /> : <LoginPage />,
         },
         {
           path: '*',

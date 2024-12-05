@@ -2,6 +2,7 @@ import { Button } from '@/components';
 import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
 import { useMutation } from '@tanstack/react-query';
+import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 const LogoutButton = () => {
   const { logout } = useAuth();
@@ -28,7 +29,12 @@ const LogoutButton = () => {
     logoutMutation.mutate();
   };
 
-  return <Button onClick={handleClick}>Изход</Button>;
+  return (
+    <Button onClick={handleClick} variant="outline">
+      <LogOut />
+      Изход
+    </Button>
+  );
 };
 
 export { LogoutButton };
