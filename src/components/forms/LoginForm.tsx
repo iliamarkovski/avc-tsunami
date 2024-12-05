@@ -135,7 +135,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Имейл</FormLabel>
               <FormControl>
-                <Input {...field} type="email" />
+                <Input {...field} type="email" autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>

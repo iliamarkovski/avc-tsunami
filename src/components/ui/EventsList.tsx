@@ -74,7 +74,7 @@ const NotFoundEvents = () => {
 const EventsList = ({ type }: Props) => {
   const { data, isLoading } = useQuery({
     queryKey: [type],
-    queryFn: () => fetchEvents(type),
+    queryFn: () => fetchEvents({ type }),
   });
 
   if (isLoading) {

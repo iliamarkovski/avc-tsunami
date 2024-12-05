@@ -17,6 +17,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputHTMLAttributes<HTM
         <Input
           type={showPassword ? 'text' : 'password'}
           className={cn('hide-password-toggle pr-10', className)}
+          autoComplete="off"
           ref={ref}
           {...props}
         />

@@ -26,7 +26,11 @@ export type DataProps = {
   [K in EventType]: Event[];
 };
 
-export const fetchEvents = async (type: EventType) => {
+type Props = {
+  type: EventType;
+};
+
+export const fetchEvents = async ({ type }: Props) => {
   const res = await fetchData<DataProps>(`{
       ${type}(orderBy: date_ASC) {
         id

@@ -129,7 +129,7 @@ const UserForm = ({ email }: Props) => {
                         {member.names}
                       </SelectItem>
                     ))}
-                    <SelectItem value="other">Друг</SelectItem>
+                    <SelectItem value="Друг">Друг</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>

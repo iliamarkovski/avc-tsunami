@@ -3,6 +3,7 @@ import { WinOrLose, EventState } from '@/types';
 import { buttonVariants, Card, CardDescription, CardHeader, CardTitle } from '@/components';
 import { cn } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
+import { useAuth } from '@/contexts';
 
 type Props = {
   isHost: boolean;
@@ -29,6 +30,8 @@ const EventItem = ({
   statisticsUrl,
   variant,
 }: Props) => {
+  const { user } = useAuth();
+
   const getMatchDisplay = () => {
     if (!result) {
       return isHost
@@ -38,22 +41,22 @@ const EventItem = ({
     if (result === 'win') {
       return isHost ? (
         <>
-          {TEAM_NAME} <strong className="font-extrabold text-green-500">3:{games ?? '-'}</strong> {opponent}
+          {TEAM_NAME} <span className="text-green-500">3:{games ?? '-'}</span> {opponent}
         </>
       ) : (
         <>
-          {opponent} <strong className="font-extrabold text-green-500">{games ?? '-'}:3</strong> {TEAM_NAME}
+          {opponent} <span className="text-green-500">{games ?? '-'}:3</span> {TEAM_NAME}
         </>
       );
     }
     if (result === 'lose') {
       return isHost ? (
         <>
-          {TEAM_NAME} <strong className="font-extrabold text-red-500">{games ?? '-'}:3</strong> {opponent}
+          {TEAM_NAME} <span className="text-red-500">{games ?? '-'}:3</span> {opponent}
         </>
       ) : (
         <>
-          {opponent} <span className="font-extrabold text-red-500">3:{games ?? '-'}</span> {TEAM_NAME}
+          {opponent} <span className="text-red-500">3:{games ?? '-'}</span> {TEAM_NAME}
         </>
       );
     }
@@ -73,15 +76,15 @@ const EventItem = ({
         <CardTitle>{getMatchDisplay()}</CardTitle>
         <CardDescription>{hall}</CardDescription>
 
-        {recordingUrl || statisticsUrl ? (
+        {recordingUrl || (statisticsUrl && !!user) ? (
           <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
             {recordingUrl ? (
               <a href={recordingUrl} target="_blank" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
-                <SquarePlay className="text-[#FF0000]" /> Запис
+                <SquarePlay className="text-[#FF0000]" /> Видео
               </a>
             ) : null}
 
-            {statisticsUrl ? (
+            {statisticsUrl && !!user ? (
               <a
                 href={statisticsUrl}
                 target="_blank"
