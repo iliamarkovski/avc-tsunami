@@ -12,7 +12,7 @@ import {
 } from '@/components';
 import { EventState, EventType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import { addDays, format, isBefore } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 import { Archive, CalendarX2 } from 'lucide-react';
 
 type Props = {
@@ -25,7 +25,10 @@ const separateEvents = (events: Event[]) => {
   const futureEvents: Event[] = [];
 
   events.forEach((event) => {
-    if (isBefore(event.date, addDays(today, -1)) || event.winOrLose) {
+    const eventDate = format(event.date, 'dd.MM.yyyy');
+    const todayDate = format(today, 'dd.MM.yyyy');
+
+    if (isBefore(eventDate, todayDate) || event.winOrLose) {
       pastEvents.push(event);
     } else {
       futureEvents.push(event);
@@ -47,6 +50,7 @@ const renderEventItem = (event: Event, variant?: EventState) => {
   return (
     <EventItem
       key={event.id}
+      id={event.id}
       date={date}
       hall={hallName}
       isHost={isHost}

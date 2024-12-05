@@ -15,7 +15,11 @@ type Props = {
   createUser: (email: string, password: string, name: string) => Promise<User>;
   logout: () => Promise<void>;
   isUserExist: (email: string) => Promise<boolean>;
-  user: User | null;
+  user: {
+    email: string;
+    name: string;
+    uid: string;
+  } | null;
   isLoading: boolean;
 };
 
@@ -36,9 +40,28 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       name: name,
       email,
       createdAt: serverTimestamp(),
+      uid: userCredential.user.uid,
     });
 
     return userCredential.user;
+  };
+
+  const getUser = async (user: User) => {
+    const usersRef = collection(db, 'users');
+    const q = query(usersRef, where('email', '==', user.email));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+      return {
+        email: userData.email,
+        name: userData.name,
+        uid: userData.uid,
+      } satisfies Props['user'];
+    }
+
+    return null; // Return null if no user is found
   };
 
   const isUserExist = async (email: string) => {
@@ -54,8 +77,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        const userData = await getUser(currentUser);
+        setUser(userData); // Now set the user data after the promise resolves
+      } else {
+        setUser(null);
+      }
       setIsLoading(false);
     });
 

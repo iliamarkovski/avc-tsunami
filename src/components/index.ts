@@ -23,9 +23,12 @@ export * from './ui/Select';
 export * from './ui/PasswordInput';
 export * from './ui/LogoutButton';
 export * from './ui/PageLoader';
+export * from './ui/EventResponse';
+export * from './ui/Badge';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
+export * from './skeletons/SkeletonEventResponse';
 
 //forms
 export * from './forms/LoginForm';

@@ -76,7 +76,6 @@ const LoginForm = () => {
       navigate('/');
     },
     onError: (data: FirebaseError) => {
-      console.log('data.code: ', data.code);
       switch (data.code) {
         case 'auth/wrong-password':
           form.setError('password', {
