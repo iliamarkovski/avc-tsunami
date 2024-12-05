@@ -5,7 +5,7 @@ import { EventOptions } from '@/types';
 type Props = {
   eventId: string;
   onChange: (value: string) => Promise<void>;
-  value: EventOptions;
+  value: EventOptions | '';
   counter: {
     yes: number;
     no: number;

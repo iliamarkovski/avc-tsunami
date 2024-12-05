@@ -1,5 +1,5 @@
 import { TEAM_NAME } from '@/constants';
-import { WinOrLose, EventState } from '@/types';
+import { WinOrLose, EventState, EventOptions } from '@/types';
 import {
   buttonVariants,
   Card,
@@ -13,9 +13,10 @@ import { cn, countUsersResponses } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { useMutation } from '@tanstack/react-query';
+import { doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/config';
+import { useEffect, useState } from 'react';
 
 type Props = {
   id: string;
@@ -31,12 +32,29 @@ type Props = {
   variant?: EventState;
 };
 
-const fetchEventResponses = async (eventId: string) => {
-  const eventRef = doc(db, 'events', eventId);
-  const docSnap = await getDoc(eventRef);
+const useLiveEventResponses = (eventId: string) => {
+  const [eventResponses, setEventResponses] = useState<Record<string, EventOptions> | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
 
-  const response = docSnap.data();
-  return response;
+  useEffect(() => {
+    const eventDocRef = doc(db, 'events', eventId);
+
+    const unsubscribe = onSnapshot(
+      eventDocRef,
+      (docSnap) => {
+        setEventResponses(docSnap.exists() ? docSnap.data() : undefined);
+        setLoading(false);
+      },
+      (error) => {
+        console.error('Error listening to event responses:', error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [eventId]);
+
+  return { eventResponses, loading };
 };
 
 const EventItem = ({
@@ -54,6 +72,8 @@ const EventItem = ({
 }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const { eventResponses, loading: eventResponsesLoading } = useLiveEventResponses(id);
 
   const isFuture = variant === 'future';
   const isCurrent = variant === 'current';
@@ -89,16 +109,6 @@ const EventItem = ({
     }
   };
 
-  const {
-    data: eventResponses,
-    refetch: refetchEventResponses,
-    isLoading: eventResponsesLoading,
-  } = useQuery({
-    enabled: isCurrent,
-    queryKey: ['eventResponses'],
-    queryFn: () => fetchEventResponses(id),
-  });
-
   const saveResponseMutation = useMutation({
     mutationFn: async (selectedValue: string) => {
       if (!user) return;
@@ -124,9 +134,9 @@ const EventItem = ({
         description: 'Моля, опитайте отново по-късно.',
       });
     },
-    onSuccess: () => {
-      refetchEventResponses();
-    },
+    // onSuccess: () => {
+    //   refetchEventResponses();
+    // },
   });
 
   const handleChange = async (value: string) => {
