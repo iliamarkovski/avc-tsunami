@@ -61,7 +61,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       } satisfies Props['user'];
     }
 
-    return null; // Return null if no user is found
+    return null;
   };
 
   const isUserExist = async (email: string) => {
@@ -80,7 +80,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         const userData = await getUser(currentUser);
-        setUser(userData); // Now set the user data after the promise resolves
+        setUser(userData);
       } else {
         setUser(null);
       }
