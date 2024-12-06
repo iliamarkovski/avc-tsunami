@@ -16,14 +16,14 @@ import {
   TabsContent,
   DialogDescription,
 } from '@/components';
-import { cn, getRoleLabel } from '@/lib';
-import { EventOptions, Roles } from '@/types';
+import { cn } from '@/lib';
+import { EventOptions } from '@/types';
 import { Info } from 'lucide-react';
 
 type Props = {
   onChange: (value: string) => Promise<void>;
   selectedValue: EventOptions | '';
-  data: Record<EventOptions, { name: string; role: Roles }[]>;
+  data: Record<EventOptions, { name: string; role: string }[]>;
 };
 
 const OPTIONS: {
@@ -92,7 +92,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                       {data[tab.value]?.map((item, index) => {
                         return (
                           <DialogDescription key={`${item.name}-${index}`}>
-                            {item.name} ({getRoleLabel(item.role).toLowerCase()})
+                            {item.name} ({item.role.toLowerCase()})
                           </DialogDescription>
                         );
                       })}

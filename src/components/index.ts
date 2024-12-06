@@ -26,6 +26,8 @@ export * from './ui/PageLoader';
 export * from './ui/EventResponse';
 export * from './ui/Badge';
 export * from './ui/Dialog';
+export * from './ui/DropdownMenu';
+export * from './ui/ThemeToggle';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';

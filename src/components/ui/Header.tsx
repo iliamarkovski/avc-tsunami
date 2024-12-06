@@ -15,7 +15,7 @@ const Header = () => {
         {!!user ? (
           <LogoutButton />
         ) : (
-          <Link to="/login" className={cn(buttonVariants({ variant: 'default' }))}>
+          <Link to="/login" className={cn(buttonVariants({ variant: 'outline' }))}>
             <LogIn />
             Вход
           </Link>

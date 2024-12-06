@@ -17,7 +17,7 @@ const HeaderNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="flex items-center gap-2">
+    <nav className="flex items-center gap-1">
       {links.map((link) => {
         const isActive = location.pathname === link.url;
 
