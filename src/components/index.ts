@@ -25,6 +25,7 @@ export * from './ui/LogoutButton';
 export * from './ui/PageLoader';
 export * from './ui/EventResponse';
 export * from './ui/Badge';
+export * from './ui/Dialog';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';

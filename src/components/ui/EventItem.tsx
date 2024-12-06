@@ -9,7 +9,7 @@ import {
   EventResponse,
   SkeletonEventResponse,
 } from '@/components';
-import { cn, countUsersResponses } from '@/lib';
+import { cn, getUsersByResponse } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
@@ -33,7 +33,9 @@ type Props = {
 };
 
 const useLiveEventResponses = (eventId: string) => {
-  const [eventResponses, setEventResponses] = useState<Record<string, EventOptions> | undefined>(undefined);
+  const [eventResponses, setEventResponses] = useState<
+    Record<string, { answer: EventOptions; name: string }> | undefined
+  >(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -119,11 +121,11 @@ const EventItem = ({
 
       if (eventDoc.exists()) {
         await updateDoc(eventDocRef, {
-          [user.uid]: selectedValue,
+          [user.uid]: { answer: selectedValue, name: user.name },
         });
       } else {
         await setDoc(eventDocRef, {
-          [user.uid]: selectedValue,
+          [user.uid]: { answer: selectedValue, name: user.name },
         });
       }
     },
@@ -134,9 +136,6 @@ const EventItem = ({
         description: 'Моля, опитайте отново по-късно.',
       });
     },
-    // onSuccess: () => {
-    //   refetchEventResponses();
-    // },
   });
 
   const handleChange = async (value: string) => {
@@ -182,10 +181,9 @@ const EventItem = ({
               <SkeletonEventResponse />
             ) : (
               <EventResponse
-                eventId={id}
                 onChange={handleChange}
-                counter={countUsersResponses(eventResponses)}
-                value={eventResponses?.[user!.uid] || ''}
+                data={getUsersByResponse(eventResponses)}
+                selectedValue={eventResponses?.[user!.uid].answer || ''}
               />
             )}
           </>
