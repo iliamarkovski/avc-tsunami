@@ -1,15 +1,7 @@
 import { fetchTeamMembers } from '@/api';
 import { Card, CardHeader } from '@/components';
+import { getRoleLabel } from '@/lib';
 import { useQuery } from '@tanstack/react-query';
-import { MemberRole } from '@/api';
-
-const roles: Record<MemberRole, string> = {
-  setter: 'Разпределител',
-  receiver: 'Посрещач',
-  opposite: 'Диагонал',
-  blocker: 'Блокировач',
-  libero: 'Либеро',
-};
 
 const TeamMembers = () => {
   const { data } = useQuery({
@@ -26,7 +18,7 @@ const TeamMembers = () => {
               <h2 key={member.id}>
                 {member.names} {member.captain ? '(к)' : null}
               </h2>
-              <p>{roles[member.role]}</p>
+              <p>{getRoleLabel(member.role)}</p>
               <span>{member.number}</span>
             </CardHeader>
           </Card>

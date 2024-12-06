@@ -1,4 +1,5 @@
 import { db, auth } from '@/config';
+import { Roles } from '@/types';
 import {
   User,
   signOut,
@@ -12,13 +13,14 @@ import { createContext, ReactNode, useContext, useState, useEffect } from 'react
 
 type Props = {
   login: (email: string, password: string) => Promise<UserCredential>;
-  createUser: (email: string, password: string, name: string) => Promise<User>;
+  createUser: (email: string, password: string, name: string, role: Roles) => Promise<User>;
   logout: () => Promise<void>;
   isUserExist: (email: string) => Promise<boolean>;
   user: {
     email: string;
     name: string;
     uid: string;
+    role: Roles;
   } | null;
   isLoading: boolean;
 };
@@ -33,7 +35,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const createUser = async (email: string, password: string, name: string) => {
+  const createUser = async (email: string, password: string, name: string, role: Roles) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userDocRef = doc(db, 'users', userCredential.user.uid);
     await setDoc(userDocRef, {
@@ -41,6 +43,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       createdAt: serverTimestamp(),
       uid: userCredential.user.uid,
+      role,
     });
 
     return userCredential.user;
@@ -58,6 +61,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         email: userData.email,
         name: userData.name,
         uid: userData.uid,
+        role: userData.role,
       } satisfies Props['user'];
     }
 

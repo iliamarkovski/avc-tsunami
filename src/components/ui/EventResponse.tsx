@@ -16,33 +16,15 @@ import {
   TabsContent,
   DialogDescription,
 } from '@/components';
-import { cn } from '@/lib';
-import { EventOptions } from '@/types';
+import { cn, getRoleLabel } from '@/lib';
+import { EventOptions, Roles } from '@/types';
 import { Info } from 'lucide-react';
 
 type Props = {
   onChange: (value: string) => Promise<void>;
   selectedValue: EventOptions | '';
-  data: { yes: string[]; no: string[]; maybe: string[] };
+  data: Record<EventOptions, { name: string; role: Roles }[]>;
 };
-
-const TABS: {
-  label: string;
-  value: EventOptions;
-}[] = [
-  {
-    label: 'ДА',
-    value: 'yes',
-  },
-  {
-    label: 'НЕ',
-    value: 'no',
-  },
-  {
-    label: 'МОЖЕ БИ',
-    value: 'maybe',
-  },
-];
 
 const OPTIONS: {
   label: string;
@@ -94,9 +76,9 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
           <DialogContent className="p-4 md:p-6">
             <DialogTitle>Гласували</DialogTitle>
             <DialogHeader>
-              <Tabs defaultValue={TABS[0].value}>
+              <Tabs defaultValue={OPTIONS[0].value}>
                 <TabsList className="flex w-full">
-                  {TABS.map((tab) => {
+                  {OPTIONS.map((tab) => {
                     return (
                       <TabsTrigger key={`trigger-${tab.value}`} value={tab.value} className="flex-1">
                         {tab.label} ({data[tab.value].length})
@@ -104,13 +86,13 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                     );
                   })}
                 </TabsList>
-                {TABS.map((tab) => {
+                {OPTIONS.map((tab) => {
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
-                      {data[tab.value]?.map((name) => {
+                      {data[tab.value]?.map((item, index) => {
                         return (
-                          <DialogDescription className="text-center" key={name}>
-                            {name}
+                          <DialogDescription key={`${item.name}-${index}`}>
+                            {item.name} ({getRoleLabel(item.role).toLowerCase()})
                           </DialogDescription>
                         );
                       })}

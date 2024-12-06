@@ -1,13 +1,12 @@
 import { fetchData } from '@/api';
-
-export type MemberRole = 'setter' | 'opposite' | 'receiver' | 'blocker' | 'libero';
+import { Roles } from '@/types';
 
 type DataProps = {
   teamMembers: {
     id: string;
     names: string;
     number: number;
-    role: MemberRole;
+    role: Roles;
     captain: boolean;
     active: boolean;
   }[];

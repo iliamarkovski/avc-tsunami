@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { Roles } from '@/types';
 
 type Props = {
   email: string;
@@ -64,7 +65,10 @@ const UserForm = ({ email }: Props) => {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
-      return await createUser(email, data.password, data.selectedName);
+      const { password, selectedName } = data;
+      const role = teamMembers.find((member) => member.names === selectedName)?.role;
+
+      return await createUser(email, password, selectedName, role as Roles);
     },
     onSuccess: (_, variables) => {
       loginMutation.mutate(variables);
@@ -129,7 +133,6 @@ const UserForm = ({ email }: Props) => {
                         {member.names}
                       </SelectItem>
                     ))}
-                    <SelectItem value="Друг">Друг</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>

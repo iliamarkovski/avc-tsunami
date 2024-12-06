@@ -1,5 +1,5 @@
 import { TEAM_NAME } from '@/constants';
-import { WinOrLose, EventState, EventOptions } from '@/types';
+import { WinOrLose, EventState, EventOptions, Roles } from '@/types';
 import {
   buttonVariants,
   Card,
@@ -34,7 +34,7 @@ type Props = {
 
 const useLiveEventResponses = (eventId: string) => {
   const [eventResponses, setEventResponses] = useState<
-    Record<string, { answer: EventOptions; name: string }> | undefined
+    Record<string, { answer: EventOptions; name: string; role: Roles }> | undefined
   >(undefined);
   const [loading, setLoading] = useState(true);
 
@@ -121,11 +121,11 @@ const EventItem = ({
 
       if (eventDoc.exists()) {
         await updateDoc(eventDocRef, {
-          [user.uid]: { answer: selectedValue, name: user.name },
+          [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
         });
       } else {
         await setDoc(eventDocRef, {
-          [user.uid]: { answer: selectedValue, name: user.name },
+          [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
         });
       }
     },
@@ -183,7 +183,7 @@ const EventItem = ({
               <EventResponse
                 onChange={handleChange}
                 data={getUsersByResponse(eventResponses)}
-                selectedValue={eventResponses?.[user!.uid].answer || ''}
+                selectedValue={eventResponses?.[user!.uid]?.answer || ''}
               />
             )}
           </>
