@@ -91,14 +91,14 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
           <DialogTrigger>
             <Info className="text-blue-600" />
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="p-4 md:p-6">
             <DialogTitle>Гласували</DialogTitle>
             <DialogHeader>
               <Tabs defaultValue={TABS[0].value}>
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="flex w-full">
                   {TABS.map((tab) => {
                     return (
-                      <TabsTrigger key={`trigger-${tab.value}`} value={tab.value}>
+                      <TabsTrigger key={`trigger-${tab.value}`} value={tab.value} className="flex-1">
                         {tab.label} ({data[tab.value].length})
                       </TabsTrigger>
                     );

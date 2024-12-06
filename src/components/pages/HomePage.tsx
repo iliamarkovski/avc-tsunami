@@ -20,10 +20,10 @@ const tabs: Tabs = [
 const HomePage = () => {
   return (
     <Tabs defaultValue={tabs[0].value}>
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="flex w-full">
         {tabs.map((tab) => {
           return (
-            <TabsTrigger key={`trigger-${tab.value}`} value={tab.value}>
+            <TabsTrigger key={`trigger-${tab.value}`} value={tab.value} className="flex-1">
               {tab.title}
             </TabsTrigger>
           );
