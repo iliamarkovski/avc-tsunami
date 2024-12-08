@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['favicon.ico', 'apple-touc-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'АВК Цунами',
-        short_name: 'Цунами',
-        description: 'Сайт на АВК Цунами',
+        name: 'AVC Tsunami',
+        short_name: 'Tsunami',
+        description: 'ACT Tsunami official website',
         icons: [
           {
             src: '/android-chrome-192x192.png',
