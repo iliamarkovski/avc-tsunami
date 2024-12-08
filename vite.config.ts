@@ -32,12 +32,12 @@ export default defineConfig({
             type: 'image/png',
             purpose: 'apple touch icon',
           },
-          // {
-          //   src: '/maskable_icon.png',
-          //   sizes: '512x512',
-          //   type: 'image/png',
-          //   purpose: 'any maskable',
-          // },
+          {
+            src: '/maskable-icon.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
         ],
         display: 'standalone',
         scope: '/',
