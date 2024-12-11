@@ -11,7 +11,7 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touc-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'AVC Tsunami',
-        short_name: 'Tsunami',
+        short_name: 'AVC Tsunami',
         description: 'ACT Tsunami official website',
         icons: [
           {
@@ -41,7 +41,7 @@ export default defineConfig({
         ],
         display: 'standalone',
         scope: '/',
-        start_url: '/',
+        start_url: '/?source=pwa',
         background_color: '#2563eb',
         theme_color: '#2563eb',
         orientation: 'any',
