@@ -17,7 +17,7 @@ const HeaderNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="gap-1La flex items-center gap-1">
       {links.map((link) => {
         const isActive = location.pathname === link.url;
 
@@ -25,7 +25,7 @@ const HeaderNav = () => {
           <Link
             key={link.url}
             to={link.url}
-            className={cn(buttonVariants({ variant: 'ghost' }), {
+            className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), {
               'bg-accent text-accent-foreground': isActive,
             })}>
             {link.title}

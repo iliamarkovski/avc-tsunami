@@ -11,7 +11,7 @@ import {
 } from '@/components';
 import { cn, getUsersByResponse } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
-import { useAuth, useTheme } from '@/contexts';
+import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { doc, getDoc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
@@ -74,15 +74,12 @@ const EventItem = ({
 }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { theme } = useTheme();
 
   const { eventResponses, loading: eventResponsesLoading } = useLiveEventResponses(id);
 
   const isFuture = variant === 'future';
   const isCurrent = variant === 'current';
   const isPast = variant === 'past';
-
-  const isDark = theme === 'dark';
 
   const getMatchDisplay = () => {
     if (!result) {
@@ -148,11 +145,9 @@ const EventItem = ({
   return (
     <Card
       className={cn('text-center', {
-        'bg-background': isPast,
-        'bg-green-400/5': isCurrent && !isDark,
-        'bg-green-400/10': isCurrent && isDark,
-        'bg-blue-400/5': isFuture && !isDark,
-        'bg-blue-400/10': isFuture && isDark,
+        'bg-gray-400/5': isPast,
+        'bg-green-400/10': isCurrent,
+        'bg-blue-400/10': isFuture,
       })}>
       <CardHeader>
         <CardDescription>

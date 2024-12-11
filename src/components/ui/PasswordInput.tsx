@@ -1,15 +1,13 @@
-'use client';
-
 import * as React from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 import { Button, Input } from '@/components';
 import { cn } from '@/lib';
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, useState } from 'react';
 
 const PasswordInput = React.forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
   ({ className, ...props }, ref) => {
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     return (
       <div className="relative">

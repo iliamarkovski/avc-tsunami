@@ -38,10 +38,6 @@ const OPTIONS: {
     label: 'НЕ',
     value: 'no',
   },
-  {
-    label: 'МОЖЕ БИ',
-    value: 'maybe',
-  },
 ];
 
 const EventResponse = ({ onChange, selectedValue, data }: Props) => {
@@ -53,7 +49,6 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
           className={cn('w-max gap-2', {
             'text-green-600': selectedValue === 'yes',
             'text-red-600': selectedValue === 'no',
-            'text-yellow-600': selectedValue === 'maybe',
           })}>
           {selectedValue ? 'Ще присъствам:' : null} <SelectValue placeholder="Потвърди присъствие" />
         </SelectTrigger>
@@ -68,7 +63,6 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
       <div className="flex flex-wrap items-center justify-center gap-1">
         <Badge variant="positive">ДА: {data?.yes.length}</Badge>
         <Badge variant="negative">НЕ: {data?.no.length}</Badge>
-        <Badge variant="neutral">МОЖЕ БИ: {data?.maybe.length}</Badge>
         <Dialog>
           <DialogTrigger>
             <Info className="text-blue-600" />

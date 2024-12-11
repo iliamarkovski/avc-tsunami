@@ -2,6 +2,7 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -13,7 +14,7 @@ import { getFirstChars } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
 import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-const LogoutButton = () => {
+const LogoutMenu = () => {
   const { logout, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -41,22 +42,26 @@ const LogoutButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full">
+        <Button variant="outline" size="icon">
           {getFirstChars(user?.name || '')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <ThemeToggle />
+        <DropdownMenuItem>
+          <ThemeToggle />
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <Button type="button" variant="ghost" size="sm" onClick={handleClick} className="w-full justify-start">
-          <LogOut />
-          Изход
-        </Button>
+        <DropdownMenuItem asChild>
+          <Button type="button" variant="ghost" size="sm" onClick={handleClick} className="w-full justify-start">
+            <LogOut />
+            Изход
+          </Button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
-export { LogoutButton };
+export { LogoutMenu };

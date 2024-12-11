@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { Header, PageLoader } from '@/components';
+import { Footer, Header, PageLoader } from '@/components';
 import { useAuth } from '@/contexts';
 
 const Layout = () => {
@@ -16,6 +16,8 @@ const Layout = () => {
       <main className="wrapper flex flex-1 flex-col gap-4">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 };

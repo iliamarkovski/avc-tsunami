@@ -4,7 +4,7 @@ import { EventOptions, Roles } from '@/types';
 export const getUsersByResponse = (
   obj: { [key: string]: { answer: EventOptions; name: string; role: Roles } } | undefined
 ) => {
-  const initialResponses: Record<EventOptions, { name: string; role: string }[]> = { yes: [], no: [], maybe: [] };
+  const initialResponses: Record<EventOptions, { name: string; role: string }[]> = { yes: [], no: [] };
 
   if (!obj) {
     return initialResponses;
@@ -17,10 +17,8 @@ export const getUsersByResponse = (
     const roleLabel = getRoleLabel(role);
     if (answer === 'yes') {
       responses.yes.push({ name, role: roleLabel });
-    } else if (answer === 'no') {
+    } else {
       responses.no.push({ name, role: roleLabel });
-    } else if (answer === 'maybe') {
-      responses.maybe.push({ name, role: roleLabel });
     }
   }
 

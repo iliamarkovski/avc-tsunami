@@ -21,13 +21,15 @@ export * from './ui/Skeleton';
 export * from './ui/Toast';
 export * from './ui/Select';
 export * from './ui/PasswordInput';
-export * from './ui/LogoutButton';
+export * from './ui/LoginMenu';
+export * from './ui/LogoutMenu';
 export * from './ui/PageLoader';
 export * from './ui/EventResponse';
 export * from './ui/Badge';
 export * from './ui/Dialog';
 export * from './ui/DropdownMenu';
 export * from './ui/ThemeToggle';
+export * from './ui/Footer';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
