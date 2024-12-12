@@ -4,7 +4,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Badge,
   Dialog,
   DialogTrigger,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   TabsTrigger,
   TabsContent,
   DialogDescription,
+  Separator,
 } from '@/components';
 import { cn } from '@/lib';
 import { EventOptions } from '@/types';
@@ -60,9 +60,12 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
           ))}
         </SelectContent>
       </Select>
-      <div className="flex flex-wrap items-center justify-center gap-1">
-        <Badge variant="positive">ДА: {data?.yes.length}</Badge>
-        <Badge variant="negative">НЕ: {data?.no.length}</Badge>
+
+      <div className="flex h-5 items-center space-x-4 text-sm">
+        <span className="flex items-center gap-1 text-green-600">ДА : {data?.yes.length}</span>
+        <Separator orientation="vertical" />
+        <span className="flex items-center gap-1 text-red-600">НЕ : {data?.no.length}</span>
+        <Separator orientation="vertical" />
         <Dialog>
           <DialogTrigger>
             <Info className="text-blue-600" />

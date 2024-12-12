@@ -31,10 +31,12 @@ export * from './ui/Dialog';
 export * from './ui/DropdownMenu';
 export * from './ui/ThemeToggle';
 export * from './ui/Footer';
+export * from './ui/Separator';
+export * from './ui/EventItem';
+export * from './ui/NotFoundEvents';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
-export * from './skeletons/SkeletonEventResponse';
 
 //forms
 export * from './forms/LoginForm';

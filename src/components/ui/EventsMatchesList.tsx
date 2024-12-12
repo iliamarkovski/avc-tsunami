@@ -1,34 +1,31 @@
 import { fetchMatches, Event } from '@/api';
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
   Button,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
   EventMatchItem,
+  NotFoundEvents,
   SkeletonEventItem,
 } from '@/components';
-import { EventState, EventType } from '@/types';
+import { EventType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import { format, isBefore } from 'date-fns';
-import { Archive, CalendarX2 } from 'lucide-react';
+import { format, isBefore, startOfDay } from 'date-fns';
+import { Archive } from 'lucide-react';
 
 type Props = {
   type: EventType;
 };
 
 const separateEvents = (events: Event[]) => {
-  const today = new Date();
+  const today = startOfDay(new Date());
   const pastEvents: Event[] = [];
   const futureEvents: Event[] = [];
 
   events.forEach((event) => {
-    const eventDate = format(event.date, 'dd.MM.yyyy');
-    const todayDate = format(today, 'dd.MM.yyyy');
+    const eventDay = startOfDay(new Date(event.date));
 
-    if (isBefore(eventDate, todayDate) || event.winOrLose) {
+    if (event.winOrLose || isBefore(eventDay, today)) {
       pastEvents.push(event);
     } else {
       futureEvents.push(event);
@@ -38,7 +35,7 @@ const separateEvents = (events: Event[]) => {
   return { pastEvents, futureEvents };
 };
 
-const renderEventItem = (event: Event, variant?: EventState) => {
+const renderEventItem = (event: Event, isCurrent?: boolean) => {
   const opponentName = event.opponent.name;
   const hallName = event.hall.name;
   const date = format(event.date, 'dd.MM.yyyy');
@@ -60,18 +57,8 @@ const renderEventItem = (event: Event, variant?: EventState) => {
       games={games}
       recordingUrl={event.recording}
       statisticsUrl={statistics}
-      variant={variant}
+      isCurrent={isCurrent}
     />
-  );
-};
-
-const NotFoundEvents = () => {
-  return (
-    <Alert variant="destructive">
-      <CalendarX2 className="size-5" />
-      <AlertTitle>Не са намерени резултати</AlertTitle>
-      <AlertDescription>Няма предстоящи събития</AlertDescription>
-    </Alert>
   );
 };
 
@@ -82,7 +69,7 @@ const EventsMatchesList = ({ type }: Props) => {
   });
 
   if (!isFetched) {
-    return <SkeletonEventItem />;
+    return <SkeletonEventItem isCurrent />;
   }
 
   if (!data || data.length === 0) {
@@ -101,7 +88,7 @@ const EventsMatchesList = ({ type }: Props) => {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="grid gap-4">
-            {pastEvents.map((event) => renderEventItem(event, 'past'))}
+            {pastEvents.map((event) => renderEventItem(event))}
           </CollapsibleContent>
         </Collapsible>
       )}
@@ -109,7 +96,7 @@ const EventsMatchesList = ({ type }: Props) => {
       {!futureEvents || futureEvents.length === 0 ? (
         <NotFoundEvents />
       ) : (
-        <>{futureEvents.map((event, index) => renderEventItem(event, index === 0 ? 'current' : 'future'))}</>
+        <>{futureEvents.map((event, index) => renderEventItem(event, index === 0))}</>
       )}
     </div>
   );
