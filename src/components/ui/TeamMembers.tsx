@@ -17,7 +17,7 @@ const TeamMembers = () => {
           <Card key={member.id} className="flex flex-col">
             <CardHeader className="grow items-center gap-2 p-4 text-center">
               <Avatar className="aspect-square h-auto w-5/6 border">
-                <AvatarImage src={undefined} />
+                <AvatarImage src={member.image?.url || undefined} className="object-cover" />
                 <AvatarFallback>
                   <User className="h-3/5 w-3/5 text-background" />
                 </AvatarFallback>
@@ -27,7 +27,7 @@ const TeamMembers = () => {
                 <h2 className="mb-auto text-xl font-semibold">
                   {member.names} {member.captain ? '(к)' : null}
                 </h2>
-                <Separator className="my-3" />
+                <Separator className="mb-2 mt-3" />
                 <p className="mt-auto text-sm">{getRoleLabel(member.role)}</p>
               </div>
             </CardHeader>

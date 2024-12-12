@@ -9,6 +9,9 @@ type Props = {
     role: Roles;
     captain: boolean;
     active: boolean;
+    image: {
+      url: string | null;
+    };
   }[];
 };
 
@@ -21,6 +24,9 @@ export const fetchTeamMembers = async (active?: boolean) => {
       role
       captain
       active
+      image {
+        url
+      }
     }
   }`);
 
