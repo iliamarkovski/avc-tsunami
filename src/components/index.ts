@@ -34,6 +34,7 @@ export * from './ui/Footer';
 export * from './ui/Separator';
 export * from './ui/EventItem';
 export * from './ui/NotFoundEvents';
+export * from './ui/Avatar';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
