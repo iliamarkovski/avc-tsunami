@@ -9,7 +9,7 @@ const SkeletonEventItem = ({ isCurrent }: Props) => {
     <Card>
       <CardHeader>
         <Skeleton className="h-5" />
-        <Skeleton className="h-6" />
+        <Skeleton className="h-8" />
         <Skeleton className="h-5" />
 
         {isCurrent ? (

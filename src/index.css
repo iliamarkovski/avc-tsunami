@@ -65,11 +65,11 @@
   }
 
   html {
-    @apply text-[18px];
+    @apply overscroll-none text-[18px];
   }
 
   body {
-    @apply overflow-y-scroll bg-background text-foreground;
+    @apply overflow-y-scroll overscroll-none bg-background text-foreground;
   }
 
   .wrapper {

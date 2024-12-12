@@ -20,7 +20,7 @@ const EventItem = ({ isCurrent, children, collection, eventId }: Props) => {
 
   const { eventResponses, loading: eventResponsesLoading } = useLiveEventResponses(collection, eventId);
 
-  const answer = eventResponses?.[user!.uid]?.answer;
+  const answer = user ? eventResponses?.[user?.uid]?.answer : undefined;
 
   const saveResponseMutation = useMutation({
     mutationFn: async (selectedValue: string) => {
@@ -54,7 +54,7 @@ const EventItem = ({ isCurrent, children, collection, eventId }: Props) => {
   };
 
   if (eventResponsesLoading) {
-    return <SkeletonEventItem isCurrent={isCurrent} />;
+    return <SkeletonEventItem isCurrent={isCurrent && !!user} />;
   }
 
   return (

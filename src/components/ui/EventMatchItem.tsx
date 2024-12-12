@@ -43,22 +43,22 @@ const EventMatchItem = ({
     if (result === 'win') {
       return isHost ? (
         <>
-          {TEAM_NAME} <span className="text-green-600">3:{games ?? '-'}</span> {opponent}
+          {TEAM_NAME} <span className="text-green-600">3:{games ?? '?'}</span> {opponent}
         </>
       ) : (
         <>
-          {opponent} <span className="text-green-600">{games ?? '-'}:3</span> {TEAM_NAME}
+          {opponent} <span className="text-green-600">{games ?? '?'}:3</span> {TEAM_NAME}
         </>
       );
     }
     if (result === 'lose') {
       return isHost ? (
         <>
-          {TEAM_NAME} <span className="text-red-600">{games ?? '-'}:3</span> {opponent}
+          {TEAM_NAME} <span className="text-red-600">{games ?? '?'}:3</span> {opponent}
         </>
       ) : (
         <>
-          {opponent} <span className="text-red-600">3:{games ?? '-'}</span> {TEAM_NAME}
+          {opponent} <span className="text-red-600">3:{games ?? '?'}</span> {TEAM_NAME}
         </>
       );
     }

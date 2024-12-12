@@ -23,7 +23,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputHTMLAttributes<HTM
           variant="ghost"
           size="sm"
           className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-          onClick={() => setShowPassword((prev) => !prev)}>
+          onClick={() => setShowPassword((prev) => !prev)}
+          tabIndex={-1}>
           {showPassword ? (
             <EyeIcon className="h-4 w-4" aria-hidden="true" />
           ) : (
@@ -32,15 +33,20 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputHTMLAttributes<HTM
           <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
         </Button>
 
-        {/* hides browsers password toggles */}
+        {/* hides browsers password toggles and suggestions */}
         <style>{`
-					.hide-password-toggle::-ms-reveal,
-					.hide-password-toggle::-ms-clear {
-						visibility: hidden;
-						pointer-events: none;
-						display: none;
-					}
-				`}</style>
+          .hide-password-toggle::-ms-reveal,
+          .hide-password-toggle::-ms-clear,
+          .hide-password-toggle::-webkit-input-placeholder {
+            visibility: hidden;
+            pointer-events: none;
+            display: none;
+          }
+          input[type="password"] {
+            -webkit-appearance: none;
+            appearance: none;
+          }
+        `}</style>
       </div>
     );
   }
