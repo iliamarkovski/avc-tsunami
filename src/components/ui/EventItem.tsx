@@ -60,7 +60,7 @@ const EventItem = ({ isCurrent, children, collection, eventId }: Props) => {
   return (
     <Card
       className={cn('text-center', {
-        'bg-border': isCurrent && !answer,
+        'bg-blue-400/10': isCurrent && !answer,
         'bg-green-400/10': isCurrent && answer === 'yes',
         'bg-red-400/10': isCurrent && answer === 'no',
       })}>

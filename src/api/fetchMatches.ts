@@ -32,7 +32,7 @@ type Props = {
 
 export const fetchMatches = async ({ type }: Props) => {
   const res = await fetchData<DataProps>(`{
-      ${type}(orderBy: date_ASC) {
+      ${type}(orderBy: date_ASC, first: 100) {
         id
         date
         hostOrGuest
