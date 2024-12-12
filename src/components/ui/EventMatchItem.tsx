@@ -39,7 +39,7 @@ const useLiveEventResponses = (eventId: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const eventDocRef = doc(db, 'events', eventId);
+    const eventDocRef = doc(db, 'matches', eventId);
 
     const unsubscribe = onSnapshot(
       eventDocRef,
@@ -59,7 +59,7 @@ const useLiveEventResponses = (eventId: string) => {
   return { eventResponses, loading };
 };
 
-const EventItem = ({
+const EventMatchItem = ({
   isHost,
   result,
   games,
@@ -115,7 +115,7 @@ const EventItem = ({
     mutationFn: async (selectedValue: string) => {
       if (!user) return;
 
-      const eventDocRef = doc(db, 'events', id);
+      const eventDocRef = doc(db, 'matches', id);
 
       const eventDoc = await getDoc(eventDocRef);
 
@@ -175,7 +175,7 @@ const EventItem = ({
           </div>
         ) : null}
 
-        {isCurrent && !!user ? (
+        {(isCurrent || isFuture) && !!user ? (
           <>
             {eventResponsesLoading ? (
               <SkeletonEventResponse />
@@ -193,4 +193,4 @@ const EventItem = ({
   );
 };
 
-export { EventItem };
+export { EventMatchItem };

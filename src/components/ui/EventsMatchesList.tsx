@@ -1,4 +1,4 @@
-import { fetchEvents, Event } from '@/api';
+import { fetchMatches, Event } from '@/api';
 import {
   Alert,
   AlertDescription,
@@ -7,7 +7,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-  EventItem,
+  EventMatchItem,
   SkeletonEventItem,
 } from '@/components';
 import { EventState, EventType } from '@/types';
@@ -48,7 +48,7 @@ const renderEventItem = (event: Event, variant?: EventState) => {
   const statistics = event.statistics?.url || null;
 
   return (
-    <EventItem
+    <EventMatchItem
       key={event.id}
       id={event.id}
       date={date}
@@ -70,18 +70,18 @@ const NotFoundEvents = () => {
     <Alert variant="destructive">
       <CalendarX2 className="size-5" />
       <AlertTitle>Не са намерени резултати</AlertTitle>
-      <AlertDescription>Няма предстоящи мачове</AlertDescription>
+      <AlertDescription>Няма предстоящи събития</AlertDescription>
     </Alert>
   );
 };
 
-const EventsList = ({ type }: Props) => {
-  const { data, isLoading } = useQuery({
+const EventsMatchesList = ({ type }: Props) => {
+  const { data, isFetched } = useQuery({
     queryKey: [type],
-    queryFn: () => fetchEvents({ type }),
+    queryFn: () => fetchMatches({ type }),
   });
 
-  if (isLoading) {
+  if (!isFetched) {
     return <SkeletonEventItem />;
   }
 
@@ -115,4 +115,4 @@ const EventsList = ({ type }: Props) => {
   );
 };
 
-export { EventsList };
+export { EventsMatchesList };

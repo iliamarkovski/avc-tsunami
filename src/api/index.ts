@@ -1,3 +1,4 @@
 export * from './fetchData';
 export * from './fetchTeamMembers';
-export * from './fetchEvents';
+export * from './fetchMatches';
+export * from './fetchTranings';

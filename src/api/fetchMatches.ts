@@ -30,7 +30,7 @@ type Props = {
   type: EventType;
 };
 
-export const fetchEvents = async ({ type }: Props) => {
+export const fetchMatches = async ({ type }: Props) => {
   const res = await fetchData<DataProps>(`{
       ${type}(orderBy: date_ASC) {
         id
