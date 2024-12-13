@@ -23,7 +23,7 @@ const AppRouter = () => {
         },
         {
           path: '*',
-          element: <p>404 Error - Nothing here...</p>,
+          element: <p>Грешка 404 - Страницата не е намерена</p>,
         },
       ],
     },
