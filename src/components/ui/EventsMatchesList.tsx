@@ -10,7 +10,7 @@ import {
 } from '@/components';
 import { EventType } from '@/types';
 import { useQuery } from '@tanstack/react-query';
-import { format, isBefore, startOfDay } from 'date-fns';
+import { isBefore, startOfDay } from 'date-fns';
 import { Archive } from 'lucide-react';
 
 type Props = {
@@ -35,29 +35,21 @@ const separateEvents = (events: Event[]) => {
   return { pastEvents, futureEvents };
 };
 
-const renderEventItem = (event: Event, isCurrent?: boolean) => {
-  const opponentName = event.opponent.name;
-  const hallName = event.hall.name;
-  const date = format(event.date, 'dd.MM.yyyy');
-  const time = format(event.date, 'HH:mm');
-  const isHost = event.hostOrGuest === 'host';
-  const games = event.lostGames ?? event.wonGames;
-  const statistics = event.statistics?.url || null;
-
+const renderEventItem = (event: Event & { type: EventType }, isCurrent?: boolean) => {
   return (
     <EventMatchItem
       key={event.id}
       id={event.id}
-      date={date}
-      hall={hallName}
-      isHost={isHost}
-      opponent={opponentName}
-      time={time}
+      date={event.date}
+      hall={event.hall.name}
+      isHost={event.hostOrGuest === 'host'}
+      opponent={event.opponent.name}
       result={event.winOrLose}
-      games={games}
+      games={event.lostGames ?? event.wonGames}
       recordingUrl={event.recording}
-      statisticsUrl={statistics}
+      statisticsUrl={event.statistics?.url || null}
       isCurrent={isCurrent}
+      eventType={event.type}
     />
   );
 };
@@ -88,7 +80,7 @@ const EventsMatchesList = ({ type }: Props) => {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="grid gap-4">
-            {pastEvents.map((event) => renderEventItem(event))}
+            {pastEvents.map((event) => renderEventItem({ ...event, type }))}
           </CollapsibleContent>
         </Collapsible>
       )}
@@ -96,7 +88,7 @@ const EventsMatchesList = ({ type }: Props) => {
       {!futureEvents || futureEvents.length === 0 ? (
         <NotFoundEvents />
       ) : (
-        <>{futureEvents.map((event, index) => renderEventItem(event, index === 0))}</>
+        <>{futureEvents.map((event, index) => renderEventItem({ ...event, type }, index === 0))}</>
       )}
     </div>
   );

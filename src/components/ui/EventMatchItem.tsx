@@ -1,9 +1,10 @@
 import { TEAM_NAME } from '@/constants';
-import { WinOrLose } from '@/types';
-import { buttonVariants, CardDescription, CardTitle, EventItem } from '@/components';
+import { EventType, WinOrLose } from '@/types';
+import { buttonVariants, EventItem } from '@/components';
 import { cn } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts';
+import { ReactNode } from 'react';
 
 type Props = {
   id: string;
@@ -12,11 +13,11 @@ type Props = {
   games: 0 | 1 | 2 | null;
   hall: string;
   date: string;
-  time: string;
   opponent: string;
   recordingUrl: string | null;
   statisticsUrl: string | null;
   isCurrent?: boolean;
+  eventType: EventType;
 };
 
 const COLLECTION = 'matches';
@@ -27,18 +28,18 @@ const EventMatchItem = ({
   games,
   hall,
   date,
-  time,
   opponent,
   recordingUrl,
   statisticsUrl,
   isCurrent,
   id,
+  eventType,
 }: Props) => {
   const { user } = useAuth();
 
-  const getMatchDisplay = () => {
+  const getMatchDisplay = (): string | ReactNode => {
     if (!result) {
-      return isHost ? `${TEAM_NAME} / ${opponent}` : `${opponent} / ${TEAM_NAME}`;
+      return isHost ? `${TEAM_NAME} vs ${opponent}` : `${opponent} vs ${TEAM_NAME}`;
     }
     if (result === 'win') {
       return isHost ? (
@@ -62,16 +63,19 @@ const EventMatchItem = ({
         </>
       );
     }
+
+    return '';
   };
 
   return (
-    <EventItem eventId={id} collection={COLLECTION} isCurrent={isCurrent}>
-      <CardDescription>
-        {date} | {time}
-      </CardDescription>
-      <CardTitle>{getMatchDisplay()}</CardTitle>
-      <CardDescription>зала {hall}</CardDescription>
-
+    <EventItem
+      eventId={id}
+      collection={COLLECTION}
+      isCurrent={isCurrent}
+      date={date}
+      title={getMatchDisplay()}
+      hall={hall}
+      eventType={eventType}>
       {recordingUrl || (statisticsUrl && !!user) ? (
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
           {recordingUrl ? (
