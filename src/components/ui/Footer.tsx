@@ -4,7 +4,7 @@ import { Instagram, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="border-t">
+    <footer className="p-safe border-t">
       <div className="wrapper flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between">
         <p className="text-sm">АВК Цунами &copy; {new Date().getFullYear()}</p>
         <div className="flex items-center justify-center gap-4">

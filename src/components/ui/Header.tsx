@@ -5,7 +5,7 @@ const Header = () => {
   const { user } = useAuth();
 
   return (
-    <header className="border-b">
+    <header className="p-safe border-b">
       <div className="wrapper flex items-center justify-between">
         <HeaderNav />
 

@@ -58,5 +58,12 @@ export default {
 			},
 		},
 	},
-	plugins: [tailwindcssAnimate],
+	plugins: [tailwindcssAnimate, function ({ addUtilities }) {
+		addUtilities({
+			'.p-safe': {
+				paddingTop: 'env(safe-area-inset-top)',
+				paddingLeft: 'env(safe-area-inset-left)',
+			},
+		});
+	}],
 };
