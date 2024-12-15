@@ -66,7 +66,7 @@ const UserForm = ({ email }: Props) => {
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
       const { password, selectedName } = data;
-      const role = teamMembers.find((member) => member.names === selectedName)?.role;
+      const role = teamMembers.find((member) => member.names === selectedName)?.role || 'other';
 
       return await createUser(email, password, selectedName, role as Roles);
     },
@@ -133,6 +133,7 @@ const UserForm = ({ email }: Props) => {
                         {member.names}
                       </SelectItem>
                     ))}
+                    <SelectItem value="Друг">Друг</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>

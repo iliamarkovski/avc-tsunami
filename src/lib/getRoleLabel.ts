@@ -6,6 +6,8 @@ const ROLES: Record<Roles, string> = {
   opposite: 'Диагонал',
   blocker: 'Блокировач',
   libero: 'Либеро',
+  coach: 'Треньор',
+  other: '?',
 };
 
 export const getRoleLabel = (role: Roles) => {
