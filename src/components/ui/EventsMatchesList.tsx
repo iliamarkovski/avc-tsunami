@@ -41,9 +41,9 @@ const renderEventItem = (event: Event & { type: EventType }, isCurrent?: boolean
       key={event.id}
       id={event.id}
       date={event.date}
-      hall={event.hall.name}
+      hall={event.hall?.name ?? '???'}
       isHost={event.hostOrGuest === 'host'}
-      opponent={event.opponent.name}
+      opponent={event.opponent?.name ?? '???'}
       result={event.winOrLose}
       games={event.lostGames ?? event.wonGames}
       recordingUrl={event.recording}

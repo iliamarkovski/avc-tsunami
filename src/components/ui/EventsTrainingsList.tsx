@@ -17,7 +17,7 @@ const EventsTrainingsList = () => {
   return (
     <div className="grid gap-4">
       {data.map((event, index) => {
-        const hallName = event.defaultHall ? `"Васил Симов"` : event.hall?.name || '-';
+        const hallName = event.defaultHall ? `"Васил Симов"` : event.hall?.name || '???';
 
         return (
           <EventTrainingItem key={event.id} id={event.id} date={event.date} hall={hallName} isCurrent={index === 0} />

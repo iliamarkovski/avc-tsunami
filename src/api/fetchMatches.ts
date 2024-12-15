@@ -1,7 +1,7 @@
 import { fetchData } from '@/api';
 import { EventType, WinOrLose } from '@/types';
 
-type Games = 0 | 1 | 2 | null;
+type Games = 0 | 1 | 2;
 
 export type Event = {
   id: string;
@@ -9,13 +9,13 @@ export type Event = {
   hostOrGuest: 'host' | 'guest';
   hall: {
     name: string;
-  };
-  lostGames: Games;
+  } | null;
+  lostGames: Games | null;
   opponent: {
     name: string;
-  };
-  winOrLose: WinOrLose;
-  wonGames: Games;
+  } | null;
+  winOrLose: WinOrLose | null;
+  wonGames: Games | null;
   recording: string | null;
   statistics: {
     url: string;

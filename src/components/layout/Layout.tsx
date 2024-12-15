@@ -10,7 +10,7 @@ const Layout = () => {
   }
 
   return (
-    <div className="flex min-h-svh w-full flex-col">
+    <div className="pt-safe flex min-h-svh w-full flex-col">
       <Header />
 
       <main className="wrapper flex flex-1 flex-col gap-4">
