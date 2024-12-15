@@ -7,6 +7,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  Input,
   PasswordInput,
   Select,
   SelectContent,
@@ -28,11 +29,14 @@ type Props = {
   email: string;
 };
 
+const OTHER_VALUE = 'other';
+
 const formSchema = z
   .object({
     selectedName: z.string({
       required_error: 'Задължително поле',
     }),
+    customName: z.string().optional(),
     password: z
       .string({
         required_error: 'Задължително поле',
@@ -49,7 +53,20 @@ const formSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Паролите не съвпадат',
     path: ['confirmPassword'],
-  });
+  })
+  .refine(
+    (data) => {
+      if (data.selectedName === OTHER_VALUE) {
+        // Explicitly handle undefined and check for non-empty string
+        return typeof data.customName === 'string' && data.customName.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'Задължително поле"',
+      path: ['customName'],
+    }
+  );
 
 export type FormSchema = z.infer<typeof formSchema>;
 
@@ -65,10 +82,11 @@ const UserForm = ({ email }: Props) => {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
-      const { password, selectedName } = data;
-      const role = teamMembers.find((member) => member.names === selectedName)?.role || 'other';
+      const { password, selectedName, customName } = data;
+      const role = teamMembers.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
+      const name = selectedName === OTHER_VALUE ? (customName as string) : selectedName;
 
-      return await createUser(email, password, selectedName, role as Roles);
+      return await createUser(email, password, name, role as Roles);
     },
     onSuccess: (_, variables) => {
       loginMutation.mutate(variables);
@@ -106,6 +124,7 @@ const UserForm = ({ email }: Props) => {
       selectedName: undefined,
       password: '',
       confirmPassword: '',
+      customName: '',
     },
   });
 
@@ -133,7 +152,7 @@ const UserForm = ({ email }: Props) => {
                         {member.names}
                       </SelectItem>
                     ))}
-                    <SelectItem value="Друг">Друг</SelectItem>
+                    <SelectItem value="other">Друг</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -141,6 +160,22 @@ const UserForm = ({ email }: Props) => {
             </FormItem>
           )}
         />
+
+        {form.watch('selectedName') === OTHER_VALUE ? (
+          <FormField
+            control={form.control}
+            name="customName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Име и фамилия</FormLabel>
+                <FormControl>
+                  <Input {...field} type="text" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ) : null}
         <FormField
           control={form.control}
           name="password"
