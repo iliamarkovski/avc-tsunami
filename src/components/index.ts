@@ -35,6 +35,12 @@ export * from './ui/Separator';
 export * from './ui/EventItem';
 export * from './ui/NotFoundEvents';
 export * from './ui/Avatar';
+export * from './ui/Title';
+export * from './ui/Table';
+export * from './ui/DeleteButton';
+export * from './ui/AlertDialog';
+export * from './ui/EditLink';
+export * from './ui/Checkbox';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
@@ -42,8 +48,19 @@ export * from './skeletons/SkeletonEventItem';
 //forms
 export * from './forms/LoginForm';
 export * from './forms/UserForm';
+export * from './forms/NameForm';
+export * from './forms/MemberForm';
 
 //pages
 export * from './pages/HomePage';
 export * from './pages/TeamPage';
 export * from './pages/LoginPage';
+
+export * from './pages/Dashboard/DashboardNavPage';
+export * from './forms/NameForm';
+export * from './pages/Dashboard/Names/NamesPage';
+export * from './pages/Dashboard/Names/AddNamePage';
+export * from './pages/Dashboard/Names/EditNamePage';
+export * from './pages/Dashboard/Members/MembersPage';
+export * from './pages/Dashboard/Members/AddMemberPage';
+export * from './pages/Dashboard/Members/EditMemberPage';

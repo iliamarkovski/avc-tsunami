@@ -11,17 +11,20 @@ import {
 import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 
+type LoggedUser = {
+  email: string;
+  name: string;
+  uid: string;
+  role: Roles;
+  isAdmin?: boolean;
+} | null;
+
 type Props = {
   login: (email: string, password: string) => Promise<UserCredential>;
   createUser: (email: string, password: string, name: string, role: Roles) => Promise<User>;
   logout: () => Promise<void>;
   isUserExist: (email: string) => Promise<boolean>;
-  user: {
-    email: string;
-    name: string;
-    uid: string;
-    role: Roles;
-  } | null;
+  user: LoggedUser;
   isLoading: boolean;
 };
 
@@ -62,6 +65,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         name: userData.name,
         uid: userData.uid,
         role: userData.role,
+        isAdmin: userData?.isAdmin,
       } satisfies Props['user'];
     }
 

@@ -1,5 +1,6 @@
 import {
   Button,
+  buttonVariants,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -10,10 +11,10 @@ import {
 } from '@/components';
 import { useAuth } from '@/contexts';
 import { useToast } from '@/hooks';
-import { getFirstChars } from '@/lib';
+import { cn, getFirstChars } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
-import { LogOut } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LogOut, Wrench } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 const LogoutMenu = () => {
   const { logout, user } = useAuth();
   const { toast } = useToast();
@@ -48,6 +49,17 @@ const LogoutMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+        {user?.isAdmin ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/dashboard" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
+                <Wrench />
+                Управление
+              </Link>
+            </DropdownMenuItem>
+          </>
+        ) : null}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <ThemeToggle />
