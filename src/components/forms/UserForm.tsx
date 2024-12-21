@@ -1,4 +1,4 @@
-import { fetchTeamMembers } from '@/api';
+import { fetchAllDocuments } from '@/api';
 import {
   Button,
   Form,
@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Members,
   PasswordInput,
   Select,
   SelectContent,
@@ -24,6 +25,8 @@ import { useToast } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Roles } from '@/types';
+import { useMemo } from 'react';
+import { MEMBERS_KEY } from '@/constants';
 
 type Props = {
   email: string;
@@ -34,20 +37,18 @@ const OTHER_VALUE = 'other';
 const formSchema = z
   .object({
     selectedName: z.string({
-      required_error: 'Задължително поле',
+      message: 'Задължително поле',
     }),
     customName: z.string().optional(),
     password: z
       .string({
-        required_error: 'Задължително поле',
+        message: 'Задължително поле',
       })
-      .min(1, { message: 'Задължително поле' })
       .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
     confirmPassword: z
       .string({
-        required_error: 'Задължително поле',
+        message: 'Задължително поле',
       })
-      .min(1, { message: 'Задължително поле' })
       .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -71,10 +72,16 @@ const formSchema = z
 export type FormSchema = z.infer<typeof formSchema>;
 
 const UserForm = ({ email }: Props) => {
-  const { data: teamMembers = [] } = useQuery({
-    queryKey: ['teamMembers'],
-    queryFn: () => fetchTeamMembers(),
+  const { data: teamMembers } = useQuery({
+    queryKey: [MEMBERS_KEY],
+    queryFn: () => fetchAllDocuments<Members>(MEMBERS_KEY),
+    staleTime: 60 * 60 * 1000,
   });
+
+  const sortedTeamMembers = useMemo(() => {
+    if (!teamMembers) return [];
+    return [...teamMembers].sort((a, b) => a.names.localeCompare(b.names));
+  }, [teamMembers]);
 
   const { createUser, login } = useAuth();
   const navigate = useNavigate();
@@ -83,7 +90,7 @@ const UserForm = ({ email }: Props) => {
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
       const { password, selectedName, customName } = data;
-      const role = teamMembers.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
+      const role = sortedTeamMembers.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
       const name = selectedName === OTHER_VALUE ? (customName as string) : selectedName;
 
       return await createUser(email, password, name, role as Roles);
@@ -147,7 +154,7 @@ const UserForm = ({ email }: Props) => {
                     <SelectValue placeholder="Избери име" />
                   </SelectTrigger>
                   <SelectContent>
-                    {teamMembers.map((member) => (
+                    {sortedTeamMembers.map((member) => (
                       <SelectItem key={member.id} value={member.names}>
                         {member.names}
                       </SelectItem>

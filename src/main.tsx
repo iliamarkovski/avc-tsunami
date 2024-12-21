@@ -2,8 +2,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { StrictMode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AppRouter } from '@/AppRouter';
 import { AuthProvider, ThemeProvider, Toaster } from '@/contexts';
+import { AppRouter } from '@/routes';
 
 const queryClient = new QueryClient();
 
