@@ -1,4 +1,5 @@
 import { db } from '@/config';
+import { useToast } from '@/hooks/useToast';
 import { EventOptions, Roles } from '@/types';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -17,6 +18,7 @@ type EventResponse =
 export const useLiveEventResponses = (collection: string, eventId: string) => {
   const [eventResponses, setEventResponses] = useState<EventResponse>(undefined);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!eventId) {
@@ -37,8 +39,12 @@ export const useLiveEventResponses = (collection: string, eventId: string) => {
         }
         setLoading(false);
       },
-      (error) => {
-        console.error('Error listening to event responses:', error);
+      () => {
+        toast({
+          variant: 'destructive',
+          title: 'Възникна грешка',
+          description: 'Моля, опитайте отново по-късно.',
+        });
         setLoading(false);
       }
     );
