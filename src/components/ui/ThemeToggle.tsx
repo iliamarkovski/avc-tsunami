@@ -7,17 +7,19 @@ const ThemeToggle = React.forwardRef<HTMLButtonElement, React.ComponentPropsWith
   const { setTheme, theme } = useTheme();
 
   return (
-    <Button
-      ref={ref}
-      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      variant="ghost"
-      size="sm"
-      className="w-full justify-start"
-      {...props}>
-      {theme === 'dark' ? <Sun /> : null}
-      {theme === 'light' ? <Moon /> : null}
-      {theme === 'light' ? 'Тъмна' : 'Светла'} тема
-    </Button>
+    <>
+      <Button
+        ref={ref}
+        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        variant="ghost"
+        size="sm"
+        className="w-full justify-start"
+        {...props}>
+        {theme === 'dark' ? <Sun /> : null}
+        {theme === 'light' ? <Moon /> : null}
+        {theme === 'light' ? 'Тъмна' : 'Светла'} тема
+      </Button>
+    </>
   );
 });
 

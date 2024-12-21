@@ -12,12 +12,14 @@ import {
   EditMemberPage,
 } from '@/components';
 import { HALLS_KEY, MEMBERS_KEY, TEAMS_KEY } from '@/constants';
-import { useAuth } from '@/contexts';
+import { useAuth, useTheme } from '@/contexts';
 import { RequireAdmin } from '@/routes';
+import { Helmet } from 'react-helmet-async';
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 
 const AppRouter = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
 
   const router = createBrowserRouter([
     {
@@ -153,7 +155,14 @@ const AppRouter = () => {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Helmet>
+        <meta name="theme-color" content={theme === 'light' ? '#ffffff' : '#020817'} />
+      </Helmet>
+      <RouterProvider router={router} />;
+    </>
+  );
 };
 
 export { AppRouter };
