@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { buttonVariants } from '@/components';
 import { cn } from '@/lib';
 
-const links = [
+const LINKS = [
   {
     title: 'Програма',
     url: '/',
@@ -17,8 +17,8 @@ const HeaderNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="gap-1La flex items-center gap-1">
-      {links.map((link) => {
+    <nav className="flex items-center gap-1">
+      {LINKS.map((link) => {
         const isActive = location.pathname === link.url;
 
         return (
