@@ -21,7 +21,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 const formNames = z.object({
-  name: z.string({ message: 'Задължително поле' }),
+  name: z.string().min(1, { message: 'Задължително поле' }),
 });
 
 export type Names = z.infer<typeof formNames>;

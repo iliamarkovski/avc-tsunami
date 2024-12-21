@@ -22,8 +22,11 @@ import { FirebaseError } from 'firebase/app';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
-  email: z.string({ message: 'Задължително поле' }).email({ message: 'Невалиден имейл' }),
-  password: z.string({ message: 'Задължително поле' }).min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
+  email: z.string().min(1, { message: 'Задължително поле' }).email({ message: 'Невалиден имейл' }),
+  password: z
+    .string()
+    .min(1, { message: 'Задължително поле' })
+    .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
 });
 
 export type LoginSchema = z.infer<typeof formSchema>;

@@ -27,9 +27,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  names: z.string({ message: 'Задължително поле' }),
-  role: z.string({ message: 'Задължително поле' }),
-  number: z.string({ message: 'Задължително поле' }),
+  names: z.string().min(1, { message: 'Задължително поле' }),
+  role: z.string().min(1, { message: 'Задължително поле' }),
+  number: z.string().min(1, { message: 'Задължително поле' }),
   active: z.boolean().default(false).optional(),
   captain: z.boolean().default(false).optional(),
 });

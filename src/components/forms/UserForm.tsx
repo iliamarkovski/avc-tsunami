@@ -36,19 +36,15 @@ const OTHER_VALUE = 'other';
 
 const formSchema = z
   .object({
-    selectedName: z.string({
-      message: 'Задължително поле',
-    }),
+    selectedName: z.string().min(1, { message: 'Задължително поле' }),
     customName: z.string().optional(),
     password: z
-      .string({
-        message: 'Задължително поле',
-      })
+      .string()
+      .min(1, { message: 'Задължително поле' })
       .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
     confirmPassword: z
-      .string({
-        message: 'Задължително поле',
-      })
+      .string()
+      .min(1, { message: 'Задължително поле' })
       .min(6, { message: 'Паролата трябва да бъде поне 6 символа' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
