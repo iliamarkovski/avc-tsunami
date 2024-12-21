@@ -61,7 +61,7 @@ export default {
 	plugins: [tailwindcssAnimate, function ({ addUtilities }) {
 		addUtilities({
 			'.p-safe': {
-				paddingTop: 'env(safe-area-inset-top)',
+				paddingRight: 'env(safe-area-inset-right)',
 				paddingLeft: 'env(safe-area-inset-left)',
 			},
 		});

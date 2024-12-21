@@ -13,7 +13,7 @@ const Layout = () => {
     <div className="flex min-h-svh w-full flex-col">
       <Header />
 
-      <main className="p-safe flex flex-1 flex-col gap-4">
+      <main className="flex flex-1 flex-col gap-4 p-safe">
         <div className="wrapper flex flex-1 flex-col gap-4">
           <Outlet />
         </div>

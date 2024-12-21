@@ -160,7 +160,7 @@ const AppRouter = () => {
       <Helmet>
         <meta name="theme-color" content={theme === 'light' ? '#ffffff' : '#020817'} />
       </Helmet>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </>
   );
 };
