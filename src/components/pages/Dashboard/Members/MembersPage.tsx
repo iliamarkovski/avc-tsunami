@@ -86,8 +86,8 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
               <TableHead>Имена</TableHead>
               <TableHead>Позиция</TableHead>
               <TableHead>Картотекиран</TableHead>
-              <TableHead></TableHead>
-              <TableHead></TableHead>
+              <TableHead className="!px-0"></TableHead>
+              <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -100,10 +100,10 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
                   </TableCell>
                   <TableCell className="w-max">{getRoleLabel(item.role as Roles)}</TableCell>
                   <TableCell className="w-min text-center">{item.active ? 'Да' : 'Не'}</TableCell>
-                  <TableCell className="sticky right-0 px-0">
+                  <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id} />
                   </TableCell>
-                  <TableCell className="px-0">
+                  <TableCell className="!px-0">
                     <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>

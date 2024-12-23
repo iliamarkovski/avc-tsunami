@@ -83,8 +83,8 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
           <TableHeader>
             <TableRow>
               <TableHead>Име</TableHead>
-              <TableHead></TableHead>
-              <TableHead></TableHead>
+              <TableHead className="!px-0"></TableHead>
+              <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -92,10 +92,10 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-full">{item.name}</TableCell>
-                  <TableCell className="px-0">
+                  <TableCell className="!px-0">
                     <EditLink to={item.id} />
                   </TableCell>
-                  <TableCell className="sticky right-0 px-0">
+                  <TableCell className="sticky right-0 !px-0">
                     <DeleteButton
                       onClick={() => handleDelete(item.id)}
                       isLoading={isPending}
