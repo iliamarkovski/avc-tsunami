@@ -94,7 +94,8 @@ const UserForm = ({ email }: Props) => {
     onSuccess: (_, variables) => {
       loginMutation.mutate(variables);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',
@@ -110,7 +111,8 @@ const UserForm = ({ email }: Props) => {
     onSuccess: () => {
       navigate('/');
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',

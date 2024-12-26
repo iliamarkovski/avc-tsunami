@@ -1,7 +1,7 @@
 import { TeamMembers } from '@/components';
 
-const TeamPage = () => {
+const TeamMembersPage = () => {
   return <TeamMembers />;
 };
 
-export { TeamPage };
+export { TeamMembersPage };

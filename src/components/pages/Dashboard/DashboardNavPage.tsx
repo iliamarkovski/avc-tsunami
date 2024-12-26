@@ -4,18 +4,18 @@ import { cn } from '@/lib';
 import { Link } from 'react-router-dom';
 
 const LINKS = [
-  // {
-  //   title: 'Volley Mania',
-  //   url: 'volleymania',
-  // },
+  {
+    title: 'Volley Mania',
+    url: 'volleymania',
+  },
   // {
   //   title: 'IVL',
   //   url: 'ivl',
   // },
-  // {
-  //   title: 'Тренировки',
-  //   url: 'trainings',
-  // },
+  {
+    title: 'Тренировки',
+    url: 'training',
+  },
   {
     title: 'Зали',
     url: 'halls',

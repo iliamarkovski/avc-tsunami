@@ -1,5 +1,5 @@
 import { fetchDocument } from '@/api';
-import { NameForm, Card, CardContent, CardDescription, CardHeader, CardTitle, Names } from '@/components';
+import { TrainingForm, Card, CardContent, CardDescription, CardHeader, CardTitle, Training } from '@/components';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -10,12 +10,12 @@ type Props = {
   parentUrl: string;
 };
 
-const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
+const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
   const { data, isFetched } = useQuery({
     enabled: !!id,
     queryKey: [queryKey, id],
-    queryFn: () => fetchDocument<Names>(queryKey, id!),
+    queryFn: () => fetchDocument<Training>(queryKey, id!),
     staleTime: 60 * 60 * 1000,
   });
 
@@ -35,10 +35,10 @@ const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
       </CardHeader>
 
       <CardContent>
-        <NameForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+        <TrainingForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
       </CardContent>
     </Card>
   );
 };
 
-export { EditNamePage };
+export { EditTrainingPage };

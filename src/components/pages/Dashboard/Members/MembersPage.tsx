@@ -47,7 +47,8 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',
@@ -68,7 +69,7 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
           Назад
         </Link>
 
-        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+        <div className="flex w-full items-center justify-between gap-4">
           <Title title={title} />
 
           <Link to="add" className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'px-0 sm:px-4')}>
@@ -95,7 +96,7 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-min text-center">{item.number}</TableCell>
-                  <TableCell className="w-full whitespace-nowrap">
+                  <TableCell className="w-full">
                     {item.names} {item.captain ? '(к)' : null}
                   </TableCell>
                   <TableCell className="w-max">{getRoleLabel(item.role as Roles)}</TableCell>

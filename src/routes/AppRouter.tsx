@@ -1,7 +1,7 @@
 import {
   HomePage,
   Layout,
-  TeamPage,
+  TeamMembersPage,
   LoginPage,
   DashboardNavPage,
   AddNamePage,
@@ -10,8 +10,14 @@ import {
   MembersPage,
   AddMemberPage,
   EditMemberPage,
+  TrainingPage,
+  AddTrainingPage,
+  EditTrainingPage,
+  MatchesPage,
+  AddMatchPage,
+  EditMatchPage,
 } from '@/components';
-import { HALLS_KEY, MEMBERS_KEY, TEAMS_KEY } from '@/constants';
+import { HALLS_KEY, IVL_KEY, MEMBERS_KEY, TEAMS_KEY, TRAINING_KEY, VM_KEY } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
 import { RequireAdmin } from '@/routes';
 import { Helmet } from 'react-helmet-async';
@@ -31,7 +37,7 @@ const AppRouter = () => {
         },
         {
           path: '/team',
-          element: <TeamPage />,
+          element: <TeamMembersPage />,
         },
         {
           path: '/login',
@@ -76,6 +82,106 @@ const AppRouter = () => {
                       description="Редайктирай името на отбора"
                       parentUrl="/dashboard/teams"
                       queryKey={TEAMS_KEY}
+                    />
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'volleymania',
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: (
+                    <MatchesPage queryKey={VM_KEY} title="Всички срещи от Volley Mania" addBttonLabel="Добави нова" />
+                  ),
+                },
+                {
+                  path: 'add',
+                  element: (
+                    <AddMatchPage
+                      title="Добави среща"
+                      description="Добави информацията за срещата от Volley Mania"
+                      parentUrl="/dashboard/volleymania"
+                      queryKey={VM_KEY}
+                    />
+                  ),
+                },
+                {
+                  path: ':id',
+                  element: (
+                    <EditMatchPage
+                      title="Редактиране на среща"
+                      description="Редайктирай информацията за срещата от Volley Mania"
+                      parentUrl="/dashboard/volleymania"
+                      queryKey={VM_KEY}
+                    />
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'ivl',
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: <MatchesPage queryKey={IVL_KEY} title="Всички срещи от IVL" addBttonLabel="Добави нова" />,
+                },
+                {
+                  path: 'add',
+                  element: (
+                    <AddMatchPage
+                      title="Добави среща"
+                      description="Добави информацията за срещата от IVL"
+                      parentUrl="/dashboard/ivl"
+                      queryKey={IVL_KEY}
+                    />
+                  ),
+                },
+                {
+                  path: ':id',
+                  element: (
+                    <EditMatchPage
+                      title="Редактиране на среща"
+                      description="Редайктирай информацията за срещата от IVL"
+                      parentUrl="/dashboard/ivl"
+                      queryKey={IVL_KEY}
+                    />
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'training',
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: (
+                    <TrainingPage queryKey={TRAINING_KEY} title="Всички тренировки" addBttonLabel="Добави нова" />
+                  ),
+                },
+                {
+                  path: 'add',
+                  element: (
+                    <AddTrainingPage
+                      title="Добави тренировка"
+                      description="Моля, проверете дали тренировката вече не е добавена"
+                      parentUrl="/dashboard/training"
+                      queryKey={TRAINING_KEY}
+                    />
+                  ),
+                },
+                {
+                  path: ':id',
+                  element: (
+                    <EditTrainingPage
+                      title="Редактиране на тренировка"
+                      description="Редайктирай данните за тренировката"
+                      parentUrl="/dashboard/training"
+                      queryKey={TRAINING_KEY}
                     />
                   ),
                 },

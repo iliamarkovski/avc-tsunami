@@ -41,6 +41,12 @@ export * from './ui/DeleteButton';
 export * from './ui/AlertDialog';
 export * from './ui/EditLink';
 export * from './ui/Checkbox';
+export * from './ui/Popover';
+export * from './ui/Calendar';
+export * from './ui/ScrollArea';
+export * from './ui/TimePickerInput';
+export * from './ui/TimePickerDemo';
+export * from './ui/MatchTitle';
 
 //skeletons
 export * from './skeletons/SkeletonEventItem';
@@ -50,10 +56,12 @@ export * from './forms/LoginForm';
 export * from './forms/UserForm';
 export * from './forms/NameForm';
 export * from './forms/MemberForm';
+export * from './forms/TrainingForm';
+export * from './forms/MatchForm';
 
 //pages
 export * from './pages/HomePage';
-export * from './pages/TeamPage';
+export * from './pages/TeamMembersPage';
 export * from './pages/LoginPage';
 
 export * from './pages/Dashboard/DashboardNavPage';
@@ -64,3 +72,9 @@ export * from './pages/Dashboard/Names/EditNamePage';
 export * from './pages/Dashboard/Members/MembersPage';
 export * from './pages/Dashboard/Members/AddMemberPage';
 export * from './pages/Dashboard/Members/EditMemberPage';
+export * from './pages/Dashboard/Training/TrainingPage';
+export * from './pages/Dashboard/Training/AddTrainingPage';
+export * from './pages/Dashboard/Training/EditTrainingPage';
+export * from './pages/Dashboard/Match/MatchesPage';
+export * from './pages/Dashboard/Match/AddMatchPage';
+export * from './pages/Dashboard/Match/EditMatchPage';

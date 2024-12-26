@@ -67,7 +67,8 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       queryClient.invalidateQueries({ queryKey: [queryKey] });
       navigate(parentUrl);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',
@@ -130,7 +131,7 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Номер</FormLabel>
               <FormControl>
-                <Input {...field} type="number" />
+                <Input {...field} type="tel" />
               </FormControl>
               <FormMessage />
             </FormItem>

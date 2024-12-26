@@ -5,7 +5,7 @@ type Games = 0 | 1 | 2;
 
 export type Event = {
   id: string;
-  date: string;
+  date: Date;
   hostOrGuest: 'host' | 'guest';
   hall: {
     name: string;

@@ -53,7 +53,8 @@ const NameForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       queryClient.invalidateQueries({ queryKey: [queryKey] });
       navigate(parentUrl);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',

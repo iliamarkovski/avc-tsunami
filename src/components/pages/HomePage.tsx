@@ -1,25 +1,25 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger, EventsMatchesList } from '@/components';
 import { EventsTrainingsList } from '@/components/ui/EventsTrainingsList';
+import { IVL_KEY, TRAINING_KEY, VM_KEY } from '@/constants';
 import { useAuth } from '@/contexts';
-import { EventType } from '@/types';
 
 type Tabs = {
   title: string;
-  value: EventType;
+  value: string;
 }[];
 
 const tabs: Tabs = [
   {
     title: 'Volley Mania',
-    value: 'volleyMania',
+    value: VM_KEY,
   },
   {
     title: 'IVL',
-    value: 'ivl',
+    value: IVL_KEY,
   },
   {
     title: 'Тренировка',
-    value: 'training',
+    value: TRAINING_KEY,
   },
 ];
 
@@ -30,7 +30,7 @@ const HomePage = () => {
     <Tabs defaultValue={tabs[0].value} key={user?.uid}>
       <TabsList className="flex w-full">
         {tabs.map((tab) => {
-          if (!user && tab.value === 'training') {
+          if (!user && tab.value === TRAINING_KEY) {
             return;
           }
 
@@ -42,13 +42,13 @@ const HomePage = () => {
         })}
       </TabsList>
       {tabs.map((tab) => {
-        if (!user && tab.value === 'training') {
+        if (!user && tab.value === TRAINING_KEY) {
           return;
         }
 
         return (
           <TabsContent key={`content-${tab.value}`} value={tab.value}>
-            {tab.value === 'training' ? <EventsTrainingsList /> : <EventsMatchesList type={tab.value} />}
+            {tab.value === TRAINING_KEY ? <EventsTrainingsList /> : <EventsMatchesList queryKey={tab.value} />}
           </TabsContent>
         );
       })}

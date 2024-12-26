@@ -4,19 +4,19 @@ import { EventOptions, Roles } from '@/types';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-type EventResponse =
-  | Record<
-      string,
-      {
-        answer: EventOptions;
-        name: string;
-        role: Roles;
-      }
-    >
-  | undefined;
+type EventResponse = {
+  responses?: Record<
+    string,
+    {
+      answer: EventOptions;
+      name: string;
+      role: Roles;
+    }
+  >;
+};
 
 export const useLiveEventResponses = (collection: string, eventId: string) => {
-  const [eventResponses, setEventResponses] = useState<EventResponse>(undefined);
+  const [eventResponses, setEventResponses] = useState<EventResponse | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -39,7 +39,8 @@ export const useLiveEventResponses = (collection: string, eventId: string) => {
         }
         setLoading(false);
       },
-      () => {
+      (error) => {
+        console.error('error: ', error);
         toast({
           variant: 'destructive',
           title: 'Възникна грешка',

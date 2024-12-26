@@ -1,74 +1,52 @@
-import { fetchMatches, Event } from '@/api';
+import { fetchAllDocuments } from '@/api';
 import {
   Button,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
   EventMatchItem,
+  Matches,
+  Names,
   NotFoundEvents,
   SkeletonEventItem,
 } from '@/components';
-import { EventType } from '@/types';
+import { HALLS_KEY, TEAMS_KEY } from '@/constants';
+import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
 import { useQuery } from '@tanstack/react-query';
-import { isBefore, startOfDay } from 'date-fns';
 import { Archive } from 'lucide-react';
 
 type Props = {
-  type: EventType;
+  queryKey: string;
 };
 
-const separateEvents = (events: Event[]) => {
-  const today = startOfDay(new Date());
-  const pastEvents: Event[] = [];
-  const futureEvents: Event[] = [];
-
-  events.forEach((event) => {
-    const eventDay = startOfDay(new Date(event.date));
-
-    if (event.winOrLose || isBefore(eventDay, today)) {
-      pastEvents.push(event);
-    } else {
-      futureEvents.push(event);
-    }
+const EventsMatchesList = ({ queryKey }: Props) => {
+  const { data: events, isFetched: isFetchedEvents } = useQuery({
+    queryKey: [queryKey],
+    queryFn: () => fetchAllDocuments<Matches>(queryKey),
+    staleTime: 60 * 60 * 1000,
   });
 
-  return { pastEvents, futureEvents };
-};
-
-const renderEventItem = (event: Event & { type: EventType }, isCurrent?: boolean) => {
-  return (
-    <EventMatchItem
-      key={event.id}
-      id={event.id}
-      date={event.date}
-      hall={event.hall?.name ?? '???'}
-      isHost={event.hostOrGuest === 'host'}
-      opponent={event.opponent?.name ?? '???'}
-      result={event.winOrLose}
-      games={event.lostGames ?? event.wonGames}
-      recordingUrl={event.recording}
-      statisticsUrl={event.statistics?.url || null}
-      isCurrent={isCurrent}
-      eventType={event.type}
-    />
-  );
-};
-
-const EventsMatchesList = ({ type }: Props) => {
-  const { data, isFetched } = useQuery({
-    queryKey: [type],
-    queryFn: () => fetchMatches({ type }),
+  const { data: halls, isFetched: isFetchedHalls } = useQuery({
+    queryKey: [HALLS_KEY],
+    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
+    staleTime: 60 * 60 * 1000,
   });
 
-  if (!isFetched) {
+  const { data: teams, isFetched: isFetchedTeams } = useQuery({
+    queryKey: [TEAMS_KEY],
+    queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
+    staleTime: 60 * 60 * 1000,
+  });
+
+  if (!isFetchedEvents || !isFetchedHalls || !isFetchedTeams) {
     return <SkeletonEventItem isCurrent />;
   }
 
-  if (!data || data.length === 0) {
+  if (!events || events.length === 0) {
     return <NotFoundEvents />;
   }
 
-  const { pastEvents, futureEvents } = separateEvents(data);
+  const { pastEvents, futureEvents } = separateEvents(events);
 
   return (
     <div className="grid gap-4">
@@ -80,7 +58,26 @@ const EventsMatchesList = ({ type }: Props) => {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="grid gap-4">
-            {pastEvents.map((event) => renderEventItem({ ...event, type }))}
+            {pastEvents.map((event) => {
+              const hall = getNameById(halls, event.hall);
+              const opponent = getNameById(teams, event.opponent);
+              const date = getDateByTimestamp(event.dateTime);
+              return (
+                <EventMatchItem
+                  key={event.id}
+                  id={event.id}
+                  date={date}
+                  hall={hall}
+                  isHost={event.host}
+                  opponent={opponent}
+                  gamesHost={event.gamesHost}
+                  gamesGuest={event.gamesGuest}
+                  recordingUrl={event.youtubeLink}
+                  // statisticsUrl={event.statistics?.url || null}
+                  collection={queryKey}
+                />
+              );
+            })}
           </CollapsibleContent>
         </Collapsible>
       )}
@@ -88,7 +85,29 @@ const EventsMatchesList = ({ type }: Props) => {
       {!futureEvents || futureEvents.length === 0 ? (
         <NotFoundEvents />
       ) : (
-        <>{futureEvents.map((event, index) => renderEventItem({ ...event, type }, index === 0))}</>
+        <>
+          {futureEvents.map((event, index) => {
+            const hall = getNameById(halls, event.hall);
+            const opponent = getNameById(teams, event.opponent);
+            const date = getDateByTimestamp(event.dateTime);
+            return (
+              <EventMatchItem
+                key={event.id}
+                id={event.id}
+                date={date}
+                hall={hall}
+                isHost={event.host}
+                opponent={opponent}
+                gamesHost={event.gamesHost}
+                gamesGuest={event.gamesGuest}
+                recordingUrl={event.youtubeLink}
+                // statisticsUrl={event.statistics?.url || null}
+                isCurrent={index === 0}
+                collection={queryKey}
+              />
+            );
+          })}
+        </>
       )}
     </div>
   );

@@ -27,7 +27,8 @@ const LogoutMenu = () => {
     onSuccess: () => {
       navigate('/');
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',

@@ -10,12 +10,14 @@ import {
   Title,
   DeleteButton,
   EditLink,
+  Training,
   Names,
 } from '@/components';
-import { DEFAULT_HALL_ID, HALLS_KEY } from '@/constants';
+import { HALLS_KEY } from '@/constants';
 import { useToast } from '@/hooks';
-import { cn } from '@/lib';
+import { cn, getDateByTimestamp, getNameById } from '@/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,20 +28,30 @@ type Props = {
   addBttonLabel: string;
 };
 
-const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
+const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useQuery({
     queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Names>(queryKey),
+    queryFn: () => fetchAllDocuments<Training>(queryKey),
     staleTime: 60 * 60 * 1000,
   });
 
   const sortedData = useMemo(() => {
     if (!data) return [];
-    return [...data].sort((a, b) => a.name.localeCompare(b.name));
+    return [...data].sort(
+      (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
+    );
   }, [data]);
 
+  const { data: halls } = useQuery({
+    queryKey: [HALLS_KEY],
+    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
+    staleTime: 60 * 60 * 1000,
+  });
+
   const { toast } = useToast();
+
   const queryClient = useQueryClient();
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
       await deleteDocument(queryKey, id);
@@ -83,7 +95,8 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Име</TableHead>
+              <TableHead>Дата и час</TableHead>
+              <TableHead>Зала</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
@@ -92,16 +105,13 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
             {sortedData.map((item) => {
               return (
                 <TableRow key={item.id}>
-                  <TableCell className="w-full">{item.name}</TableCell>
-                  <TableCell className="!px-0">
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
+                  <TableCell className="w-full">{halls ? getNameById(halls, item.hall) : '-'}</TableCell>
+                  <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id} />
                   </TableCell>
-                  <TableCell className="sticky right-0 !px-0">
-                    <DeleteButton
-                      onClick={() => handleDelete(item.id)}
-                      isLoading={isPending}
-                      disabled={queryKey === HALLS_KEY && item.id === DEFAULT_HALL_ID}
-                    />
+                  <TableCell className="!px-0">
+                    <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );
@@ -113,4 +123,4 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   );
 };
 
-export { NamesPage };
+export { TrainingPage };

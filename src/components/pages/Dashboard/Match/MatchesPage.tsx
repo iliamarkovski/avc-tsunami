@@ -11,11 +11,14 @@ import {
   DeleteButton,
   EditLink,
   Names,
+  Matches,
+  MatchTitle,
 } from '@/components';
-import { DEFAULT_HALL_ID, HALLS_KEY } from '@/constants';
+import { HALLS_KEY, TEAMS_KEY } from '@/constants';
 import { useToast } from '@/hooks';
-import { cn } from '@/lib';
+import { cn, getDateByTimestamp, getNameById } from '@/lib';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,17 +29,31 @@ type Props = {
   addBttonLabel: string;
 };
 
-const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
-  const { data } = useQuery({
+const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
+  const { data: matches } = useQuery({
     queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Names>(queryKey),
+    queryFn: () => fetchAllDocuments<Matches>(queryKey),
     staleTime: 60 * 60 * 1000,
   });
 
-  const sortedData = useMemo(() => {
-    if (!data) return [];
-    return [...data].sort((a, b) => a.name.localeCompare(b.name));
-  }, [data]);
+  const sortedMatches = useMemo(() => {
+    if (!matches) return [];
+    return [...matches].sort(
+      (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
+    );
+  }, [matches]);
+
+  const { data: halls } = useQuery({
+    queryKey: [HALLS_KEY],
+    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const { data: opponents } = useQuery({
+    queryKey: [TEAMS_KEY],
+    queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
+    staleTime: 60 * 60 * 1000,
+  });
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -79,29 +96,38 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedData && sortedData?.length > 0 ? (
+      {sortedMatches && sortedMatches?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Име</TableHead>
+              <TableHead>Дата и час</TableHead>
+              <TableHead>Зала</TableHead>
+              <TableHead className="w-full">Среща</TableHead>
+              <TableHead>Видео</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedData.map((item) => {
+            {sortedMatches.map((item) => {
               return (
                 <TableRow key={item.id}>
-                  <TableCell className="w-full">{item.name}</TableCell>
-                  <TableCell className="!px-0">
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
+                  <TableCell>{halls ? getNameById(halls, item.hall) : '???'}</TableCell>
+                  <TableCell className="w-full">
+                    <MatchTitle
+                      isHost={item.host}
+                      opponent={getNameById(opponents, item.opponent) || ''}
+                      gamesHost={item.gamesHost}
+                      gamesGuest={item.gamesGuest}
+                    />
+                  </TableCell>
+                  <TableCell className="text-center">{item.youtubeLink ? 'Да' : 'Не'}</TableCell>
+                  <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id} />
                   </TableCell>
-                  <TableCell className="sticky right-0 !px-0">
-                    <DeleteButton
-                      onClick={() => handleDelete(item.id)}
-                      isLoading={isPending}
-                      disabled={queryKey === HALLS_KEY && item.id === DEFAULT_HALL_ID}
-                    />
+                  <TableCell className="!px-0">
+                    <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );
@@ -113,4 +139,4 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   );
 };
 
-export { NamesPage };
+export { MatchesPage };

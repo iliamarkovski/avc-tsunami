@@ -25,10 +25,9 @@ type Props = {
   children?: ReactNode;
   collection: string;
   eventId: string;
-  date: string;
-  title: string | ReactNode;
+  date: Date;
+  title: ReactNode;
   hall: string;
-  eventType: EventType;
 };
 
 const prefix: Record<EventType, string> = {
@@ -51,7 +50,7 @@ const getEventInfo = ({
 }: {
   title: string;
   location: string;
-  date: string;
+  date: Date;
   eventType: EventType;
 }): CalendarEvent => {
   return {
@@ -62,13 +61,13 @@ const getEventInfo = ({
   };
 };
 
-const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall, eventType }: Props) => {
+const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
 
   const { eventResponses, loading: eventResponsesLoading } = useLiveEventResponses(collection, eventId);
 
-  const answer = user ? eventResponses?.[user?.uid]?.answer : undefined;
+  const answer = user ? eventResponses?.responses?.[user?.uid]?.answer : undefined;
   const formattedDate = format(date, 'dd.MM.yyyy');
   const time = format(date, 'HH:mm');
 
@@ -82,15 +81,21 @@ const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall
 
       if (eventDoc.exists()) {
         await updateDoc(eventDocRef, {
-          [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
+          responses: {
+            ...eventDoc.data().responses,
+            [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
+          },
         });
       } else {
         await setDoc(eventDocRef, {
-          [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
+          responses: {
+            [user.uid]: { answer: selectedValue, name: user.name, role: user.role },
+          },
         });
       }
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('error: ', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',
@@ -127,13 +132,15 @@ const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall
           <div className="flex flex-col items-center gap-5">
             <EventResponse
               onChange={handleChange}
-              data={getUsersByResponse(eventResponses)}
-              selectedValue={eventResponses?.[user!.uid]?.answer || ''}
+              data={getUsersByResponse(eventResponses?.responses)}
+              selectedValue={eventResponses?.responses?.[user!.uid]?.answer || ''}
             />
 
             <a
               className={cn(buttonVariants())}
-              href={google(getEventInfo({ title: title as string, location: hall, date, eventType }))}
+              href={google(
+                getEventInfo({ title: title as string, location: hall, date, eventType: collection as EventType })
+              )}
               target="_blank">
               <CalendarPlus /> Добави в календар
             </a>
