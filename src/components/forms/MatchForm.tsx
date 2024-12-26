@@ -273,7 +273,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                 <Checkbox checked={field.value} onCheckedChange={field.onChange} />
               </FormControl>
               <div className="space-y-1 leading-none">
-                <FormLabel>{TEAM_NAME} домакин?</FormLabel>
+                <FormLabel>{TEAM_NAME} домакин</FormLabel>
               </div>
             </FormItem>
           )}

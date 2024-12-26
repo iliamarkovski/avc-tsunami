@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger, EventsMatchesList } from '@/components';
 import { EventsTrainingsList } from '@/components/ui/EventsTrainingsList';
-import { IVL_KEY, TRAINING_KEY, VM_KEY } from '@/constants';
+import { IVL_KEY, TRAINING_KEY, VOLLEYMANIA_KEY } from '@/constants';
 import { useAuth } from '@/contexts';
 
 type Tabs = {
@@ -11,7 +11,7 @@ type Tabs = {
 const tabs: Tabs = [
   {
     title: 'Volley Mania',
-    value: VM_KEY,
+    value: VOLLEYMANIA_KEY,
   },
   {
     title: 'IVL',

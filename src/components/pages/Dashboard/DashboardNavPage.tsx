@@ -8,10 +8,10 @@ const LINKS = [
     title: 'Volley Mania',
     url: 'volleymania',
   },
-  // {
-  //   title: 'IVL',
-  //   url: 'ivl',
-  // },
+  {
+    title: 'IVL',
+    url: 'ivl',
+  },
   {
     title: 'Тренировки',
     url: 'training',

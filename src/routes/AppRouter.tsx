@@ -17,7 +17,7 @@ import {
   AddMatchPage,
   EditMatchPage,
 } from '@/components';
-import { HALLS_KEY, IVL_KEY, MEMBERS_KEY, TEAMS_KEY, TRAINING_KEY, VM_KEY } from '@/constants';
+import { HALLS_KEY, IVL_KEY, MEMBERS_KEY, TEAMS_KEY, TRAINING_KEY, VOLLEYMANIA_KEY } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
 import { RequireAdmin } from '@/routes';
 import { Helmet } from 'react-helmet-async';
@@ -94,7 +94,11 @@ const AppRouter = () => {
                 {
                   index: true,
                   element: (
-                    <MatchesPage queryKey={VM_KEY} title="Всички срещи от Volley Mania" addBttonLabel="Добави нова" />
+                    <MatchesPage
+                      queryKey={VOLLEYMANIA_KEY}
+                      title="Всички срещи от Volley Mania"
+                      addBttonLabel="Добави нова"
+                    />
                   ),
                 },
                 {
@@ -104,7 +108,7 @@ const AppRouter = () => {
                       title="Добави среща"
                       description="Добави информацията за срещата от Volley Mania"
                       parentUrl="/dashboard/volleymania"
-                      queryKey={VM_KEY}
+                      queryKey={VOLLEYMANIA_KEY}
                     />
                   ),
                 },
@@ -115,7 +119,7 @@ const AppRouter = () => {
                       title="Редактиране на среща"
                       description="Редайктирай информацията за срещата от Volley Mania"
                       parentUrl="/dashboard/volleymania"
-                      queryKey={VM_KEY}
+                      queryKey={VOLLEYMANIA_KEY}
                     />
                   ),
                 },
