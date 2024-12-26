@@ -1,5 +1,5 @@
 import { fetchDocument } from '@/api';
-import { MatchForm, Card, CardContent, CardDescription, CardHeader, CardTitle, Matches } from '@/components';
+import { MatchForm, Matches, FormCard } from '@/components';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -29,16 +29,9 @@ const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <MatchForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
-      </CardContent>
-    </Card>
+    <FormCard title={title} description={description}>
+      <MatchForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+    </FormCard>
   );
 };
 

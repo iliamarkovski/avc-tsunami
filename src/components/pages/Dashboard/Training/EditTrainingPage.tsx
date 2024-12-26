@@ -1,5 +1,5 @@
 import { fetchDocument } from '@/api';
-import { TrainingForm, Card, CardContent, CardDescription, CardHeader, CardTitle, Training } from '@/components';
+import { TrainingForm, Training, FormCard } from '@/components';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -28,16 +28,9 @@ const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) =>
   }
 
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <TrainingForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
-      </CardContent>
-    </Card>
+    <FormCard title={title} description={description}>
+      <TrainingForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+    </FormCard>
   );
 };
 

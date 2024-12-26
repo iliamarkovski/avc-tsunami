@@ -1,5 +1,5 @@
 import { fetchDocument } from '@/api';
-import { NameForm, Card, CardContent, CardDescription, CardHeader, CardTitle, Names } from '@/components';
+import { NameForm, Names, FormCard } from '@/components';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
@@ -28,16 +28,9 @@ const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <NameForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
-      </CardContent>
-    </Card>
+    <FormCard title={title} description={description}>
+      <NameForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+    </FormCard>
   );
 };
 

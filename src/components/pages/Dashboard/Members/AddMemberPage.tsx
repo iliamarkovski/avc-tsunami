@@ -1,4 +1,4 @@
-import { MemberForm, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components';
+import { MemberForm, FormCard } from '@/components';
 
 type Props = {
   title: string;
@@ -9,16 +9,9 @@ type Props = {
 
 const AddMemberPage = ({ title, description, parentUrl, queryKey }: Props) => {
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <MemberForm parentUrl={parentUrl} queryKey={queryKey} />
-      </CardContent>
-    </Card>
+    <FormCard title={title} description={description}>
+      <MemberForm parentUrl={parentUrl} queryKey={queryKey} />
+    </FormCard>
   );
 };
 

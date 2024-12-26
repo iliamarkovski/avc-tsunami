@@ -1,4 +1,4 @@
-import { MatchForm, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components';
+import { MatchForm, FormCard } from '@/components';
 
 type Props = {
   title: string;
@@ -9,16 +9,9 @@ type Props = {
 
 const AddMatchPage = ({ title, description, parentUrl, queryKey }: Props) => {
   return (
-    <Card className="mx-auto w-full max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-
-      <CardContent>
-        <MatchForm parentUrl={parentUrl} queryKey={queryKey} />
-      </CardContent>
-    </Card>
+    <FormCard title={title} description={description}>
+      <MatchForm parentUrl={parentUrl} queryKey={queryKey} />
+    </FormCard>
   );
 };
 
