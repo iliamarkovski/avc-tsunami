@@ -71,7 +71,6 @@ const UserForm = ({ email }: Props) => {
   const { data: teamMembers } = useQuery({
     queryKey: [MEMBERS_KEY],
     queryFn: () => fetchAllDocuments<Members>(MEMBERS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedTeamMembers = useMemo(() => {

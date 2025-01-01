@@ -32,7 +32,6 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useQuery({
     queryKey: [queryKey],
     queryFn: () => fetchAllDocuments<Training>(queryKey),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedData = useMemo(() => {
@@ -45,7 +44,6 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data: halls } = useQuery({
     queryKey: [HALLS_KEY],
     queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const { toast } = useToast();

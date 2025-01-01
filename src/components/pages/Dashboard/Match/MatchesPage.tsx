@@ -33,7 +33,6 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data: matches } = useQuery({
     queryKey: [queryKey],
     queryFn: () => fetchAllDocuments<Matches>(queryKey),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedMatches = useMemo(() => {
@@ -46,13 +45,11 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data: halls } = useQuery({
     queryKey: [HALLS_KEY],
     queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const { data: opponents } = useQuery({
     queryKey: [TEAMS_KEY],
     queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const { toast } = useToast();

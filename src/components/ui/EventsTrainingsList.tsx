@@ -8,13 +8,11 @@ const EventsTrainingsList = () => {
   const { data: events, isFetched: isFetchedEvents } = useQuery({
     queryKey: [TRAINING_KEY],
     queryFn: () => fetchAllDocuments<Training>(TRAINING_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const { data: halls, isFetched: isFetchedHalls } = useQuery({
     queryKey: [HALLS_KEY],
     queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   if (!isFetchedEvents || !isFetchedHalls) {

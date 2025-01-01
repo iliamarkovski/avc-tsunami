@@ -16,7 +16,6 @@ const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) =>
     enabled: !!id,
     queryKey: [queryKey, id],
     queryFn: () => fetchDocument<Training>(queryKey, id!),
-    staleTime: 60 * 60 * 1000,
   });
 
   if (!isFetched) {

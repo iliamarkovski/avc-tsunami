@@ -30,7 +30,6 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useQuery({
     queryKey: [queryKey],
     queryFn: () => fetchAllDocuments<Members>(queryKey),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedData = useMemo(() => {

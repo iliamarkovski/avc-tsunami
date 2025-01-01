@@ -54,7 +54,6 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const { data: halls } = useQuery({
     queryKey: [HALLS_KEY],
     queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedHalls = useMemo(() => {
@@ -65,7 +64,6 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const { data: opponents } = useQuery({
     queryKey: [TEAMS_KEY],
     queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedOpponents = useMemo(() => {

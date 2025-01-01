@@ -30,7 +30,6 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useQuery({
     queryKey: [queryKey],
     queryFn: () => fetchAllDocuments<Names>(queryKey),
-    staleTime: 60 * 60 * 1000,
   });
 
   const sortedData = useMemo(() => {
