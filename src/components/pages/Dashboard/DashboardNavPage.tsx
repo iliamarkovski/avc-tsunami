@@ -28,6 +28,10 @@ const LINKS = [
     title: 'Състезатели',
     url: 'members',
   },
+  // {
+  //   title: 'Потребители',
+  //   url: 'users',
+  // },
 ];
 
 const DashboardNavPage = () => {

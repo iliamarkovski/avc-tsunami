@@ -7,6 +7,7 @@ export const QUERY_KEYS: {
   TRAINING: QueryKeys;
   VOLLEYMANIA: QueryKeys;
   IVL: QueryKeys;
+  USERS: QueryKeys;
 } = {
   TEAMS: 'teams',
   HALLS: 'halls',
@@ -14,4 +15,5 @@ export const QUERY_KEYS: {
   TRAINING: 'training',
   VOLLEYMANIA: 'volleymania',
   IVL: 'ivl',
+  USERS: 'users',
 } as const;

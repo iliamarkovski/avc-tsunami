@@ -1,3 +1,3 @@
 import { EventType } from '@/types';
 
-export type QueryKeys = EventType | 'teams' | 'halls' | 'members';
+export type QueryKeys = EventType | 'teams' | 'halls' | 'members' | 'users';

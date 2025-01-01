@@ -12,6 +12,7 @@ type Props = {
     training: Training[] | undefined;
     ivl: Matches[] | undefined;
     volleymania: Matches[] | undefined;
+    users: any | undefined;
   };
 };
 
@@ -37,6 +38,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           training,
           ivl,
           volleymania,
+          users: [],
         },
       }}>
       {children}
