@@ -1,4 +1,3 @@
-import { deleteDocument } from '@/api';
 import {
   buttonVariants,
   Table,
@@ -8,14 +7,11 @@ import {
   TableHeader,
   TableRow,
   Title,
-  DeleteButton,
   EditLink,
 } from '@/components';
 import { useData } from '@/contexts';
-import { useToast } from '@/hooks';
 import { cn, getRoleLabel } from '@/lib';
 import { Roles } from '@/types';
-import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -26,7 +22,7 @@ type Props = {
   addBttonLabel: string;
 };
 
-const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
+const MembersPage = ({ title, addBttonLabel }: Props) => {
   const { data } = useData();
   const { members } = data;
 
@@ -34,26 +30,6 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
     if (!members) return [];
     return [...members].sort((a, b) => Number(a.number) - Number(b.number));
   }, [members]);
-
-  const { toast } = useToast();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (id: string) => {
-      await deleteDocument(queryKey, id);
-    },
-    onError: (error) => {
-      console.error('error: ', error);
-      toast({
-        variant: 'destructive',
-        title: 'Възникна грешка',
-        description: 'Моля, опитайте отново по-късно.',
-      });
-    },
-  });
-
-  const handleDelete = (id: string) => {
-    mutate(id);
-  };
 
   return (
     <section className="flex flex-col gap-6">
@@ -82,7 +58,6 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
               <TableHead>Позиция</TableHead>
               <TableHead>Картотекиран</TableHead>
               <TableHead className="!px-0"></TableHead>
-              <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,9 +72,6 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
                   <TableCell className="w-min text-center">{item.active ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id!} />
-                  </TableCell>
-                  <TableCell className="!px-0">
-                    <DeleteButton onClick={() => handleDelete(item.id!)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );

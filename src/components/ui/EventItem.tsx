@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
 import { google, CalendarEvent } from 'calendar-link';
 import { format } from 'date-fns';
 import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
-import { TEAM_NAME } from '@/constants';
+import { QUERY_KEYS, TEAM_NAME } from '@/constants';
 import { CalendarPlus } from 'lucide-react';
 
 type EventResponse = {
@@ -75,6 +75,8 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
   const formattedDate = format(date, 'dd.MM.yyyy');
   const time = format(date, 'HH:mm');
 
+  const canVote = isCurrent && !!user && !(user.role === 'other' && queryKey === QUERY_KEYS.VOLLEYMANIA);
+
   const saveResponseMutation = useMutation({
     mutationFn: async (selectedValue: string) => {
       if (!user) return;
@@ -128,7 +130,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
 
         {children}
 
-        {isCurrent && !!user ? (
+        {canVote ? (
           <div className="flex flex-col items-center gap-5">
             <EventResponse
               onChange={handleChange}
