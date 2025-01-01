@@ -1,4 +1,5 @@
 import { db, auth } from '@/config';
+import { QUERY_KEYS } from '@/constants';
 import { Roles } from '@/types';
 import {
   User,
@@ -40,7 +41,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const createUser = async (email: string, password: string, name: string, role: Roles) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const userDocRef = doc(db, 'users', userCredential.user.uid);
+    const userDocRef = doc(db, QUERY_KEYS.USERS, userCredential.user.uid);
     await setDoc(userDocRef, {
       name: name,
       email,
@@ -53,7 +54,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getUser = async (user: User) => {
-    const usersRef = collection(db, 'users');
+    const usersRef = collection(db, QUERY_KEYS.USERS);
     const q = query(usersRef, where('email', '==', user.email));
     const querySnapshot = await getDocs(q);
 
@@ -73,7 +74,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const isUserExist = async (email: string) => {
-    const usersRef = collection(db, 'users');
+    const usersRef = collection(db, QUERY_KEYS.USERS);
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
 

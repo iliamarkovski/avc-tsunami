@@ -28,7 +28,7 @@ const HomePage = () => {
   const { user } = useAuth();
 
   return (
-    <Tabs defaultValue={tabs[0].value} key={user?.uid}>
+    <Tabs defaultValue={tabs[0].value}>
       <TabsList className="flex w-full">
         {tabs.map((tab) => {
           if (!user && tab.value === QUERY_KEYS.TRAINING) {

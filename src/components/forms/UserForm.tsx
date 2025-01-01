@@ -24,12 +24,11 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Roles } from '@/types';
 import { useMemo } from 'react';
+import { OTHER_VALUE } from '@/constants';
 
 type Props = {
   email: string;
 };
-
-const OTHER_VALUE = 'other';
 
 const formSchema = z
   .object({
@@ -151,7 +150,7 @@ const UserForm = ({ email }: Props) => {
                         {member.names}
                       </SelectItem>
                     ))}
-                    <SelectItem value="other">Друг</SelectItem>
+                    <SelectItem value={OTHER_VALUE}>Друг</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
@@ -175,6 +174,7 @@ const UserForm = ({ email }: Props) => {
             )}
           />
         ) : null}
+
         <FormField
           control={form.control}
           name="password"
