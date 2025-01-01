@@ -11,14 +11,16 @@ const Footer = () => {
           <a
             href="https://www.instagram.com/avc.tsunami/"
             target="_blank"
-            className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+            className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}
+            title="instagram button">
             <Instagram />
           </a>
 
           <a
             href="https://www.youtube.com/@avctsunami/"
             target="_blank"
-            className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}>
+            className={cn(buttonVariants({ variant: 'outline', size: 'icon' }))}
+            title="youtube button">
             <Youtube />
           </a>
         </div>

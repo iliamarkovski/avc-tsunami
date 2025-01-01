@@ -15,7 +15,7 @@ const LoginMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title="menu button">
           <Menu />
         </Button>
       </DropdownMenuTrigger>

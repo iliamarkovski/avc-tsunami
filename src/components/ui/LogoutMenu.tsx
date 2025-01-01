@@ -44,7 +44,7 @@ const LogoutMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" title="menu button">
           {getFirstChars(user?.name || '')}
         </Button>
       </DropdownMenuTrigger>
