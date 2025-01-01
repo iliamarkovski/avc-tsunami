@@ -13,7 +13,7 @@ import { db } from '@/config';
 import { toast } from '@/hooks';
 import { cn } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -22,17 +22,18 @@ import { z } from 'zod';
 
 const formNames = z.object({
   name: z.string().min(1, { message: 'Задължително поле' }),
+  id: z.string().optional(),
 });
 
 export type Names = z.infer<typeof formNames>;
+type FormValues = Omit<Names, 'id'>;
 
 type Props = Partial<Names> & { id?: string; parentUrl: string; queryKey: string };
 
 const NameForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const form = useForm<Names>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formNames),
     defaultValues: {
       name: props.name ?? '',
@@ -40,7 +41,7 @@ const NameForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: Names) => {
+    mutationFn: async (data: FormValues) => {
       if (id) {
         const teamRef = doc(db, queryKey, id);
         await updateDoc(teamRef, data);
@@ -50,7 +51,6 @@ const NameForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
       navigate(parentUrl);
     },
     onError: (error) => {
@@ -63,7 +63,7 @@ const NameForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     },
   });
 
-  const handleSubmit = async (value: Names) => {
+  const handleSubmit = async (value: FormValues) => {
     mutate(value);
   };
 

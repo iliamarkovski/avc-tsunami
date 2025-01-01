@@ -51,7 +51,6 @@ export const deleteDocument = async (collectionName: string, id: string): Promis
   try {
     const docRef = doc(db, collectionName, id);
     await deleteDoc(docRef);
-    console.info(`Document with ID ${id} successfully deleted from ${collectionName}.`);
   } catch (error) {
     console.error(`Failed to delete document with ID ${id} from ${collectionName}:`, error);
     throw new Error('Failed to delete document.');
@@ -72,7 +71,6 @@ export const updateDocument = async (
   try {
     const docRef = doc(db, collectionName, id);
     await setDoc(docRef, data, { merge: true });
-    console.info(`Document with ID ${id} successfully updated in ${collectionName}.`);
   } catch (error) {
     console.error(`Failed to update document with ID ${id} in ${collectionName}:`, error);
     throw new Error('Failed to update document.');

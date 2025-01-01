@@ -1,5 +1,5 @@
 import { EventItem } from '@/components';
-import { TRAINING_KEY } from '@/constants';
+import { QUERY_KEYS } from '@/constants';
 
 type Props = {
   id: string;
@@ -12,7 +12,7 @@ const EventTrainingItem = ({ hall, date, id, isCurrent }: Props) => {
   return (
     <EventItem
       eventId={id}
-      collection={TRAINING_KEY}
+      queryKey={QUERY_KEYS.TRAINING}
       isCurrent={isCurrent}
       title="Тренировка"
       hall={hall}

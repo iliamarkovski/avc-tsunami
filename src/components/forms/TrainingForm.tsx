@@ -1,4 +1,3 @@
-import { fetchAllDocuments } from '@/api';
 import {
   Button,
   buttonVariants,
@@ -13,15 +12,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Names,
   DateTimePicker,
 } from '@/components';
 import { db } from '@/config';
-import { DEFAULT_HALL_ID, HALLS_KEY } from '@/constants';
+import { DEFAULT_HALL_ID } from '@/constants';
+import { useData } from '@/contexts';
 import { toast } from '@/hooks';
 import { cn, getDateByTimestamp } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -34,27 +33,26 @@ const formSchema = z.object({
     required_error: 'Задължително поле',
   }),
   hall: z.string().min(1, { message: 'Задължително поле' }),
+  id: z.string().optional(),
 });
 
 export type Training = z.infer<typeof formSchema>;
+type FormValues = Omit<Training, 'id'>;
 
 type Props = Partial<Training> & { id?: string; parentUrl: string; queryKey: string };
 
 const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const { data: halls } = useQuery({
-    queryKey: [HALLS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-  });
+  const { data } = useData();
+  const { halls } = data;
 
   const sortedHalls = useMemo(() => {
     if (!halls) return [];
     return [...halls].sort((a, b) => a.name.localeCompare(b.name));
   }, [halls]);
 
-  const form = useForm<Training>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       dateTime: props.dateTime ? getDateByTimestamp(props.dateTime) : undefined,
@@ -63,7 +61,7 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: Training) => {
+    mutationFn: async (data: FormValues) => {
       if (id) {
         const docRef = doc(db, queryKey, id);
         await updateDoc(docRef, data);
@@ -73,7 +71,6 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
       navigate(parentUrl);
     },
     onError: (error) => {
@@ -86,14 +83,14 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     },
   });
 
-  const handleSubmit = async (value: Training) => {
+  const handleSubmit = async (value: FormValues) => {
     mutate(value);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <DateTimePicker<Training> formControl={form.control} name="dateTime" />
+        <DateTimePicker<FormValues> formControl={form.control} name="dateTime" />
 
         <FormField
           control={form.control}
@@ -110,7 +107,7 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                 <SelectContent>
                   {sortedHalls?.map((hall) => {
                     return (
-                      <SelectItem key={hall.id} value={hall.id}>
+                      <SelectItem key={hall.id} value={hall.id!}>
                         {hall.name}
                       </SelectItem>
                     );

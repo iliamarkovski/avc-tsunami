@@ -1,4 +1,3 @@
-import { fetchAllDocuments } from '@/api';
 import {
   Button,
   buttonVariants,
@@ -13,17 +12,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Names,
   Input,
   Checkbox,
   DateTimePicker,
 } from '@/components';
 import { db } from '@/config';
-import { HALLS_KEY, TEAM_NAME, TEAMS_KEY } from '@/constants';
+import { TEAM_NAME } from '@/constants';
+import { useData } from '@/contexts';
 import { toast } from '@/hooks';
 import { cn, getDateByTimestamp } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -41,37 +40,31 @@ const formSchema = z.object({
   gamesHost: z.string(),
   gamesGuest: z.string(),
   youtubeLink: z.string(),
+  id: z.string().optional(),
 });
 
 export type Matches = z.infer<typeof formSchema>;
+type FormValues = Omit<Matches, 'id'>;
 
-type Props = Partial<Matches> & { id?: string; parentUrl: string; queryKey: string };
+type Props = Partial<Matches> & { parentUrl: string; queryKey: string };
 
 const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const { data: halls } = useQuery({
-    queryKey: [HALLS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-  });
+  const { data } = useData();
+  const { halls, teams } = data;
 
   const sortedHalls = useMemo(() => {
     if (!halls) return [];
     return [...halls].sort((a, b) => a.name.localeCompare(b.name));
   }, [halls]);
 
-  const { data: opponents } = useQuery({
-    queryKey: [TEAMS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
-  });
-
   const sortedOpponents = useMemo(() => {
-    if (!opponents) return [];
-    return [...opponents].sort((a, b) => a.name.localeCompare(b.name));
-  }, [opponents]);
+    if (!teams) return [];
+    return [...teams].sort((a, b) => a.name.localeCompare(b.name));
+  }, [teams]);
 
-  const form = useForm<Matches>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       dateTime: props.dateTime ? getDateByTimestamp(props.dateTime) : undefined,
@@ -85,7 +78,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: Matches) => {
+    mutationFn: async (data: FormValues) => {
       if (id) {
         const docRef = doc(db, queryKey, id);
         await updateDoc(docRef, data);
@@ -95,7 +88,6 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
       navigate(parentUrl);
     },
     onError: (error) => {
@@ -108,14 +100,14 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     },
   });
 
-  const handleSubmit = async (value: Matches) => {
+  const handleSubmit = async (value: FormValues) => {
     mutate(value);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <DateTimePicker<Matches> formControl={form.control} name="dateTime" />
+        <DateTimePicker<FormValues> formControl={form.control} name="dateTime" />
 
         <FormField
           control={form.control}
@@ -132,7 +124,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                 <SelectContent>
                   {sortedHalls?.map((hall) => {
                     return (
-                      <SelectItem key={hall.id} value={hall.id}>
+                      <SelectItem key={hall.id} value={hall.id!}>
                         {hall.name}
                       </SelectItem>
                     );
@@ -159,7 +151,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                 <SelectContent>
                   {sortedOpponents?.map((opponent) => {
                     return (
-                      <SelectItem key={opponent.id} value={opponent.id}>
+                      <SelectItem key={opponent.id} value={opponent.id!}>
                         {opponent.name}
                       </SelectItem>
                     );

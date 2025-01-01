@@ -17,7 +17,7 @@ import {
   AddMatchPage,
   EditMatchPage,
 } from '@/components';
-import { HALLS_KEY, IVL_KEY, MEMBERS_KEY, TEAMS_KEY, TRAINING_KEY, VOLLEYMANIA_KEY } from '@/constants';
+import { QUERY_KEYS } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
 import { RequireAdmin } from '@/routes';
 import { Helmet } from 'react-helmet-async';
@@ -61,7 +61,7 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <NamesPage queryKey={TEAMS_KEY} title="Всички отбори" addBttonLabel="Добави нов" />,
+                  element: <NamesPage queryKey={QUERY_KEYS.TEAMS} title="Всички отбори" addBttonLabel="Добави нов" />,
                 },
                 {
                   path: 'add',
@@ -70,7 +70,7 @@ const AppRouter = () => {
                       title="Добави отбор"
                       description="Моля, проверете дали отборът вече не е добавен"
                       parentUrl="/dashboard/teams"
-                      queryKey={TEAMS_KEY}
+                      queryKey={QUERY_KEYS.TEAMS}
                     />
                   ),
                 },
@@ -81,7 +81,7 @@ const AppRouter = () => {
                       title="Редактиране на отбор"
                       description="Редайктирай името на отбора"
                       parentUrl="/dashboard/teams"
-                      queryKey={TEAMS_KEY}
+                      queryKey={QUERY_KEYS.TEAMS}
                     />
                   ),
                 },
@@ -95,7 +95,7 @@ const AppRouter = () => {
                   index: true,
                   element: (
                     <MatchesPage
-                      queryKey={VOLLEYMANIA_KEY}
+                      queryKey={QUERY_KEYS.VOLLEYMANIA}
                       title="Всички срещи от Volley Mania"
                       addBttonLabel="Добави нова"
                     />
@@ -108,7 +108,7 @@ const AppRouter = () => {
                       title="Добави среща"
                       description="Добави информацията за срещата от Volley Mania"
                       parentUrl="/dashboard/volleymania"
-                      queryKey={VOLLEYMANIA_KEY}
+                      queryKey={QUERY_KEYS.VOLLEYMANIA}
                     />
                   ),
                 },
@@ -119,7 +119,7 @@ const AppRouter = () => {
                       title="Редактиране на среща"
                       description="Редайктирай информацията за срещата от Volley Mania"
                       parentUrl="/dashboard/volleymania"
-                      queryKey={VOLLEYMANIA_KEY}
+                      queryKey={QUERY_KEYS.VOLLEYMANIA}
                     />
                   ),
                 },
@@ -131,7 +131,9 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <MatchesPage queryKey={IVL_KEY} title="Всички срещи от IVL" addBttonLabel="Добави нова" />,
+                  element: (
+                    <MatchesPage queryKey={QUERY_KEYS.IVL} title="Всички срещи от IVL" addBttonLabel="Добави нова" />
+                  ),
                 },
                 {
                   path: 'add',
@@ -140,7 +142,7 @@ const AppRouter = () => {
                       title="Добави среща"
                       description="Добави информацията за срещата от IVL"
                       parentUrl="/dashboard/ivl"
-                      queryKey={IVL_KEY}
+                      queryKey={QUERY_KEYS.IVL}
                     />
                   ),
                 },
@@ -151,7 +153,7 @@ const AppRouter = () => {
                       title="Редактиране на среща"
                       description="Редайктирай информацията за срещата от IVL"
                       parentUrl="/dashboard/ivl"
-                      queryKey={IVL_KEY}
+                      queryKey={QUERY_KEYS.IVL}
                     />
                   ),
                 },
@@ -164,7 +166,11 @@ const AppRouter = () => {
                 {
                   index: true,
                   element: (
-                    <TrainingPage queryKey={TRAINING_KEY} title="Всички тренировки" addBttonLabel="Добави нова" />
+                    <TrainingPage
+                      queryKey={QUERY_KEYS.TRAINING}
+                      title="Всички тренировки"
+                      addBttonLabel="Добави нова"
+                    />
                   ),
                 },
                 {
@@ -174,7 +180,7 @@ const AppRouter = () => {
                       title="Добави тренировка"
                       description="Моля, проверете дали тренировката вече не е добавена"
                       parentUrl="/dashboard/training"
-                      queryKey={TRAINING_KEY}
+                      queryKey={QUERY_KEYS.TRAINING}
                     />
                   ),
                 },
@@ -185,7 +191,7 @@ const AppRouter = () => {
                       title="Редактиране на тренировка"
                       description="Редайктирай данните за тренировката"
                       parentUrl="/dashboard/training"
-                      queryKey={TRAINING_KEY}
+                      queryKey={QUERY_KEYS.TRAINING}
                     />
                   ),
                 },
@@ -197,7 +203,7 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <NamesPage queryKey={HALLS_KEY} title="Всички зали" addBttonLabel="Добави нова" />,
+                  element: <NamesPage queryKey={QUERY_KEYS.HALLS} title="Всички зали" addBttonLabel="Добави нова" />,
                 },
                 {
                   path: 'add',
@@ -206,7 +212,7 @@ const AppRouter = () => {
                       title="Добави зала"
                       description="Моля, проверете дали залата вече не е добавена"
                       parentUrl="/dashboard/halls"
-                      queryKey={HALLS_KEY}
+                      queryKey={QUERY_KEYS.HALLS}
                     />
                   ),
                 },
@@ -217,7 +223,7 @@ const AppRouter = () => {
                       title="Редактиране на зала"
                       description="Редайктирайте името на залата"
                       parentUrl="/dashboard/halls"
-                      queryKey={HALLS_KEY}
+                      queryKey={QUERY_KEYS.HALLS}
                     />
                   ),
                 },
@@ -229,7 +235,9 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <MembersPage queryKey={MEMBERS_KEY} title="Всички състезатели" addBttonLabel="Добави нов" />,
+                  element: (
+                    <MembersPage queryKey={QUERY_KEYS.MEMBERS} title="Всички състезатели" addBttonLabel="Добави нов" />
+                  ),
                 },
                 {
                   path: 'add',
@@ -238,7 +246,7 @@ const AppRouter = () => {
                       title="Добави състезател"
                       description="Моля, проверете дали състезателят вече не е добавен"
                       parentUrl="/dashboard/members"
-                      queryKey={MEMBERS_KEY}
+                      queryKey={QUERY_KEYS.MEMBERS}
                     />
                   ),
                 },
@@ -249,7 +257,7 @@ const AppRouter = () => {
                       title="Редактиране на състезател"
                       description="Редайктирайте информацията на състезателя"
                       parentUrl="/dashboard/members"
-                      queryKey={MEMBERS_KEY}
+                      queryKey={QUERY_KEYS.MEMBERS}
                     />
                   ),
                 },

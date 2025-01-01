@@ -1,3 +1,3 @@
-export type EventType = 'volleyMania' | 'ivl' | 'training';
+export type EventType = 'volleymania' | 'ivl' | 'training';
 
 export type EventOptions = 'yes' | 'no';

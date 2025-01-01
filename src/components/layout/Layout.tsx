@@ -1,11 +1,12 @@
 import { Outlet } from 'react-router-dom';
 import { Footer, Header, PageLoader } from '@/components';
-import { useAuth } from '@/contexts';
+import { useAuth, useData } from '@/contexts';
 
 const Layout = () => {
-  const { isLoading } = useAuth();
+  const { isLoading: isAuthLoading } = useAuth();
+  const { isLoading: isDataLoading } = useData();
 
-  if (isLoading) {
+  if (isAuthLoading || isDataLoading) {
     return <PageLoader />;
   }
 

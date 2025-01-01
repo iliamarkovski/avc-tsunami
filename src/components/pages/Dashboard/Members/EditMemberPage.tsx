@@ -1,6 +1,6 @@
-import { fetchDocument } from '@/api';
-import { MemberForm, Members, FormCard } from '@/components';
-import { useQuery } from '@tanstack/react-query';
+import { MemberForm, FormCard } from '@/components';
+import { useData } from '@/contexts';
+import { getDataById } from '@/lib';
 import { useParams } from 'react-router-dom';
 
 type Props = {
@@ -12,23 +12,19 @@ type Props = {
 
 const EditMemberPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
-  const { data, isFetched } = useQuery({
-    enabled: !!id,
-    queryKey: [queryKey, id],
-    queryFn: () => fetchDocument<Members>(queryKey, id!),
-  });
 
-  if (!isFetched) {
-    return null;
-  }
+  const { data } = useData();
+  const { members } = data;
 
-  if (!data && isFetched) {
+  const member = getDataById(members, id);
+
+  if (!member) {
     return <p>Not Found</p>;
   }
 
   return (
     <FormCard title={title} description={description}>
-      <MemberForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <MemberForm {...member} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

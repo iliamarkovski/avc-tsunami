@@ -1,4 +1,3 @@
-import { fetchAllDocuments } from '@/api';
 import {
   Button,
   Collapsible,
@@ -6,44 +5,27 @@ import {
   CollapsibleTrigger,
   EventMatchItem,
   Matches,
-  Names,
   NotFoundEvents,
-  SkeletonEventItem,
 } from '@/components';
-import { HALLS_KEY, TEAMS_KEY } from '@/constants';
+import { useData } from '@/contexts';
 import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
-import { useQuery } from '@tanstack/react-query';
+import { QueryKeys } from '@/types';
 import { Archive } from 'lucide-react';
 
 type Props = {
-  queryKey: string;
+  queryKey: QueryKeys;
 };
 
 const EventsMatchesList = ({ queryKey }: Props) => {
-  const { data: events, isFetched: isFetchedEvents } = useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Matches>(queryKey),
-  });
-
-  const { data: halls, isFetched: isFetchedHalls } = useQuery({
-    queryKey: [HALLS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-  });
-
-  const { data: teams, isFetched: isFetchedTeams } = useQuery({
-    queryKey: [TEAMS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
-  });
-
-  if (!isFetchedEvents || !isFetchedHalls || !isFetchedTeams) {
-    return <SkeletonEventItem isCurrent />;
-  }
+  const { data } = useData();
+  const { halls, teams } = data;
+  const events = data[queryKey];
 
   if (!events || events.length === 0) {
     return <NotFoundEvents />;
   }
 
-  const { pastEvents, futureEvents } = separateEvents(events);
+  const { pastEvents, futureEvents } = separateEvents(events as Matches[]);
 
   return (
     <div className="grid gap-4">
@@ -62,7 +44,7 @@ const EventsMatchesList = ({ queryKey }: Props) => {
               return (
                 <EventMatchItem
                   key={event.id}
-                  id={event.id}
+                  id={event.id!}
                   date={date}
                   hall={hall}
                   isHost={event.host}
@@ -71,7 +53,7 @@ const EventsMatchesList = ({ queryKey }: Props) => {
                   gamesGuest={event.gamesGuest}
                   recordingUrl={event.youtubeLink}
                   // statisticsUrl={event.statistics?.url || null}
-                  collection={queryKey}
+                  queryKey={queryKey}
                 />
               );
             })}
@@ -90,7 +72,7 @@ const EventsMatchesList = ({ queryKey }: Props) => {
             return (
               <EventMatchItem
                 key={event.id}
-                id={event.id}
+                id={event.id!}
                 date={date}
                 hall={hall}
                 isHost={event.host}
@@ -100,7 +82,7 @@ const EventsMatchesList = ({ queryKey }: Props) => {
                 recordingUrl={event.youtubeLink}
                 // statisticsUrl={event.statistics?.url || null}
                 isCurrent={index === 0}
-                collection={queryKey}
+                queryKey={queryKey}
               />
             );
           })}

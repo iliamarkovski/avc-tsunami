@@ -17,8 +17,6 @@ export * from './ui/EventMatchItem';
 export * from './ui/EventTrainingItem';
 export * from './ui/Collapsible';
 export * from './ui/Alert';
-export * from './ui/Skeleton';
-export * from './ui/Skeleton';
 export * from './ui/Toast';
 export * from './ui/Select';
 export * from './ui/PasswordInput';
@@ -49,9 +47,6 @@ export * from './ui/TimePickerDemo';
 export * from './ui/MatchTitle';
 export * from './ui/DateTimePicker';
 export * from './ui/FormCard';
-
-//skeletons
-export * from './skeletons/SkeletonEventItem';
 
 //forms
 export * from './forms/LoginForm';

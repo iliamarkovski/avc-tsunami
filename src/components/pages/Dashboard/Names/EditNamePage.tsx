@@ -1,10 +1,11 @@
-import { fetchDocument } from '@/api';
-import { NameForm, Names, FormCard } from '@/components';
-import { useQuery } from '@tanstack/react-query';
+import { NameForm, FormCard } from '@/components';
+import { useData } from '@/contexts';
+import { getDataById } from '@/lib';
+import { QueryKeys } from '@/types';
 import { useParams } from 'react-router-dom';
 
 type Props = {
-  queryKey: string;
+  queryKey: QueryKeys;
   title: string;
   description: string;
   parentUrl: string;
@@ -12,23 +13,17 @@ type Props = {
 
 const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
-  const { data, isFetched } = useQuery({
-    enabled: !!id,
-    queryKey: [queryKey, id],
-    queryFn: () => fetchDocument<Names>(queryKey, id!),
-  });
 
-  if (!isFetched) {
-    return null;
-  }
+  const { data } = useData();
+  const name = getDataById(data[queryKey], id);
 
-  if (!data && isFetched) {
+  if (!name) {
     return <p>Not Found</p>;
   }
 
   return (
     <FormCard title={title} description={description}>
-      <NameForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <NameForm {...name} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

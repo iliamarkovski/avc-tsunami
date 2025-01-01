@@ -2,6 +2,7 @@ import { buttonVariants, EventItem, MatchTitle } from '@/components';
 import { cn } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts';
+import { QueryKeys } from '@/types';
 
 export type EventMatch = {
   id: string;
@@ -14,7 +15,7 @@ export type EventMatch = {
   recordingUrl?: string | null;
   statisticsUrl?: string | null;
   isCurrent?: boolean;
-  collection: string;
+  queryKey: QueryKeys;
 };
 
 const EventMatchItem = ({
@@ -28,14 +29,14 @@ const EventMatchItem = ({
   recordingUrl,
   statisticsUrl,
   isCurrent,
-  collection,
+  queryKey,
 }: EventMatch) => {
   const { user } = useAuth();
 
   return (
     <EventItem
       eventId={id}
-      collection={collection}
+      queryKey={queryKey}
       isCurrent={isCurrent}
       date={date}
       title={<MatchTitle isHost={isHost} opponent={opponent} gamesHost={gamesHost} gamesGuest={gamesGuest} />}

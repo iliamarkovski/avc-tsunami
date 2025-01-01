@@ -1,26 +1,22 @@
-import { fetchAllDocuments } from '@/api';
-import { Avatar, AvatarFallback, AvatarImage, Card, CardHeader, Members, Separator } from '@/components';
+import { Avatar, AvatarFallback, AvatarImage, Card, CardHeader, Separator } from '@/components';
 import { User } from 'lucide-react';
 import { getRoleLabel } from '@/lib';
-import { useQuery } from '@tanstack/react-query';
-import { MEMBERS_KEY } from '@/constants';
 import { Roles } from '@/types';
 import { useMemo } from 'react';
+import { useData } from '@/contexts';
 
 const TeamMembers = () => {
-  const { data } = useQuery({
-    queryKey: [MEMBERS_KEY],
-    queryFn: () => fetchAllDocuments<Members>(MEMBERS_KEY),
-  });
+  const { data } = useData();
+  const { members } = data;
 
-  const filteredData = useMemo(() => {
-    if (!data) return [];
-    return [...data].filter((item) => item.active).sort((a, b) => Number(a.number) - Number(b.number));
-  }, [data]);
+  const filteredMembers = useMemo(() => {
+    if (!members) return [];
+    return [...members].filter((item) => item.active).sort((a, b) => Number(a.number) - Number(b.number));
+  }, [members]);
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-      {filteredData?.map((member) => {
+      {filteredMembers?.map((member) => {
         return (
           <Card key={member.id} className="flex flex-col">
             <CardHeader className="grow items-center gap-2 p-4 text-center">

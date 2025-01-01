@@ -1,4 +1,4 @@
-import { deleteDocument, fetchAllDocuments } from '@/api';
+import { deleteDocument } from '@/api';
 import {
   buttonVariants,
   Table,
@@ -10,30 +10,31 @@ import {
   Title,
   DeleteButton,
   EditLink,
-  Names,
   Matches,
   MatchTitle,
 } from '@/components';
-import { HALLS_KEY, TEAMS_KEY } from '@/constants';
+import { useData } from '@/contexts';
 import { useToast } from '@/hooks';
 import { cn, getDateByTimestamp, getNameById } from '@/lib';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from '@/types';
+import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
-  queryKey: string;
+  queryKey: QueryKeys;
   title: string;
   addBttonLabel: string;
 };
 
 const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
-  const { data: matches } = useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Matches>(queryKey),
-  });
+  const { toast } = useToast();
+
+  const { data } = useData();
+  const { halls, teams } = data;
+  const matches = data[queryKey] as Matches[];
 
   const sortedMatches = useMemo(() => {
     if (!matches) return [];
@@ -42,24 +43,9 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
     );
   }, [matches]);
 
-  const { data: halls } = useQuery({
-    queryKey: [HALLS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-  });
-
-  const { data: opponents } = useQuery({
-    queryKey: [TEAMS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(TEAMS_KEY),
-  });
-
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
       await deleteDocument(queryKey, id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
     onError: (error) => {
       console.error('error: ', error);
@@ -114,17 +100,17 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
                   <TableCell className="w-full">
                     <MatchTitle
                       isHost={item.host}
-                      opponent={getNameById(opponents, item.opponent) || ''}
+                      opponent={getNameById(teams, item.opponent) || ''}
                       gamesHost={item.gamesHost}
                       gamesGuest={item.gamesGuest}
                     />
                   </TableCell>
                   <TableCell className="text-center">{item.youtubeLink ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
-                    <EditLink to={item.id} />
+                    <EditLink to={item.id!} />
                   </TableCell>
                   <TableCell className="!px-0">
-                    <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
+                    <DeleteButton onClick={() => handleDelete(item.id!)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );

@@ -1,4 +1,3 @@
-import { fetchAllDocuments } from '@/api';
 import {
   Button,
   Form,
@@ -8,7 +7,6 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Members,
   PasswordInput,
   Select,
   SelectContent,
@@ -17,16 +15,15 @@ import {
   SelectValue,
 } from '@/components';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useAuth } from '@/contexts';
+import { useAuth, useData } from '@/contexts';
 import { useToast } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Roles } from '@/types';
 import { useMemo } from 'react';
-import { MEMBERS_KEY } from '@/constants';
 
 type Props = {
   email: string;
@@ -68,15 +65,13 @@ const formSchema = z
 export type FormSchema = z.infer<typeof formSchema>;
 
 const UserForm = ({ email }: Props) => {
-  const { data: teamMembers } = useQuery({
-    queryKey: [MEMBERS_KEY],
-    queryFn: () => fetchAllDocuments<Members>(MEMBERS_KEY),
-  });
+  const { data } = useData();
+  const { members } = data;
 
   const sortedTeamMembers = useMemo(() => {
-    if (!teamMembers) return [];
-    return [...teamMembers].sort((a, b) => a.names.localeCompare(b.names));
-  }, [teamMembers]);
+    if (!members) return [];
+    return [...members].sort((a, b) => a.names.localeCompare(b.names));
+  }, [members]);
 
   const { createUser, login } = useAuth();
   const navigate = useNavigate();

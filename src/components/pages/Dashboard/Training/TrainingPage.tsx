@@ -1,4 +1,4 @@
-import { deleteDocument, fetchAllDocuments } from '@/api';
+import { deleteDocument } from '@/api';
 import {
   buttonVariants,
   Table,
@@ -10,52 +10,38 @@ import {
   Title,
   DeleteButton,
   EditLink,
-  Training,
-  Names,
 } from '@/components';
-import { HALLS_KEY } from '@/constants';
+import { useData } from '@/contexts';
 import { useToast } from '@/hooks';
 import { cn, getDateByTimestamp, getNameById } from '@/lib';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from '@/types';
+import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
-  queryKey: string;
+  queryKey: QueryKeys;
   title: string;
   addBttonLabel: string;
 };
 
 const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
-  const { data } = useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Training>(queryKey),
-  });
+  const { toast } = useToast();
+  const { data } = useData();
+  const { halls, training } = data;
 
-  const sortedData = useMemo(() => {
-    if (!data) return [];
-    return [...data].sort(
+  const sortedEvent = useMemo(() => {
+    if (!training) return [];
+    return [...training].sort(
       (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
     );
-  }, [data]);
-
-  const { data: halls } = useQuery({
-    queryKey: [HALLS_KEY],
-    queryFn: () => fetchAllDocuments<Names>(HALLS_KEY),
-  });
-
-  const { toast } = useToast();
-
-  const queryClient = useQueryClient();
+  }, [training]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
       await deleteDocument(queryKey, id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
     onError: (error) => {
       console.error('error: ', error);
@@ -89,7 +75,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedData && sortedData?.length > 0 ? (
+      {sortedEvent && sortedEvent?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -100,16 +86,16 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedData.map((item) => {
+            {sortedEvent.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
                   <TableCell className="w-full">{halls ? getNameById(halls, item.hall) : '-'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
-                    <EditLink to={item.id} />
+                    <EditLink to={item.id!} />
                   </TableCell>
                   <TableCell className="!px-0">
-                    <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
+                    <DeleteButton onClick={() => handleDelete(item.id!)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );

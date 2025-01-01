@@ -1,10 +1,11 @@
-import { fetchDocument } from '@/api';
-import { MatchForm, Matches, FormCard } from '@/components';
-import { useQuery } from '@tanstack/react-query';
+import { MatchForm, FormCard } from '@/components';
+import { useData } from '@/contexts';
+import { getDataById } from '@/lib';
+import { QueryKeys } from '@/types';
 import { useParams } from 'react-router-dom';
 
 type Props = {
-  queryKey: string;
+  queryKey: QueryKeys;
   title: string;
   description: string;
   parentUrl: string;
@@ -13,23 +14,16 @@ type Props = {
 const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
 
-  const { data, isFetched } = useQuery({
-    enabled: !!id,
-    queryKey: [queryKey, id],
-    queryFn: () => fetchDocument<Matches>(queryKey, id!),
-  });
+  const { data } = useData();
+  const event = getDataById(data[queryKey], id);
 
-  if (!isFetched) {
-    return null;
-  }
-
-  if (!data && isFetched) {
+  if (!event) {
     return <p>Not Found</p>;
   }
 
   return (
     <FormCard title={title} description={description}>
-      <MatchForm {...data} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <MatchForm {...event} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

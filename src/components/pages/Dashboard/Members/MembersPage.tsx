@@ -1,4 +1,4 @@
-import { deleteDocument, fetchAllDocuments } from '@/api';
+import { deleteDocument } from '@/api';
 import {
   buttonVariants,
   Table,
@@ -10,12 +10,12 @@ import {
   Title,
   DeleteButton,
   EditLink,
-  Members,
 } from '@/components';
+import { useData } from '@/contexts';
 import { useToast } from '@/hooks';
 import { cn, getRoleLabel } from '@/lib';
 import { Roles } from '@/types';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -27,24 +27,19 @@ type Props = {
 };
 
 const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
-  const { data } = useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAllDocuments<Members>(queryKey),
-  });
+  const { data } = useData();
+  const { members } = data;
 
-  const sortedData = useMemo(() => {
-    if (!data) return [];
-    return [...data].sort((a, b) => Number(a.number) - Number(b.number));
-  }, [data]);
+  const sortedMembers = useMemo(() => {
+    if (!members) return [];
+    return [...members].sort((a, b) => Number(a.number) - Number(b.number));
+  }, [members]);
 
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
       await deleteDocument(queryKey, id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [queryKey] });
     },
     onError: (error) => {
       console.error('error: ', error);
@@ -78,7 +73,7 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedData && sortedData?.length > 0 ? (
+      {sortedMembers && sortedMembers?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -91,7 +86,7 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedData.map((item) => {
+            {sortedMembers.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-min text-center">{item.number}</TableCell>
@@ -101,10 +96,10 @@ const MembersPage = ({ queryKey, title, addBttonLabel }: Props) => {
                   <TableCell className="w-max">{getRoleLabel(item.role as Roles)}</TableCell>
                   <TableCell className="w-min text-center">{item.active ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
-                    <EditLink to={item.id} />
+                    <EditLink to={item.id!} />
                   </TableCell>
                   <TableCell className="!px-0">
-                    <DeleteButton onClick={() => handleDelete(item.id)} isLoading={isPending} />
+                    <DeleteButton onClick={() => handleDelete(item.id!)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );

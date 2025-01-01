@@ -1,29 +1,32 @@
-import {
-  buttonVariants,
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  EventResponse,
-  SkeletonEventItem,
-} from '@/components';
+import { buttonVariants, Card, CardDescription, CardHeader, CardTitle, EventResponse } from '@/components';
 import { db } from '@/config';
-import { useAuth } from '@/contexts';
-import { useLiveEventResponses, useToast } from '@/hooks';
-import { cn, getUsersByResponse } from '@/lib';
+import { useAuth, useData } from '@/contexts';
+import { useToast } from '@/hooks';
+import { cn, getDataById, getUsersByResponse } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { ReactNode } from 'react';
 import { google, CalendarEvent } from 'calendar-link';
 import { format } from 'date-fns';
-import { EventType } from '@/types';
+import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
 import { TEAM_NAME } from '@/constants';
 import { CalendarPlus } from 'lucide-react';
+
+type EventResponse = {
+  responses?: Record<
+    string,
+    {
+      answer: EventOptions;
+      name: string;
+      role: Roles;
+    }
+  >;
+};
 
 type Props = {
   isCurrent?: boolean;
   children?: ReactNode;
-  collection: string;
+  queryKey: QueryKeys;
   eventId: string;
   date: Date;
   title: ReactNode;
@@ -33,13 +36,13 @@ type Props = {
 const prefix: Record<EventType, string> = {
   training: '',
   ivl: '[IVL] ',
-  volleyMania: '[Volley Mania] ',
+  volleymania: '[Volley Mania] ',
 };
 
 const suffix: Record<EventType, string> = {
   training: ` ${TEAM_NAME}`,
   ivl: '',
-  volleyMania: '',
+  volleymania: '',
 };
 
 const getEventInfo = ({
@@ -61,11 +64,12 @@ const getEventInfo = ({
   };
 };
 
-const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall }: Props) => {
+const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { data } = useData();
 
-  const { eventResponses, loading: eventResponsesLoading } = useLiveEventResponses(collection, eventId);
+  const eventResponses = getDataById(data[queryKey], eventId) as EventResponse;
 
   const answer = user ? eventResponses?.responses?.[user?.uid]?.answer : undefined;
   const formattedDate = format(date, 'dd.MM.yyyy');
@@ -75,7 +79,7 @@ const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall
     mutationFn: async (selectedValue: string) => {
       if (!user) return;
 
-      const eventDocRef = doc(db, collection, eventId);
+      const eventDocRef = doc(db, queryKey, eventId);
 
       const eventDoc = await getDoc(eventDocRef);
 
@@ -108,10 +112,6 @@ const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall
     saveResponseMutation.mutate(value);
   };
 
-  if (eventResponsesLoading) {
-    return <SkeletonEventItem isCurrent={isCurrent && !!user} />;
-  }
-
   return (
     <Card
       className={cn('text-center', {
@@ -139,7 +139,7 @@ const EventItem = ({ isCurrent, children, collection, eventId, date, title, hall
             <a
               className={cn(buttonVariants())}
               href={google(
-                getEventInfo({ title: title as string, location: hall, date, eventType: collection as EventType })
+                getEventInfo({ title: title as string, location: hall, date, eventType: queryKey as EventType })
               )}
               target="_blank">
               <CalendarPlus /> Добави в календар
