@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
 import { QUERY_KEYS, TEAM_NAME } from '@/constants';
 import { CalendarPlus } from 'lucide-react';
+import ReactDOMServer from 'react-dom/server';
 
 type EventResponse = {
   responses?: Record<
@@ -70,6 +71,8 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
   const { data } = useData();
 
   const eventResponses = getDataById(data[queryKey], eventId) as EventResponse;
+
+  const calendarTitle = typeof title === 'string' ? title : ReactDOMServer.renderToString(title);
 
   const answer = user ? eventResponses?.responses?.[user?.uid]?.answer : undefined;
   const formattedDate = format(date, 'dd.MM.yyyy');
@@ -141,7 +144,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
             <a
               className={cn(buttonVariants())}
               href={google(
-                getEventInfo({ title: title as string, location: hall, date, eventType: queryKey as EventType })
+                getEventInfo({ title: calendarTitle, location: hall, date, eventType: queryKey as EventType })
               )}
               target="_blank">
               <CalendarPlus /> Добави в календар

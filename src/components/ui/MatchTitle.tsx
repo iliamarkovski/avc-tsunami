@@ -36,8 +36,6 @@ const MatchTitle = ({ isHost, opponent, gamesHost, gamesGuest }: Props) => {
       </>
     );
   }
-
-  return null;
 };
 
 export { MatchTitle };
