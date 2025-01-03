@@ -126,11 +126,14 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
         'bg-red-400/10': isCurrent && answer === 'no',
       })}>
       <CardHeader>
-        {badge ? (
-          <Badge variant="outline" className="mb-2 self-center">
-            {badge}
-          </Badge>
-        ) : null}
+        <div className="mb- mb-2 flex flex-wrap items-center justify-center gap-2">
+          {!!user && !answer ? (
+            <Badge variant="destructive" className="animate-pulse">
+              НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
+            </Badge>
+          ) : null}
+          {badge ? <Badge variant="outline">{badge}</Badge> : null}
+        </div>
         <CardDescription>
           {formattedDate} | {time}
         </CardDescription>
@@ -144,7 +147,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
             <EventResponse
               onChange={handleChange}
               data={getUsersByResponse(eventResponses?.responses)}
-              selectedValue={eventResponses?.responses?.[user!.uid]?.answer || ''}
+              selectedValue={answer || ''}
             />
 
             <a
