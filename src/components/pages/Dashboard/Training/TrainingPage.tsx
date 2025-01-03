@@ -18,7 +18,6 @@ import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -31,13 +30,6 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { toast } = useToast();
   const { data } = useData();
   const { halls, training } = data;
-
-  const sortedEvent = useMemo(() => {
-    if (!training) return [];
-    return [...training].sort(
-      (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
-    );
-  }, [training]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -75,7 +67,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedEvent && sortedEvent?.length > 0 ? (
+      {training?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -86,7 +78,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedEvent.map((item) => {
+            {training.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>

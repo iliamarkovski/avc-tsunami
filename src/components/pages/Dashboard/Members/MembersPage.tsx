@@ -13,7 +13,6 @@ import { useData } from '@/contexts';
 import { cn, getRoleLabel } from '@/lib';
 import { Roles } from '@/types';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -25,11 +24,6 @@ type Props = {
 const MembersPage = ({ title, addBttonLabel }: Props) => {
   const { data } = useData();
   const { members } = data;
-
-  const sortedMembers = useMemo(() => {
-    if (!members) return [];
-    return [...members].sort((a, b) => Number(a.number) - Number(b.number));
-  }, [members]);
 
   return (
     <section className="flex flex-col gap-6">
@@ -49,7 +43,7 @@ const MembersPage = ({ title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedMembers && sortedMembers?.length > 0 ? (
+      {members.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -61,7 +55,7 @@ const MembersPage = ({ title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedMembers.map((item) => {
+            {members.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-min text-center">{item.number}</TableCell>

@@ -23,7 +23,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -46,11 +45,6 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
 
   const { data } = useData();
   const { halls } = data;
-
-  const sortedHalls = useMemo(() => {
-    if (!halls) return [];
-    return [...halls].sort((a, b) => a.name.localeCompare(b.name));
-  }, [halls]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -105,7 +99,7 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {sortedHalls?.map((hall) => {
+                  {halls.map((hall) => {
                     return (
                       <SelectItem key={hall.id} value={hall.id!}>
                         {hall.name}

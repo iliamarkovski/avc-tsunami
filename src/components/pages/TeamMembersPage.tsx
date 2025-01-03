@@ -16,7 +16,7 @@ const TeamMembersPage = () => {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-      {filteredMembers?.map((member) => {
+      {filteredMembers.map((member) => {
         return (
           <Card key={member.id} className="flex flex-col">
             <CardHeader className="grow items-center gap-2 p-4 text-center">

@@ -4,18 +4,19 @@ import { SquarePlay, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts';
 import { QueryKeys } from '@/types';
 
-export type EventMatch = {
+export type EventMatchProps = {
   id: string;
   isHost: boolean;
   hall: string;
   gamesHost?: string;
   gamesGuest?: string;
-  date: Date;
+  dateTime: Date;
   opponent: string;
   recordingUrl?: string | null;
   statisticsUrl?: string | null;
   isCurrent?: boolean;
   queryKey: QueryKeys;
+  badge?: string;
 };
 
 const EventMatchItem = ({
@@ -24,13 +25,14 @@ const EventMatchItem = ({
   hall,
   gamesHost,
   gamesGuest,
-  date,
+  dateTime,
   opponent,
   recordingUrl,
   statisticsUrl,
   isCurrent,
   queryKey,
-}: EventMatch) => {
+  badge,
+}: EventMatchProps) => {
   const { user } = useAuth();
 
   return (
@@ -38,9 +40,10 @@ const EventMatchItem = ({
       eventId={id}
       queryKey={queryKey}
       isCurrent={isCurrent}
-      date={date}
+      dateTime={dateTime}
       title={<MatchTitle isHost={isHost} opponent={opponent} gamesHost={gamesHost} gamesGuest={gamesGuest} />}
-      hall={hall}>
+      hall={hall}
+      badge={badge}>
       {recordingUrl || (statisticsUrl && !!user) ? (
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
           {recordingUrl ? (

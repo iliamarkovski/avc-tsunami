@@ -87,13 +87,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setIsLoading(true); // Start loading when the state changes.
       if (currentUser) {
         const userData = await getUser(currentUser);
         setUser(userData);
       } else {
         setUser(null);
       }
-      setIsLoading(false);
+      setIsLoading(false); // Only stop loading after all operations are complete.
     });
 
     return () => {

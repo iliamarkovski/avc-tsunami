@@ -23,7 +23,6 @@ import { useToast } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { Roles } from '@/types';
-import { useMemo } from 'react';
 import { OTHER_VALUE } from '@/constants';
 
 type Props = {
@@ -67,11 +66,6 @@ const UserForm = ({ email }: Props) => {
   const { data } = useData();
   const { members } = data;
 
-  const sortedTeamMembers = useMemo(() => {
-    if (!members) return [];
-    return [...members].sort((a, b) => a.names.localeCompare(b.names));
-  }, [members]);
-
   const { createUser, login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -79,7 +73,7 @@ const UserForm = ({ email }: Props) => {
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
       const { password, selectedName, customName } = data;
-      const role = sortedTeamMembers.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
+      const role = members?.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
       const name = selectedName === OTHER_VALUE ? (customName as string) : selectedName;
 
       return await createUser(email, password, name, role as Roles);
@@ -145,7 +139,7 @@ const UserForm = ({ email }: Props) => {
                     <SelectValue placeholder="Избери име" />
                   </SelectTrigger>
                   <SelectContent>
-                    {sortedTeamMembers.map((member) => (
+                    {members.map((member) => (
                       <SelectItem key={member.id} value={member.names}>
                         {member.names}
                       </SelectItem>

@@ -40,18 +40,18 @@ const EventsMatchesList = ({ queryKey }: Props) => {
             {pastEvents.map((event) => {
               const hall = getNameById(halls, event.hall);
               const opponent = getNameById(teams, event.opponent);
-              const date = getDateByTimestamp(event.dateTime);
+              const dateTime = getDateByTimestamp(event.dateTime);
               return (
                 <EventMatchItem
                   key={event.id}
                   id={event.id!}
-                  date={date}
+                  dateTime={dateTime}
                   hall={hall}
                   isHost={event.host}
                   opponent={opponent}
                   gamesHost={event.gamesHost}
                   gamesGuest={event.gamesGuest}
-                  recordingUrl={event.youtubeLink}
+                  recordingUrl={event.recordingLink}
                   // statisticsUrl={event.statistics?.url || null}
                   queryKey={queryKey}
                 />
@@ -68,18 +68,18 @@ const EventsMatchesList = ({ queryKey }: Props) => {
           {futureEvents.map((event, index) => {
             const hall = getNameById(halls, event.hall);
             const opponent = getNameById(teams, event.opponent);
-            const date = getDateByTimestamp(event.dateTime);
+            const dateTime = getDateByTimestamp(event.dateTime);
             return (
               <EventMatchItem
                 key={event.id}
                 id={event.id!}
-                date={date}
+                dateTime={dateTime}
                 hall={hall}
                 isHost={event.host}
                 opponent={opponent}
                 gamesHost={event.gamesHost}
                 gamesGuest={event.gamesGuest}
-                recordingUrl={event.youtubeLink}
+                recordingUrl={event.recordingLink}
                 // statisticsUrl={event.statistics?.url || null}
                 isCurrent={index === 0}
                 queryKey={queryKey}

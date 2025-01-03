@@ -1,18 +1,19 @@
 import { Matches, Members, Names, Training } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useLiveData } from '@/hooks';
-import { createContext, ReactNode, useContext } from 'react';
+import { getDateByTimestamp } from '@/lib';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 type Props = {
   isLoading: boolean;
   data: {
-    teams: Names[] | undefined;
-    halls: Names[] | undefined;
-    members: Members[] | undefined;
-    training: Training[] | undefined;
-    ivl: Matches[] | undefined;
-    volleymania: Matches[] | undefined;
-    users: any | undefined;
+    teams: Names[];
+    halls: Names[];
+    members: Members[];
+    training: Training[];
+    ivl: Matches[];
+    volleymania: Matches[];
+    users: any;
   };
 };
 
@@ -26,18 +27,52 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: ivl, loading: ivlLoading } = useLiveData<Matches[]>(QUERY_KEYS.IVL);
   const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
 
+  const sortedTeams = useMemo(() => {
+    if (!teams) return [];
+    return [...teams].sort((a, b) => a.name.localeCompare(b.name));
+  }, [teams]);
+
+  const sortedHalls = useMemo(() => {
+    if (!halls) return [];
+    return [...halls].sort((a, b) => a.name.localeCompare(b.name));
+  }, [halls]);
+
+  const sortedMembers = useMemo(() => {
+    if (!members) return [];
+    return [...members].sort((a, b) => a.names.localeCompare(b.names));
+  }, [members]);
+
+  const sortedTraining = useMemo(() => {
+    if (!training) return [];
+    return [...training].sort(
+      (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
+    );
+  }, [training]);
+
+  const sortedIvl = useMemo(() => {
+    if (!ivl) return [];
+    return [...ivl].sort((a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime());
+  }, [ivl]);
+
+  const sortedVolleyMania = useMemo(() => {
+    if (!volleymania) return [];
+    return [...volleymania].sort(
+      (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
+    );
+  }, [volleymania]);
+
   return (
     <DataContext.Provider
       value={{
         isLoading:
           ivlLoading || volleymaniaLoading || teamsLoading || hallsLoading || membersLoading || trainingLoading,
         data: {
-          halls,
-          teams,
-          members,
-          training,
-          ivl,
-          volleymania,
+          halls: sortedHalls,
+          teams: sortedTeams,
+          members: sortedMembers,
+          training: sortedTraining,
+          ivl: sortedIvl,
+          volleymania: sortedVolleyMania,
           users: [],
         },
       }}>

@@ -19,7 +19,6 @@ import { cn } from '@/lib';
 import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -31,11 +30,6 @@ type Props = {
 const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useData();
   const names = data[queryKey] as Names[];
-
-  const sortedNames = useMemo(() => {
-    if (!names) return [];
-    return [...names].sort((a, b) => a.name.localeCompare(b.name));
-  }, [names]);
 
   const { toast } = useToast();
   const { mutate, isPending } = useMutation({
@@ -74,7 +68,7 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedNames && sortedNames?.length > 0 ? (
+      {names.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -84,7 +78,7 @@ const NamesPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedNames.map((item) => {
+            {names.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-full">{item.name}</TableCell>

@@ -1,4 +1,4 @@
-import { buttonVariants, Card, CardDescription, CardHeader, CardTitle, EventResponse } from '@/components';
+import { Badge, buttonVariants, Card, CardDescription, CardHeader, CardTitle, EventResponse } from '@/components';
 import { db } from '@/config';
 import { useAuth, useData } from '@/contexts';
 import { useToast } from '@/hooks';
@@ -29,9 +29,10 @@ type Props = {
   children?: ReactNode;
   queryKey: QueryKeys;
   eventId: string;
-  date: Date;
+  dateTime: Date;
   title: ReactNode;
   hall: string;
+  badge?: string;
 };
 
 const prefix: Record<EventType, string> = {
@@ -49,23 +50,23 @@ const suffix: Record<EventType, string> = {
 const getEventInfo = ({
   title,
   location,
-  date,
+  dateTime,
   eventType,
 }: {
   title: string;
   location: string;
-  date: Date;
+  dateTime: Date;
   eventType: EventType;
 }): CalendarEvent => {
   return {
     title: prefix[eventType] + title + suffix[eventType],
     location: `зала ${location}`,
-    start: date,
+    start: dateTime,
     duration: [2, 'hour'],
   };
 };
 
-const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }: Props) => {
+const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge }: Props) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { data } = useData();
@@ -75,8 +76,8 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
   const calendarTitle = typeof title === 'string' ? title : ReactDOMServer.renderToString(title);
 
   const answer = user ? eventResponses?.responses?.[user?.uid]?.answer : undefined;
-  const formattedDate = format(date, 'dd.MM.yyyy');
-  const time = format(date, 'HH:mm');
+  const formattedDate = format(dateTime, 'dd.MM.yyyy');
+  const time = format(dateTime, 'HH:mm');
 
   const canVote = isCurrent && !!user && !(user.role === 'other' && queryKey === QUERY_KEYS.VOLLEYMANIA);
 
@@ -125,6 +126,11 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
         'bg-red-400/10': isCurrent && answer === 'no',
       })}>
       <CardHeader>
+        {badge ? (
+          <Badge variant="outline" className="mb-2 self-center">
+            {badge}
+          </Badge>
+        ) : null}
         <CardDescription>
           {formattedDate} | {time}
         </CardDescription>
@@ -144,7 +150,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, date, title, hall }
             <a
               className={cn(buttonVariants())}
               href={google(
-                getEventInfo({ title: calendarTitle, location: hall, date, eventType: queryKey as EventType })
+                getEventInfo({ title: calendarTitle, location: hall, dateTime, eventType: queryKey as EventType })
               )}
               target="_blank">
               <CalendarPlus /> Добави в календар

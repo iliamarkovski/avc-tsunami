@@ -4,11 +4,12 @@ import { QUERY_KEYS } from '@/constants';
 type Props = {
   id: string;
   hall: string;
-  date: Date;
+  dateTime: Date;
   isCurrent?: boolean;
+  badge?: string;
 };
 
-const EventTrainingItem = ({ hall, date, id, isCurrent }: Props) => {
+const EventTrainingItem = ({ hall, dateTime, id, isCurrent, badge }: Props) => {
   return (
     <EventItem
       eventId={id}
@@ -16,7 +17,8 @@ const EventTrainingItem = ({ hall, date, id, isCurrent }: Props) => {
       isCurrent={isCurrent}
       title="Тренировка"
       hall={hall}
-      date={date}
+      dateTime={dateTime}
+      badge={badge}
     />
   );
 };

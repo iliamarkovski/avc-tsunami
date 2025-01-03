@@ -16,9 +16,11 @@ const EventsTrainingsList = () => {
     <div className="grid gap-4">
       {futureEvents.map((event, index) => {
         const hall = getNameById(halls, event.hall);
-        const date = getDateByTimestamp(event.dateTime);
+        const dateTime = getDateByTimestamp(event.dateTime);
 
-        return <EventTrainingItem key={event.id} id={event.id!} date={date} hall={hall} isCurrent={index === 0} />;
+        return (
+          <EventTrainingItem key={event.id} id={event.id!} dateTime={dateTime} hall={hall} isCurrent={index === 0} />
+        );
       })}
     </div>
   );

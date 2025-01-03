@@ -25,7 +25,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -39,7 +38,7 @@ const formSchema = z.object({
   host: z.boolean().default(false),
   gamesHost: z.string(),
   gamesGuest: z.string(),
-  youtubeLink: z.string(),
+  recordingLink: z.string(),
   id: z.string().optional(),
 });
 
@@ -54,16 +53,6 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const { data } = useData();
   const { halls, teams } = data;
 
-  const sortedHalls = useMemo(() => {
-    if (!halls) return [];
-    return [...halls].sort((a, b) => a.name.localeCompare(b.name));
-  }, [halls]);
-
-  const sortedOpponents = useMemo(() => {
-    if (!teams) return [];
-    return [...teams].sort((a, b) => a.name.localeCompare(b.name));
-  }, [teams]);
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,7 +62,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       host: props.host ?? false,
       gamesHost: props.gamesHost ?? '',
       gamesGuest: props.gamesGuest ?? '',
-      youtubeLink: props.youtubeLink ?? '',
+      recordingLink: props.recordingLink ?? '',
     },
   });
 
@@ -122,7 +111,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {sortedHalls?.map((hall) => {
+                  {halls.map((hall) => {
                     return (
                       <SelectItem key={hall.id} value={hall.id!}>
                         {hall.name}
@@ -149,10 +138,10 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {sortedOpponents?.map((opponent) => {
+                  {teams.map((team) => {
                     return (
-                      <SelectItem key={opponent.id} value={opponent.id!}>
-                        {opponent.name}
+                      <SelectItem key={team.id} value={team.id!}>
+                        {team.name}
                       </SelectItem>
                     );
                   })}
@@ -208,7 +197,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
 
         <FormField
           control={form.control}
-          name="youtubeLink"
+          name="recordingLink"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Видео запис</FormLabel>

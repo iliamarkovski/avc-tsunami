@@ -33,7 +33,7 @@ const AppRouter = () => {
       children: [
         {
           path: '/',
-          element: <HomePage />,
+          element: <HomePage key={user?.uid} />,
         },
         {
           path: '/team',

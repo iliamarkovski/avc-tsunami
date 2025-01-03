@@ -20,7 +20,7 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Start loading
     let unsubscribe: (() => void) | undefined;
 
     try {
@@ -36,11 +36,9 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
             } else {
               setData(undefined);
             }
-            setLoading(false);
+            setLoading(false); // Stop loading after fetching the document
           },
-          (error) => {
-            handleError(error, 'Error fetching single document');
-          }
+          (error) => handleError(error, 'Error fetching single document')
         );
       } else {
         // Fetch the entire collection
@@ -52,11 +50,9 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
           (querySnapshot) => {
             const docsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
             setData(docsData as T);
-            setLoading(false);
+            setLoading(false); // Stop loading after fetching the collection
           },
-          (error) => {
-            handleError(error, 'Error fetching the entire collection');
-          }
+          (error) => handleError(error, 'Error fetching the entire collection')
         );
       }
     } catch (error) {
@@ -64,17 +60,19 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
       handleError(error as Error, 'Unexpected error occurred');
     }
 
-    return () => unsubscribe?.();
+    return () => {
+      unsubscribe?.();
+    };
   }, [collectionName, eventId, toast]);
 
   const handleError = (error: unknown, message: string) => {
     console.error(message, error);
     toast({
       variant: 'destructive',
-      title: 'Error occurred',
-      description: 'Please try again later.',
+      title: 'Възникна грешка',
+      description: 'Моля, опитайте отново по-късно.',
     });
-    setLoading(false);
+    setLoading(false); // Ensure loading is false on error
   };
 
   return { data, loading };

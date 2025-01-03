@@ -20,7 +20,6 @@ import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -35,13 +34,6 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useData();
   const { halls, teams } = data;
   const matches = data[queryKey] as Matches[];
-
-  const sortedMatches = useMemo(() => {
-    if (!matches) return [];
-    return [...matches].sort(
-      (a, b) => getDateByTimestamp(b.dateTime).getTime() - getDateByTimestamp(a.dateTime).getTime()
-    );
-  }, [matches]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -79,7 +71,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
         </div>
       </div>
 
-      {sortedMatches && sortedMatches?.length > 0 ? (
+      {matches?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -92,7 +84,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {sortedMatches.map((item) => {
+            {matches.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
@@ -105,7 +97,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
                       gamesGuest={item.gamesGuest}
                     />
                   </TableCell>
-                  <TableCell className="text-center">{item.youtubeLink ? 'Да' : 'Не'}</TableCell>
+                  <TableCell className="text-center">{item.recordingLink ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id!} />
                   </TableCell>
