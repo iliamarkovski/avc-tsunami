@@ -59,7 +59,7 @@ export * from './forms/MatchForm';
 
 //pages
 export * from './pages/HomePage';
-export * from './pages/TeamMembersPage';
+export * from './pages/ActiveMembersPage';
 export * from './pages/LoginPage';
 
 export * from './pages/Dashboard/DashboardNavPage';

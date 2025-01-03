@@ -1,7 +1,7 @@
 import {
   HomePage,
   Layout,
-  TeamMembersPage,
+  ActiveMembersPage,
   LoginPage,
   DashboardNavPage,
   AddNamePage,
@@ -37,7 +37,7 @@ const AppRouter = () => {
         },
         {
           path: '/team',
-          element: <TeamMembersPage />,
+          element: <ActiveMembersPage />,
         },
         {
           path: '/login',

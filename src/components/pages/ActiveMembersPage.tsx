@@ -5,7 +5,7 @@ import { Roles } from '@/types';
 import { User } from 'lucide-react';
 import { useMemo } from 'react';
 
-const TeamMembersPage = () => {
+const ActiveMembersPage = () => {
   const { data } = useData();
   const { members } = data;
 
@@ -42,4 +42,4 @@ const TeamMembersPage = () => {
   );
 };
 
-export { TeamMembersPage };
+export { ActiveMembersPage };

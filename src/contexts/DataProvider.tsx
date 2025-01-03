@@ -39,7 +39,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
 
   const sortedMembers = useMemo(() => {
     if (!members) return [];
-    return [...members].sort((a, b) => a.names.localeCompare(b.names));
+    return [...members].sort((a, b) => Number(a.number) - Number(b.number));
   }, [members]);
 
   const sortedTraining = useMemo(() => {
