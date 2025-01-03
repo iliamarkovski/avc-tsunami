@@ -84,14 +84,23 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                   })}
                 </TabsList>
                 {OPTIONS.map((tab) => {
+                  const votedMembers = data[tab.value]?.filter((item) => item.role !== '?');
+                  const votedOthers = data[tab.value]?.filter((item) => item.role === '?');
+
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
-                      {data[tab.value]?.map((item, index) => {
+                      {votedMembers?.map((item, index) => {
                         return (
                           <DialogDescription key={`${item.name}-${index}`}>
                             {item.name} ({item.role.toLowerCase()})
                           </DialogDescription>
                         );
+                      })}
+
+                      {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
+
+                      {votedOthers?.map((item, index) => {
+                        return <DialogDescription key={`${item.name}-${index}`}>{item.name}</DialogDescription>;
                       })}
                     </TabsContent>
                   );
