@@ -68,6 +68,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const { user } = useAuth();
   const { toast } = useToast();
   const { data } = useData();
+  const { users } = data;
 
   const eventResponses = getDataById(data[queryKey], eventId) as EventResponseType | undefined;
   const responsesData = useUsersByResponse(eventResponses?.responses);
@@ -81,8 +82,10 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const formattedDate = format(dateTime, 'dd.MM.yyyy');
   const time = format(dateTime, 'HH:mm');
 
+  const isUserActive = !!user ? users.find((u) => u.id === user.id)?.isActive : false;
+
   const canVote = useMemo(
-    () => isCurrent && !!user && !(user.role === 'other' && queryKey === QUERY_KEYS.VOLLEYMANIA),
+    () => isCurrent && !!user && !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA),
     [isCurrent, user, queryKey]
   );
 
@@ -132,7 +135,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
       })}>
       <CardHeader>
         <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
-          {isCurrent && !!user && !answer && (
+          {canVote && (
             <Badge variant="destructive" className="animate-pulse">
               НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
             </Badge>
