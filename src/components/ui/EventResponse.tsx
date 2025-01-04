@@ -19,11 +19,12 @@ import {
 import { cn } from '@/lib';
 import { EventOptions } from '@/types';
 import { Info } from 'lucide-react';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 
 type Props = {
   onChange: (value: string) => void;
   selectedValue: EventOptions | undefined;
-  data: Record<EventOptions, { names: string; role: string; id: string }[]>;
+  data: Record<EventOptions, { names: string; role: string; id: string; isMember: boolean }[]>;
 };
 
 const OPTIONS: {
@@ -41,8 +42,6 @@ const OPTIONS: {
 ];
 
 const EventResponse = ({ onChange, selectedValue, data }: Props) => {
-  // const { data: stateData } = useData();
-  // const { members, yser } = stateData;
   return (
     <div className="!mt-4 flex flex-col items-center gap-4">
       <Select onValueChange={onChange} value={selectedValue}>
@@ -73,6 +72,9 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
             <Info className="text-blue-600" />
           </DialogTrigger>
           <DialogContent className="p-4 md:p-6">
+            <VisuallyHidden.Root>
+              <DialogDescription>Гласували</DialogDescription>
+            </VisuallyHidden.Root>
             <DialogTitle>Гласували</DialogTitle>
             <DialogHeader>
               <Tabs defaultValue={OPTIONS[0].value}>
@@ -86,8 +88,8 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                   })}
                 </TabsList>
                 {OPTIONS.map((tab) => {
-                  // const votedMembers = data[tab.value]?.filter((item) => item.role !== OTHER_VALUE);
-                  // const votedOthers = data[tab.value]?.filter((item) => item.role === OTHER_VALUE);
+                  const votedMembers = data[tab.value]?.filter((item) => item.isMember);
+                  const votedOthers = data[tab.value]?.filter((item) => !item.isMember);
 
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
@@ -99,7 +101,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                         );
                       })}
 
-                      {/* {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
+                      {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
 
                       {votedOthers?.map((item) => {
                         return (
@@ -107,7 +109,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                             {item.names} ({item.role.toLowerCase()})
                           </DialogDescription>
                         );
-                      })} */}
+                      })}
                     </TabsContent>
                   );
                 })}

@@ -1,7 +1,8 @@
 import { Matches, Members, Names, Training } from '@/components';
-import { QUERY_KEYS } from '@/constants';
+import { QUERY_KEYS, OTHER_VALUE } from '@/constants';
 import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
+import { Roles } from '@/types';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 type Users = {
@@ -12,6 +13,15 @@ type Users = {
   id: string;
 }[];
 
+type EnrichedUser = {
+  id: string;
+  email: string;
+  names: string;
+  role: string | null;
+  isActive: boolean;
+  isMember: boolean;
+};
+
 type SortedData = {
   teams: Names[];
   halls: Names[];
@@ -19,7 +29,7 @@ type SortedData = {
   training: Training[];
   ivl: Matches[];
   volleymania: Matches[];
-  users: Users;
+  users: EnrichedUser[];
 };
 
 type ContextProps = {
@@ -48,6 +58,36 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
   const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
 
+  const enrichedUsers = useMemo(() => {
+    if (!users || !members) return [];
+
+    return users.map((u) => {
+      const memberId = u.memberId;
+
+      if (memberId === OTHER_VALUE) {
+        return {
+          id: u.id,
+          email: u.email,
+          names: u.customName || '',
+          role: u.role as Roles,
+          isActive: false,
+          isMember: false,
+        };
+      }
+
+      const member = members.find((m) => m.id === memberId);
+
+      return {
+        id: u.id,
+        email: u.email,
+        names: member?.names || '',
+        role: (member?.role || u.role) as Roles,
+        isActive: member?.active || false,
+        isMember: true,
+      };
+    });
+  }, [users, members]);
+
   const sortedData = useMemo(
     () => ({
       teams: [...(teams ?? defaultData.teams)].sort((a, b) => a.name.localeCompare(b.name)),
@@ -62,9 +102,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       volleymania: [...(volleymania ?? defaultData.volleymania)].sort(
         (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
       ),
-      users: [...(users ?? defaultData.users)].sort((a, b) => a.email?.localeCompare(b?.email)),
+      users: [...enrichedUsers].sort((a, b) => a.names?.localeCompare(b.names)),
     }),
-    [teams, halls, members, training, ivl, volleymania, users]
+    [teams, halls, members, training, ivl, volleymania, enrichedUsers]
   );
 
   const isLoading = [

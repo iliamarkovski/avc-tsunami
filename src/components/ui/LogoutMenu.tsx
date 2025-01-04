@@ -9,8 +9,8 @@ import {
   DropdownMenuTrigger,
   ThemeToggle,
 } from '@/components';
-import { useAuth } from '@/contexts';
-import { useToast, useUserInfo } from '@/hooks';
+import { useAuth, useData } from '@/contexts';
+import { useToast } from '@/hooks';
 import { cn, getFirstChars } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
 import { LogOut, Wrench } from 'lucide-react';
@@ -19,8 +19,10 @@ const LogoutMenu = () => {
   const { logout, user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { data } = useData();
+  const { users } = data;
 
-  const userData = useUserInfo();
+  const userData = users.find((u) => u.id === user?.id);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -47,11 +49,11 @@ const LogoutMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" title="menu button">
-          {getFirstChars(userData.names || '')}
+          {getFirstChars(userData?.names || '')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{userData.names}</DropdownMenuLabel>
+        <DropdownMenuLabel>{userData?.names}</DropdownMenuLabel>
         {user?.isAdmin ? (
           <>
             <DropdownMenuSeparator />

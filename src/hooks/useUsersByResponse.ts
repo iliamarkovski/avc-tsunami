@@ -1,28 +1,54 @@
-import { useUserInfo } from '@/hooks';
+import { useData } from '@/contexts';
 import { getRoleLabel } from '@/lib';
-import { EventOptions } from '@/types';
+import { EventOptions, Roles } from '@/types';
 
-export const useUsersByResponse = (responses: { [key: string]: { answer: EventOptions } } | undefined) => {
-  const initialResponses: Record<EventOptions, { names: string; role: string; id: string }[]> = { yes: [], no: [] };
+type UserResponse = {
+  names: string;
+  role: string;
+  id: string;
+  isMember: boolean;
+};
+
+export const useUsersByResponse = (
+  responses: Record<string, { answer: EventOptions }> | undefined
+): Record<EventOptions, UserResponse[]> => {
+  // Initialize the mapped responses with empty arrays for each option
+  const initialResponses: Record<EventOptions, UserResponse[]> = { yes: [], no: [] };
 
   if (!responses) {
     return initialResponses;
   }
 
-  const mappedResponses = { ...initialResponses };
+  const { data } = useData();
+  const { users } = data;
 
-  for (const key in responses) {
-    const { answer } = responses[key];
-    const userData = useUserInfo(key);
-
-    const roleLabel = getRoleLabel(userData.role);
-    if (answer === 'yes') {
-      mappedResponses.yes.push({ names: userData.names, role: roleLabel, id: key });
-    } else {
-      mappedResponses.no.push({ names: userData.names, role: roleLabel, id: key });
-    }
+  if (!users) {
+    return initialResponses;
   }
 
+  const mappedResponses: Record<EventOptions, UserResponse[]> = { ...initialResponses };
+
+  for (const [userId, { answer }] of Object.entries(responses)) {
+    const userData = users.find((user) => user.id === userId);
+
+    // Safely check if userData exists
+    if (!userData) {
+      console.warn(`User with ID ${userId} not found in the data.`);
+      continue;
+    }
+
+    const roleLabel = getRoleLabel(userData.role as Roles);
+    const userResponse: UserResponse = {
+      names: userData.names,
+      role: roleLabel,
+      id: userId,
+      isMember: userData.isMember,
+    };
+
+    mappedResponses[answer]?.push(userResponse);
+  }
+
+  // Sort each response group
   for (const option of Object.keys(mappedResponses) as EventOptions[]) {
     mappedResponses[option].sort((a, b) => {
       if (a.role === b.role) {
