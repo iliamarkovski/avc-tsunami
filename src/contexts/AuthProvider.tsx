@@ -1,22 +1,16 @@
-import { db, auth } from '@/config';
-import { QUERY_KEYS } from '@/constants';
-import { Roles } from '@/types';
+import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 import {
-  User,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   UserCredential,
+  User,
 } from 'firebase/auth';
-import { collection, doc, FieldValue, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
-import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
-
-type CreatedAt = {
-  createdAt: {
-    isEqual: (other: FieldValue) => boolean;
-  };
-};
+import { collection, doc, query, where, setDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { db, auth } from '@/config';
+import { QUERY_KEYS } from '@/constants';
+import { Roles } from '@/types';
 
 export type UserInfo = {
   id?: string;
@@ -28,7 +22,7 @@ export type UserInfo = {
   isSuperAdmin: boolean;
 };
 
-type Props = {
+type AuthContextType = {
   login: (email: string, password: string) => Promise<UserCredential>;
   createUser: (email: string, password: string, memberId: string, role?: Roles, customName?: string) => Promise<User>;
   logout: () => Promise<void>;
@@ -37,14 +31,14 @@ type Props = {
   isLoading: boolean;
 };
 
-const AuthContext = createContext<Props | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<Props['user']>(null);
+  const [user, setUser] = useState<UserInfo | null>(null);
 
   const login = async (email: string, password: string) => {
-    return await signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password);
   };
 
   const createUser = async (email: string, password: string, memberId: string, role?: Roles, customName?: string) => {
@@ -58,26 +52,21 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       memberId,
       isAdmin: false,
       isSuperAdmin: false,
-    } satisfies UserInfo & CreatedAt);
+    } as UserInfo);
 
     return userCredential.user;
   };
 
-  const getUser = async (user: User): Promise<UserInfo | null> => {
+  const getUser = async (currentUser: User): Promise<UserInfo | null> => {
     const usersRef = collection(db, QUERY_KEYS.USERS);
-    const q = query(usersRef, where('email', '==', user.email));
+    const q = query(usersRef, where('email', '==', currentUser.email));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
       const userDoc = querySnapshot.docs[0];
       const userData = userDoc.data() as UserInfo;
-
-      return {
-        ...userData,
-        id: user.uid,
-      };
+      return { ...userData, id: currentUser.uid };
     }
-
     return null;
   };
 
@@ -85,7 +74,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     const usersRef = collection(db, QUERY_KEYS.USERS);
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
-
     return !querySnapshot.empty;
   };
 
@@ -95,42 +83,30 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setIsLoading(true); // Start loading when the state changes.
+      setIsLoading(true);
       if (currentUser) {
         const userData = await getUser(currentUser);
         setUser(userData);
       } else {
         setUser(null);
       }
-      setIsLoading(false); // Only stop loading after all operations are complete.
+      setIsLoading(false);
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{
-        createUser,
-        login,
-        logout,
-        isUserExist,
-        user,
-        isLoading,
-      }}>
+    <AuthContext.Provider value={{ login, createUser, logout, isUserExist, user, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-const useAuth = (): Props => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within a AuthProvider');
   }
   return context;
 };
-
-export { AuthProvider, useAuth };

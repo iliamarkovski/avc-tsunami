@@ -69,7 +69,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const { toast } = useToast();
   const { data } = useData();
 
-  const eventResponses = getDataById(data[queryKey], eventId) as EventResponseType;
+  const eventResponses = getDataById(data[queryKey], eventId) as EventResponseType | undefined;
   const responsesData = useUsersByResponse(eventResponses?.responses);
 
   const calendarTitle = useMemo(
@@ -132,12 +132,12 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
       })}>
       <CardHeader>
         <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
-          {isCurrent && !!user && !answer ? (
+          {isCurrent && !!user && !answer && (
             <Badge variant="destructive" className="animate-pulse">
               НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
             </Badge>
-          ) : null}
-          {badge ? <Badge variant="outline">{badge}</Badge> : null}
+          )}
+          {badge && <Badge variant="outline">{badge}</Badge>}
         </div>
         <CardDescription>
           {formattedDate} | {time}
@@ -147,9 +147,9 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
 
         {children}
 
-        {canVote ? (
+        {canVote && (
           <div className="flex flex-col items-center gap-5">
-            <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer || ''} />
+            <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} />
 
             <a
               className={cn(buttonVariants())}
@@ -161,7 +161,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
               <CalendarPlus /> Добави в календар
             </a>
           </div>
-        ) : null}
+        )}
       </CardHeader>
     </Card>
   );

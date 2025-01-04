@@ -22,7 +22,7 @@ import { Info } from 'lucide-react';
 
 type Props = {
   onChange: (value: string) => void;
-  selectedValue: EventOptions | '';
+  selectedValue: EventOptions | undefined;
   data: Record<EventOptions, { names: string; role: string; id: string }[]>;
 };
 
@@ -41,6 +41,8 @@ const OPTIONS: {
 ];
 
 const EventResponse = ({ onChange, selectedValue, data }: Props) => {
+  // const { data: stateData } = useData();
+  // const { members, yser } = stateData;
   return (
     <div className="!mt-4 flex flex-col items-center gap-4">
       <Select onValueChange={onChange} value={selectedValue}>
@@ -97,10 +99,14 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                         );
                       })}
 
-                      {/* {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null} */}
+                      {/* {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
 
-                      {/* {votedOthers?.map((item) => {
-                        return <DialogDescription key={item.uid}>{item.uid}</DialogDescription>;
+                      {votedOthers?.map((item) => {
+                        return (
+                          <DialogDescription key={item.id}>
+                            {item.names} ({item.role.toLowerCase()})
+                          </DialogDescription>
+                        );
                       })} */}
                     </TabsContent>
                   );
