@@ -135,7 +135,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
       })}>
       <CardHeader>
         <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
-          {canVote && (
+          {canVote && !answer && (
             <Badge variant="destructive" className="animate-pulse">
               НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
             </Badge>
