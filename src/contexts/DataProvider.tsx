@@ -4,6 +4,14 @@ import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 
+type Users = {
+  customName: string | null;
+  email: string;
+  memberId: string | null;
+  role: string | null;
+  id: string;
+}[];
+
 type Props = {
   isLoading: boolean;
   data: {
@@ -13,7 +21,7 @@ type Props = {
     training: Training[];
     ivl: Matches[];
     volleymania: Matches[];
-    users: any;
+    users: Users;
   };
 };
 
@@ -26,6 +34,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: training, loading: trainingLoading } = useLiveData<Training[]>(QUERY_KEYS.TRAINING);
   const { data: ivl, loading: ivlLoading } = useLiveData<Matches[]>(QUERY_KEYS.IVL);
   const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
+  const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
 
   const sortedTeams = useMemo(() => {
     if (!teams) return [];
@@ -61,11 +70,22 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     );
   }, [volleymania]);
 
+  const sortedUsers = useMemo(() => {
+    if (!users) return [];
+    return [...users].sort((a, b) => a.email?.localeCompare(b?.email));
+  }, [users]);
+
   return (
     <DataContext.Provider
       value={{
         isLoading:
-          ivlLoading || volleymaniaLoading || teamsLoading || hallsLoading || membersLoading || trainingLoading,
+          ivlLoading ||
+          volleymaniaLoading ||
+          teamsLoading ||
+          hallsLoading ||
+          membersLoading ||
+          trainingLoading ||
+          usersLoading,
         data: {
           halls: sortedHalls,
           teams: sortedTeams,
@@ -73,7 +93,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           training: sortedTraining,
           ivl: sortedIvl,
           volleymania: sortedVolleyMania,
-          users: [],
+          users: sortedUsers,
         },
       }}>
       {children}

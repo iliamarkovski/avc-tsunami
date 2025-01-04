@@ -21,9 +21,9 @@ import { EventOptions } from '@/types';
 import { Info } from 'lucide-react';
 
 type Props = {
-  onChange: (value: string) => Promise<void>;
+  onChange: (value: string) => void;
   selectedValue: EventOptions | '';
-  data: Record<EventOptions, { name: string; role: string }[]>;
+  data: Record<EventOptions, { names: string; role: string; id: string }[]>;
 };
 
 const OPTIONS: {
@@ -84,24 +84,24 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                   })}
                 </TabsList>
                 {OPTIONS.map((tab) => {
-                  const votedMembers = data[tab.value]?.filter((item) => item.role !== '?');
-                  const votedOthers = data[tab.value]?.filter((item) => item.role === '?');
+                  // const votedMembers = data[tab.value]?.filter((item) => item.role !== OTHER_VALUE);
+                  // const votedOthers = data[tab.value]?.filter((item) => item.role === OTHER_VALUE);
 
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
-                      {votedMembers?.map((item, index) => {
+                      {data[tab.value]?.map((item) => {
                         return (
-                          <DialogDescription key={`${item.name}-${index}`}>
-                            {item.name} ({item.role.toLowerCase()})
+                          <DialogDescription key={item.id}>
+                            {item.names} ({item.role.toLowerCase()})
                           </DialogDescription>
                         );
                       })}
 
-                      {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
+                      {/* {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null} */}
 
-                      {votedOthers?.map((item, index) => {
-                        return <DialogDescription key={`${item.name}-${index}`}>{item.name}</DialogDescription>;
-                      })}
+                      {/* {votedOthers?.map((item) => {
+                        return <DialogDescription key={item.uid}>{item.uid}</DialogDescription>;
+                      })} */}
                     </TabsContent>
                   );
                 })}

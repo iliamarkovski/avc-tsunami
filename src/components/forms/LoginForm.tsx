@@ -13,7 +13,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuth } from '@/contexts';
-import { UserForm } from '@/components';
+import { UserRegistrationForm } from '@/components';
 import { useState } from 'react';
 import { useToast } from '@/hooks';
 import { useMutation } from '@tanstack/react-query';
@@ -121,7 +121,7 @@ const LoginForm = () => {
   };
 
   if (showUserForm) {
-    return <UserForm email={form.watch('email')} />;
+    return <UserRegistrationForm email={form.watch('email')} />;
   }
 
   return (

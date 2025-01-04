@@ -1,5 +1,5 @@
 export * from './utils';
-export * from './getUsersByResponse';
+export * from '../hooks/useUsersByResponse';
 export * from './getRoleLabel';
 export * from './getFirstChars';
 export * from './getNameById';

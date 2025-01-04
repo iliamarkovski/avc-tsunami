@@ -16,6 +16,8 @@ import {
   MatchesPage,
   AddMatchPage,
   EditMatchPage,
+  UsersPage,
+  EditUserPage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
@@ -33,7 +35,7 @@ const AppRouter = () => {
       children: [
         {
           path: '/',
-          element: <HomePage key={user?.uid} />,
+          element: <HomePage key={user?.id} />,
         },
         {
           path: '/team',
@@ -221,7 +223,7 @@ const AppRouter = () => {
                   element: (
                     <EditNamePage
                       title="Редактиране на зала"
-                      description="Редайктирайте името на залата"
+                      description="Редактирайте името на залата"
                       parentUrl="/dashboard/halls"
                       queryKey={QUERY_KEYS.HALLS}
                     />
@@ -255,9 +257,30 @@ const AppRouter = () => {
                   element: (
                     <EditMemberPage
                       title="Редактиране на състезател"
-                      description="Редайктирайте информацията на състезателя"
+                      description="Редактирайте информацията на състезателя"
                       parentUrl="/dashboard/members"
                       queryKey={QUERY_KEYS.MEMBERS}
+                    />
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'users',
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: <UsersPage queryKey={QUERY_KEYS.USERS} title="Всички потребители" />,
+                },
+                {
+                  path: ':id',
+                  element: (
+                    <EditUserPage
+                      title="Редактиране на потребител"
+                      description="Редактирайте информацията на потребителя"
+                      parentUrl="/dashboard/users"
+                      queryKey={QUERY_KEYS.USERS}
                     />
                   ),
                 },

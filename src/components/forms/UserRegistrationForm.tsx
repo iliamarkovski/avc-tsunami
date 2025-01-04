@@ -31,8 +31,9 @@ type Props = {
 
 const formSchema = z
   .object({
-    selectedName: z.string().min(1, { message: 'Задължително поле' }),
+    selectedName: z.string({ required_error: 'Задължително поле' }),
     customName: z.string().optional(),
+    selectedRole: z.string().optional(),
     password: z
       .string()
       .min(1, { message: 'Задължително поле' })
@@ -49,20 +50,33 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.selectedName === OTHER_VALUE) {
-        // Explicitly handle undefined and check for non-empty string
+        // Ensure customName is non-empty
         return typeof data.customName === 'string' && data.customName.trim().length > 0;
       }
       return true;
     },
     {
-      message: 'Задължително поле"',
+      message: 'Задължително поле',
       path: ['customName'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.selectedName === OTHER_VALUE) {
+        // Ensure selectedRole is non-empty
+        return typeof data.selectedRole === 'string' && data.selectedRole.trim().length > 0;
+      }
+      return true;
+    },
+    {
+      message: 'Задължително поле',
+      path: ['selectedRole'],
     }
   );
 
 export type FormSchema = z.infer<typeof formSchema>;
 
-const UserForm = ({ email }: Props) => {
+const UserRegistrationForm = ({ email }: Props) => {
   const { data } = useData();
   const { members } = data;
 
@@ -72,11 +86,9 @@ const UserForm = ({ email }: Props) => {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
-      const { password, selectedName, customName } = data;
-      const role = members?.find((member) => member.names === selectedName)?.role || OTHER_VALUE;
-      const name = selectedName === OTHER_VALUE ? (customName as string) : selectedName;
+      const { password, selectedName, customName, selectedRole } = data;
 
-      return await createUser(email, password, name, role as Roles);
+      return await createUser(email, password, selectedName, selectedRole as Roles, customName);
     },
     onSuccess: (_, variables) => {
       loginMutation.mutate(variables);
@@ -140,7 +152,7 @@ const UserForm = ({ email }: Props) => {
                   </SelectTrigger>
                   <SelectContent>
                     {members.map((member) => (
-                      <SelectItem key={member.id} value={member.names}>
+                      <SelectItem key={member.id} value={member.id!}>
                         {member.names}
                       </SelectItem>
                     ))}
@@ -154,19 +166,46 @@ const UserForm = ({ email }: Props) => {
         />
 
         {form.watch('selectedName') === OTHER_VALUE ? (
-          <FormField
-            control={form.control}
-            name="customName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Име и фамилия</FormLabel>
-                <FormControl>
-                  <Input {...field} type="text" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <>
+            <FormField
+              control={form.control}
+              name="customName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Име и фамилия</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="text" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="selectedRole"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Позиция</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Изберете позиция" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="blocker">Блокировач</SelectItem>
+                      <SelectItem value="opposite">Диагонал</SelectItem>
+                      <SelectItem value="libero">Либеро</SelectItem>
+                      <SelectItem value="receiver">Посрещач</SelectItem>
+                      <SelectItem value="setter">Разпределител</SelectItem>
+                      <SelectItem value="coach">Треньор</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </>
         ) : null}
 
         <FormField
@@ -204,4 +243,4 @@ const UserForm = ({ email }: Props) => {
   );
 };
 
-export { UserForm };
+export { UserRegistrationForm };

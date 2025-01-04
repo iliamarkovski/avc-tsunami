@@ -9,23 +9,31 @@ import {
   signInWithEmailAndPassword,
   UserCredential,
 } from 'firebase/auth';
-import { collection, doc, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
+import { collection, doc, FieldValue, getDocs, query, serverTimestamp, setDoc, where } from 'firebase/firestore';
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 
-type LoggedUser = {
+type CreatedAt = {
+  createdAt: {
+    isEqual: (other: FieldValue) => boolean;
+  };
+};
+
+export type UserInfo = {
+  id?: string;
   email: string;
-  name: string;
-  uid: string;
-  role: Roles;
-  isAdmin?: boolean;
-} | null;
+  role: Roles | null;
+  customName: string | null;
+  memberId: string;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
+};
 
 type Props = {
   login: (email: string, password: string) => Promise<UserCredential>;
-  createUser: (email: string, password: string, name: string, role: Roles) => Promise<User>;
+  createUser: (email: string, password: string, memberId: string, role?: Roles, customName?: string) => Promise<User>;
   logout: () => Promise<void>;
   isUserExist: (email: string) => Promise<boolean>;
-  user: LoggedUser;
+  user: UserInfo | null;
   isLoading: boolean;
 };
 
@@ -39,35 +47,35 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const createUser = async (email: string, password: string, name: string, role: Roles) => {
+  const createUser = async (email: string, password: string, memberId: string, role?: Roles, customName?: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const userDocRef = doc(db, QUERY_KEYS.USERS, userCredential.user.uid);
     await setDoc(userDocRef, {
-      name: name,
-      email,
       createdAt: serverTimestamp(),
-      uid: userCredential.user.uid,
-      role,
-    });
+      email,
+      role: role || null,
+      customName: customName || null,
+      memberId,
+      isAdmin: false,
+      isSuperAdmin: false,
+    } satisfies UserInfo & CreatedAt);
 
     return userCredential.user;
   };
 
-  const getUser = async (user: User) => {
+  const getUser = async (user: User): Promise<UserInfo | null> => {
     const usersRef = collection(db, QUERY_KEYS.USERS);
     const q = query(usersRef, where('email', '==', user.email));
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
       const userDoc = querySnapshot.docs[0];
-      const userData = userDoc.data();
+      const userData = userDoc.data() as UserInfo;
+
       return {
-        email: userData.email,
-        name: userData.name,
-        uid: userData.uid,
-        role: userData.role,
-        isAdmin: userData?.isAdmin,
-      } satisfies Props['user'];
+        ...userData,
+        id: user.uid,
+      };
     }
 
     return null;

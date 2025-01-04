@@ -51,7 +51,8 @@ export * from './ui/FormCard';
 
 //forms
 export * from './forms/LoginForm';
-export * from './forms/UserForm';
+export * from './forms/UserRegistrationForm';
+export * from './forms/UserEditForm';
 export * from './forms/NameForm';
 export * from './forms/MemberForm';
 export * from './forms/TrainingForm';
@@ -76,3 +77,5 @@ export * from './pages/Dashboard/Training/EditTrainingPage';
 export * from './pages/Dashboard/Match/MatchesPage';
 export * from './pages/Dashboard/Match/AddMatchPage';
 export * from './pages/Dashboard/Match/EditMatchPage';
+export * from './pages/Dashboard/Users/UsersPage';
+export * from './pages/Dashboard/Users/EditUserPage';
