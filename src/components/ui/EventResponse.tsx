@@ -93,7 +93,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
 
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
-                      {data[tab.value]?.map((item) => {
+                      {votedMembers?.map((item) => {
                         return (
                           <DialogDescription key={item.id}>
                             {item.names} ({item.role.toLowerCase()})
