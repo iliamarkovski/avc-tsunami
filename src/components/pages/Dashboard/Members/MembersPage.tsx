@@ -13,6 +13,7 @@ import { useData } from '@/contexts';
 import { cn, getRoleLabel } from '@/lib';
 import { Roles } from '@/types';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -24,6 +25,11 @@ type Props = {
 const MembersPage = ({ title, addBttonLabel }: Props) => {
   const { data } = useData();
   const { members } = data;
+
+  const sortedMembers = useMemo(() => {
+    if (!members) return [];
+    return [...members].sort((a, b) => Number(a.number) - Number(b.number));
+  }, [members]);
 
   return (
     <section className="flex flex-col gap-6">
@@ -55,17 +61,17 @@ const MembersPage = ({ title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {members.map((item) => {
+            {sortedMembers.map((member) => {
               return (
-                <TableRow key={item.id}>
-                  <TableCell className="w-min text-center">{item.number}</TableCell>
+                <TableRow key={member.id}>
+                  <TableCell className="w-min text-center">{member.number}</TableCell>
                   <TableCell className="w-full">
-                    {item.names} {item.captain ? '(к)' : null}
+                    {member.names} {member.captain ? '(к)' : null}
                   </TableCell>
-                  <TableCell className="w-max">{getRoleLabel(item.role as Roles)}</TableCell>
-                  <TableCell className="w-min text-center">{item.active ? 'Да' : 'Не'}</TableCell>
+                  <TableCell className="w-max">{getRoleLabel(member.role as Roles)}</TableCell>
+                  <TableCell className="w-min text-center">{member.active ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
-                    <EditLink to={item.id!} />
+                    <EditLink to={member.id!} />
                   </TableCell>
                 </TableRow>
               );

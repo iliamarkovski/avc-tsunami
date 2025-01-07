@@ -92,7 +92,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       teams: [...(teams ?? defaultData.teams)].sort((a, b) => a.name.localeCompare(b.name)),
       halls: [...(halls ?? defaultData.halls)].sort((a, b) => a.name.localeCompare(b.name)),
-      members: [...(members ?? defaultData.members)].sort((a, b) => Number(a.number) - Number(b.number)),
+      members: [...(members ?? defaultData.members)].sort((a, b) => a.names.localeCompare(b.names)),
       training: [...(training ?? defaultData.training)].sort(
         (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
       ),
