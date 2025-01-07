@@ -13,11 +13,11 @@ type Users = {
   id: string;
 }[];
 
-type EnrichedUser = {
+export type EnrichedUser = {
   id: string;
   email: string;
   names: string;
-  role: string | null;
+  role: Roles;
   isActive: boolean;
   isMember: boolean;
 };

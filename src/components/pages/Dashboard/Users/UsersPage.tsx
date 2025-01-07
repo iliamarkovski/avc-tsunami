@@ -1,4 +1,3 @@
-import { deleteDocument } from '@/api';
 import {
   buttonVariants,
   Table,
@@ -8,15 +7,14 @@ import {
   TableHeader,
   TableRow,
   Title,
-  DeleteButton,
   EditLink,
+  TableCaption,
 } from '@/components';
-import { useData } from '@/contexts';
-import { useToast } from '@/hooks';
+import { EnrichedUser, useData } from '@/contexts';
 import { cn } from '@/lib';
 import { QueryKeys } from '@/types';
-import { useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -25,28 +23,31 @@ type Props = {
   addBttonLabel?: string;
 };
 
-const UsersPage = ({ queryKey, title, addBttonLabel }: Props) => {
-  const { toast } = useToast();
+type UserTypes = 'coach' | 'active' | 'notActive' | 'other';
+
+const getUserTypeCounts = (users: EnrichedUser[]) => {
+  return users.reduce(
+    (counts, user) => {
+      const userType: UserTypes =
+        user.role === 'coach' ? 'coach' : user.isMember ? (user.isActive ? 'active' : 'notActive') : 'other';
+      counts[userType] = (counts[userType] || 0) + 1;
+      return counts;
+    },
+    {} as Record<UserTypes, number>
+  );
+};
+
+const UsersPage = ({ title, addBttonLabel }: Props) => {
   const { data } = useData();
-  const { users } = data;
+  const { users, members } = data;
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (id: string) => {
-      await deleteDocument(queryKey, id);
-    },
-    onError: (error) => {
-      console.error('error: ', error);
-      toast({
-        variant: 'destructive',
-        title: 'Възникна грешка',
-        description: 'Моля, опитайте отново по-късно.',
-      });
-    },
-  });
+  const usersTypes = useMemo(() => {
+    return getUserTypeCounts(users);
+  }, [users]);
 
-  const handleDelete = (id: string) => {
-    mutate(id);
-  };
+  const activeMembers = useMemo(() => {
+    return members.filter((member) => member.active);
+  }, [users]);
 
   return (
     <section className="flex flex-col gap-6">
@@ -70,25 +71,30 @@ const UsersPage = ({ queryKey, title, addBttonLabel }: Props) => {
 
       {users?.length > 0 ? (
         <Table>
+          <TableCaption>
+            Общо ({users.length}): Картотекирани: {usersTypes.active || 0} / {activeMembers.length}, Некартотекирани:{' '}
+            {usersTypes.notActive || 0}, Треньор: {usersTypes.coach || 0}, Други: {usersTypes.other || 0}
+          </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
               <TableHead>Имейл</TableHead>
-              <TableHead className="!px-0"></TableHead>
+              <TableHead>Имена</TableHead>
+              <TableHead>Тип</TableHead>
+              <TableHead>ID</TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user) => {
+              const userType = user.role === 'coach' ? 'Т' : user.isMember ? (user.isActive ? 'К' : 'Н') : 'Д';
               return (
                 <TableRow key={user.id}>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell className="w-full">{user.names}</TableCell>
+                  <TableCell className="text-center">{userType}</TableCell>
                   <TableCell>{user.id}</TableCell>
-                  <TableCell className="w-full">{user.email}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={user.id!} />
-                  </TableCell>
-                  <TableCell className="!px-0">
-                    <DeleteButton onClick={() => handleDelete(user.id!)} isLoading={isPending} />
                   </TableCell>
                 </TableRow>
               );

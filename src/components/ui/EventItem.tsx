@@ -82,10 +82,12 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const formattedDate = format(dateTime, 'dd.MM.yyyy');
   const time = format(dateTime, 'HH:mm');
 
-  const isUserActive = !!user ? users.find((u) => u.id === user.id)?.isActive : false;
+  const userInfo = !!user ? users.find((u) => u.id === user.id) : undefined;
+  const isUserActive = userInfo?.isActive;
+  const userRole = userInfo?.role;
 
   const canVote = useMemo(
-    () => isCurrent && !!user && !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA),
+    () => isCurrent && !!user && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
     [isCurrent, user, queryKey]
   );
 
@@ -134,14 +136,16 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
         'bg-red-400/10': isCurrent && answer === 'no',
       })}>
       <CardHeader>
-        <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
-          {canVote && !answer && (
-            <Badge variant="destructive" className="animate-pulse">
-              НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
-            </Badge>
-          )}
-          {badge && <Badge variant="outline">{badge}</Badge>}
-        </div>
+        {(canVote && !answer) || badge ? (
+          <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
+            {canVote && !answer && (
+              <Badge variant="destructive" className="animate-pulse">
+                НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
+              </Badge>
+            )}
+            {badge && <Badge variant="outline">{badge}</Badge>}
+          </div>
+        ) : null}
         <CardDescription>
           {formattedDate} | {time}
         </CardDescription>
