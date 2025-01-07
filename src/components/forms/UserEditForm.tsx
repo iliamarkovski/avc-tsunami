@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from '@/components';
 import { db } from '@/config';
-import { OTHER_VALUE } from '@/constants';
+import { OTHER_VALUE, SUPER_ADMIN_ID } from '@/constants';
 import { useData } from '@/contexts';
 import { toast } from '@/hooks';
 import { cn } from '@/lib';
@@ -212,7 +212,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Админ</FormLabel>
@@ -227,7 +227,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Суперадмин</FormLabel>
