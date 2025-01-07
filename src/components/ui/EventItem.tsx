@@ -1,4 +1,14 @@
-import { Badge, buttonVariants, Card, CardDescription, CardHeader, CardTitle, EventResponse } from '@/components';
+import {
+  Badge,
+  buttonVariants,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  EventResponse,
+  Matches,
+  Training,
+} from '@/components';
 import { db } from '@/config';
 import { useAuth, useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
@@ -70,7 +80,9 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const { data } = useData();
   const { users } = data;
 
-  const eventResponses = getDataById(data[queryKey], eventId) as EventResponseType | undefined;
+  const eventResponses = getDataById(data[queryKey] as Training[] | Matches[], eventId) as
+    | EventResponseType
+    | undefined;
   const responsesData = useUsersByResponse(eventResponses?.responses);
 
   const calendarTitle = useMemo(

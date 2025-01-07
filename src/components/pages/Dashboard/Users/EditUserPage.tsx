@@ -1,5 +1,5 @@
 import { UserEditForm, FormCard } from '@/components';
-import { useData } from '@/contexts';
+import { EnrichedUser, useData } from '@/contexts';
 import { getDataById } from '@/lib';
 import { QueryKeys } from '@/types';
 import { useParams } from 'react-router-dom';
@@ -15,7 +15,7 @@ const EditUserPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
 
   const { data } = useData();
-  const user = getDataById(data[queryKey], id);
+  const user = getDataById<EnrichedUser>(data[queryKey] as EnrichedUser[], id);
 
   if (!user) {
     return <p>Not Found</p>;
@@ -23,7 +23,16 @@ const EditUserPage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <UserEditForm {...user} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <UserEditForm
+        isAdmin={user.isAdmin}
+        isSuperAdmin={user.isSuperAdmin}
+        member={user.memberId}
+        names={user.names}
+        role={user.role}
+        id={id}
+        parentUrl={parentUrl}
+        queryKey={queryKey}
+      />
     </FormCard>
   );
 };

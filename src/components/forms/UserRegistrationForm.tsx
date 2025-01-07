@@ -31,7 +31,7 @@ type Props = {
 
 const formSchema = z
   .object({
-    selectedName: z.string({ required_error: 'Задължително поле' }),
+    member: z.string({ required_error: 'Задължително поле' }),
     customName: z.string().optional(),
     selectedRole: z.string().optional(),
     password: z
@@ -49,7 +49,7 @@ const formSchema = z
   })
   .refine(
     (data) => {
-      if (data.selectedName === OTHER_VALUE) {
+      if (data.member === OTHER_VALUE) {
         // Ensure customName is non-empty
         return typeof data.customName === 'string' && data.customName.trim().length > 0;
       }
@@ -62,7 +62,7 @@ const formSchema = z
   )
   .refine(
     (data) => {
-      if (data.selectedName === OTHER_VALUE) {
+      if (data.member === OTHER_VALUE) {
         // Ensure selectedRole is non-empty
         return typeof data.selectedRole === 'string' && data.selectedRole.trim().length > 0;
       }
@@ -86,9 +86,9 @@ const UserRegistrationForm = ({ email }: Props) => {
 
   const createUserMutation = useMutation({
     mutationFn: async (data: FormSchema) => {
-      const { password, selectedName, customName, selectedRole } = data;
+      const { password, member, customName, selectedRole } = data;
 
-      return await createUser(email, password, selectedName, selectedRole as Roles, customName);
+      return await createUser(email, password, member, selectedRole as Roles, customName);
     },
     onSuccess: (_, variables) => {
       loginMutation.mutate(variables);
@@ -125,7 +125,7 @@ const UserRegistrationForm = ({ email }: Props) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      selectedName: undefined,
+      member: undefined,
       password: '',
       confirmPassword: '',
       customName: '',
@@ -141,13 +141,13 @@ const UserRegistrationForm = ({ email }: Props) => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4" autoComplete="off">
         <FormField
           control={form.control}
-          name="selectedName"
+          name="member"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Име</FormLabel>
               <FormControl>
                 <Select onValueChange={(value) => field.onChange(value)} value={field.value} name={field.name}>
-                  <SelectTrigger id="selectedName">
+                  <SelectTrigger id="member">
                     <SelectValue placeholder="Избери име" />
                   </SelectTrigger>
                   <SelectContent>
@@ -165,7 +165,7 @@ const UserRegistrationForm = ({ email }: Props) => {
           )}
         />
 
-        {form.watch('selectedName') === OTHER_VALUE ? (
+        {form.watch('member') === OTHER_VALUE ? (
           <>
             <FormField
               control={form.control}

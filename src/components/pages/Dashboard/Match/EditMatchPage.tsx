@@ -1,4 +1,4 @@
-import { MatchForm, FormCard } from '@/components';
+import { MatchForm, FormCard, Matches } from '@/components';
 import { useData } from '@/contexts';
 import { getDataById } from '@/lib';
 import { QueryKeys } from '@/types';
@@ -15,7 +15,7 @@ const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
 
   const { data } = useData();
-  const event = getDataById(data[queryKey], id);
+  const event = getDataById<Matches>(data[queryKey] as Matches[], id);
 
   if (!event) {
     return <p>Not Found</p>;
@@ -23,7 +23,18 @@ const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <MatchForm {...event} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <MatchForm
+        dateTime={event.dateTime}
+        gamesGuest={event.gamesGuest}
+        gamesHost={event.gamesHost}
+        hall={event.hall}
+        host={event.host}
+        opponent={event.opponent}
+        recordingLink={event.recordingLink}
+        id={id}
+        parentUrl={parentUrl}
+        queryKey={queryKey}
+      />
     </FormCard>
   );
 };

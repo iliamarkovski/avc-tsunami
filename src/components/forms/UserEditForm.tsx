@@ -1,6 +1,7 @@
 import {
   Button,
   buttonVariants,
+  Checkbox,
   Form,
   FormControl,
   FormField,
@@ -19,44 +20,55 @@ import { OTHER_VALUE } from '@/constants';
 import { useData } from '@/contexts';
 import { toast } from '@/hooks';
 import { cn } from '@/lib';
+import { Roles } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
+type MappedData = {
+  customName: string | null;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
+  role: Roles | null;
+  memberId: string;
+};
+
 const formNames = z
   .object({
-    selectedName: z.string({ required_error: 'Задължително поле' }),
-    customName: z.string().optional(),
-    selectedRole: z.string().optional(),
+    member: z.string({ required_error: 'Задължително поле' }),
+    names: z.string().optional(),
+    role: z.string().optional(),
+    isAdmin: z.boolean().default(false),
+    isSuperAdmin: z.boolean().default(false),
   })
   .refine(
     (data) => {
-      if (data.selectedName === OTHER_VALUE) {
-        // Ensure customName is non-empty
-        return typeof data.customName === 'string' && data.customName.trim().length > 0;
+      if (data.member === OTHER_VALUE) {
+        // Ensure names is non-empty
+        return typeof data.names === 'string' && data.names.trim().length > 0;
       }
       return true;
     },
     {
       message: 'Задължително поле',
-      path: ['customName'],
+      path: ['names'],
     }
   )
   .refine(
     (data) => {
-      if (data.selectedName === OTHER_VALUE) {
-        // Ensure selectedRole is non-empty
-        return typeof data.selectedRole === 'string' && data.selectedRole.trim().length > 0;
+      if (data.member === OTHER_VALUE) {
+        // Ensure role is non-empty
+        return typeof data.role === 'string' && data.role.trim().length > 0;
       }
       return true;
     },
     {
       message: 'Задължително поле',
-      path: ['selectedRole'],
+      path: ['role'],
     }
   );
 
@@ -65,7 +77,7 @@ type FormValues = Omit<Users, 'id'>;
 
 type Props = Partial<Users> & { id?: string; parentUrl: string; queryKey: string };
 
-const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
+const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, isSuperAdmin }: Props) => {
   const { data } = useData();
   const { members } = data;
 
@@ -74,20 +86,28 @@ const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formNames),
     defaultValues: {
-      selectedName: props.selectedName ?? '',
-      customName: props.customName ?? '',
-      selectedRole: props.selectedRole ?? '',
+      member: member ?? '',
+      names: names ?? '',
+      role: role ?? '',
+      isAdmin: isAdmin ?? false,
+      isSuperAdmin: isSuperAdmin ?? false,
     },
   });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
-        const teamRef = doc(db, queryKey, id);
-        await updateDoc(teamRef, data);
-      } else {
-        const collectionRef = collection(db, queryKey);
-        await addDoc(collectionRef, data);
+        const userRef = doc(db, queryKey, id);
+
+        const mappedData: MappedData = {
+          customName: data.names || null,
+          isAdmin: data.isAdmin,
+          isSuperAdmin: data.isSuperAdmin,
+          role: (data.role as Roles) || null,
+          memberId: data.member,
+        };
+
+        await updateDoc(userRef, mappedData);
       }
     },
     onSuccess: () => {
@@ -112,13 +132,20 @@ const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="selectedName"
+          name="member"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Име</FormLabel>
               <FormControl>
-                <Select onValueChange={(value) => field.onChange(value)} value={field.value} name={field.name}>
-                  <SelectTrigger id="selectedName">
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue('names', '');
+                    form.setValue('role', '');
+                  }}
+                  value={field.value}
+                  name={field.name}>
+                  <SelectTrigger id="member">
                     <SelectValue placeholder="Избери име" />
                   </SelectTrigger>
                   <SelectContent>
@@ -136,11 +163,11 @@ const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           )}
         />
 
-        {form.watch('selectedName') === OTHER_VALUE ? (
+        {form.watch('member') === OTHER_VALUE ? (
           <>
             <FormField
               control={form.control}
-              name="customName"
+              name="names"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Име и фамилия</FormLabel>
@@ -153,7 +180,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             />
             <FormField
               control={form.control}
-              name="selectedRole"
+              name="role"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Позиция</FormLabel>
@@ -178,6 +205,36 @@ const UserEditForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             />
           </>
         ) : null}
+
+        <FormField
+          control={form.control}
+          name="isAdmin"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Админ</FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="isSuperAdmin"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+              <FormControl>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Суперадмин</FormLabel>
+              </div>
+            </FormItem>
+          )}
+        />
 
         <div className="!mt-8 flex gap-4">
           <Link to={parentUrl} className={cn(buttonVariants({ variant: 'outline' }))}>

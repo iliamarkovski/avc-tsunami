@@ -1,4 +1,4 @@
-import { TrainingForm, FormCard } from '@/components';
+import { TrainingForm, FormCard, Training } from '@/components';
 import { useData } from '@/contexts';
 import { getDataById } from '@/lib';
 import { QueryKeys } from '@/types';
@@ -15,7 +15,7 @@ const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) =>
   const { id } = useParams();
 
   const { data } = useData();
-  const event = getDataById(data[queryKey], id);
+  const event = getDataById<Training>(data[queryKey] as Training[], id);
 
   if (!event) {
     return <p>Not Found</p>;
@@ -23,7 +23,7 @@ const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) =>
 
   return (
     <FormCard title={title} description={description}>
-      <TrainingForm {...event} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <TrainingForm dateTime={event.dateTime} hall={event.hall} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

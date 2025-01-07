@@ -1,4 +1,4 @@
-import { NameForm, FormCard } from '@/components';
+import { NameForm, FormCard, Names } from '@/components';
 import { useData } from '@/contexts';
 import { getDataById } from '@/lib';
 import { QueryKeys } from '@/types';
@@ -15,7 +15,7 @@ const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
 
   const { data } = useData();
-  const name = getDataById(data[queryKey], id);
+  const name = getDataById<Names>(data[queryKey] as Names[], id);
 
   if (!name) {
     return <p>Not Found</p>;
@@ -23,7 +23,7 @@ const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <NameForm {...name} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <NameForm name={name.name} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

@@ -46,7 +46,6 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
     <div className="!mt-4 flex flex-col items-center gap-4">
       <Select onValueChange={onChange} value={selectedValue}>
         <SelectTrigger
-          id="selectedName"
           className={cn('w-max gap-2', {
             'text-green-600': selectedValue === 'yes',
             'text-red-600': selectedValue === 'no',

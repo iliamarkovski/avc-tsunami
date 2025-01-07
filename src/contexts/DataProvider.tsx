@@ -1,5 +1,5 @@
 import { Matches, Members, Names, Training } from '@/components';
-import { QUERY_KEYS, OTHER_VALUE } from '@/constants';
+import { QUERY_KEYS } from '@/constants';
 import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
 import { Roles } from '@/types';
@@ -11,15 +11,20 @@ type Users = {
   memberId: string | null;
   role: string | null;
   id: string;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
 }[];
 
 export type EnrichedUser = {
   id: string;
+  memberId: string;
   email: string;
   names: string;
   role: Roles;
   isActive: boolean;
   isMember: boolean;
+  isAdmin: boolean;
+  isSuperAdmin: boolean;
 };
 
 type SortedData = {
@@ -59,32 +64,24 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
 
   const enrichedUsers = useMemo(() => {
-    if (!users || !members) return [];
+    if (!users?.length || !members?.length) return [];
+
+    const memberMap = new Map(members.map((m) => [m.id, m]));
 
     return users.map((u) => {
-      const memberId = u.memberId;
-
-      if (memberId === OTHER_VALUE) {
-        return {
-          id: u.id,
-          email: u.email,
-          names: u.customName || '',
-          role: u.role as Roles,
-          isActive: false,
-          isMember: false,
-        };
-      }
-
-      const member = members.find((m) => m.id === memberId);
+      const member = memberMap.get(u.memberId!);
 
       return {
         id: u.id,
+        memberId: u.memberId,
         email: u.email,
-        names: member?.names || '',
+        names: member ? member.names : u.customName || '',
         role: (member?.role || u.role) as Roles,
         isActive: member?.active || false,
-        isMember: true,
-      };
+        isMember: !!member,
+        isAdmin: u.isAdmin,
+        isSuperAdmin: u.isSuperAdmin,
+      } as EnrichedUser;
     });
   }, [users, members]);
 
