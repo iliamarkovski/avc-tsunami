@@ -128,7 +128,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                         );
                       })}
 
-                      {votedCoaches.length > 0 && votedMembers.length > 0 ? <Separator className="!mt-1" /> : null}
+                      {votedCoaches.length > 0 && votedMembers.length > 0 ? <Separator className="!my-2" /> : null}
 
                       {votedMembers?.map((item) => {
                         return (
@@ -139,7 +139,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                       })}
 
                       {(votedMembers.length > 0 || votedCoaches.length > 0) && votedOthers.length > 0 ? (
-                        <Separator className="!mt-2" />
+                        <Separator className="!my-2" />
                       ) : null}
 
                       {votedOthers?.map((item) => {
