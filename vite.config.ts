@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touc-icon.png', 'masked-icon.svg'],
       manifest: {
         name: 'AVC Tsunami',
@@ -45,6 +45,12 @@ export default defineConfig({
         background_color: '#2563eb',
         theme_color: '#2563eb',
         orientation: 'any',
+      },
+      workbox: {
+        // Skip caching for all runtime requests
+        runtimeCaching: [],
+        // Do not precache any assets
+        globPatterns: [],
       },
     }),
   ],
