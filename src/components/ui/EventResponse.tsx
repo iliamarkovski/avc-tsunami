@@ -16,10 +16,11 @@ import {
   DialogDescription,
   Separator,
 } from '@/components';
-import { cn } from '@/lib';
+import { cn, getRoleLabel } from '@/lib';
 import { EventOptions } from '@/types';
 import { Info } from 'lucide-react';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
+import { useMemo } from 'react';
 
 type Props = {
   onChange: (value: string) => void;
@@ -87,11 +88,30 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                   })}
                 </TabsList>
                 {OPTIONS.map((tab) => {
-                  const votedMembers = data[tab.value]?.filter((item) => item.isMember);
-                  const votedOthers = data[tab.value]?.filter((item) => !item.isMember);
+                  const votedCoaches = useMemo(() => {
+                    return data[tab.value]?.filter((item) => item.role === getRoleLabel('coach'));
+                  }, [tab]);
+
+                  const votedMembers = useMemo(() => {
+                    return data[tab.value]?.filter((item) => item.isMember && item.role !== getRoleLabel('coach'));
+                  }, [tab]);
+
+                  const votedOthers = useMemo(() => {
+                    return data[tab.value]?.filter((item) => !item.isMember);
+                  }, [tab]);
 
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
+                      {votedCoaches?.map((item) => {
+                        return (
+                          <DialogDescription key={item.id}>
+                            {item.names} ({item.role.toLowerCase()})
+                          </DialogDescription>
+                        );
+                      })}
+
+                      {votedCoaches.length > 0 && votedMembers.length > 0 ? <Separator className="!mt-2" /> : null}
+
                       {votedMembers?.map((item) => {
                         return (
                           <DialogDescription key={item.id}>
@@ -100,7 +120,9 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                         );
                       })}
 
-                      {votedMembers.length > 0 && votedOthers.length > 0 ? <Separator className="!mt-2" /> : null}
+                      {(votedMembers.length > 0 || votedCoaches.length > 0) && votedOthers.length > 0 ? (
+                        <Separator className="!mt-2" />
+                      ) : null}
 
                       {votedOthers?.map((item) => {
                         return (
