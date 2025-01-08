@@ -42,7 +42,19 @@ const OPTIONS: {
   },
 ];
 
+// const votedYesTotalLabel =
+
 const EventResponse = ({ onChange, selectedValue, data }: Props) => {
+  const votedCoachesWithYes = useMemo(() => {
+    return data?.yes?.filter((item) => item.role === getRoleLabel('coach'));
+  }, [data]);
+
+  const votedCoachesWithNo = useMemo(() => {
+    return data?.no?.filter((item) => item.role === getRoleLabel('coach'));
+  }, [data]);
+
+  const lenghtVotedYesLabel = `${data.yes.length - votedCoachesWithYes.length}${votedCoachesWithYes.length > 0 ? ' + Т' : ''}`;
+  const lenghtVotedNoLabel = `${data.no.length - votedCoachesWithNo.length}${votedCoachesWithNo.length > 0 ? ' + Т' : ''}`;
   return (
     <div className="!mt-4 flex flex-col items-center gap-4">
       <Select onValueChange={onChange} value={selectedValue}>
@@ -63,9 +75,9 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
       </Select>
 
       <div className="flex h-5 items-center space-x-4 text-sm">
-        <span className="flex items-center gap-1 text-green-600">ДА : {data?.yes.length}</span>
+        <span className="flex items-center gap-1 text-green-600">ДА : {lenghtVotedYesLabel}</span>
         <Separator orientation="vertical" />
-        <span className="flex items-center gap-1 text-red-600">НЕ : {data?.no.length}</span>
+        <span className="flex items-center gap-1 text-red-600">НЕ : {lenghtVotedNoLabel}</span>
         <Separator orientation="vertical" />
         <Dialog>
           <DialogTrigger>
@@ -80,9 +92,15 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
               <Tabs defaultValue={OPTIONS[0].value}>
                 <TabsList className="flex w-full">
                   {OPTIONS.map((tab) => {
+                    const votedCoaches = useMemo(() => {
+                      return data[tab.value]?.filter((item) => item.role === getRoleLabel('coach'));
+                    }, [tab]);
+
+                    const lengthLabel = `${data[tab.value].length - votedCoaches.length}${votedCoaches.length > 0 ? ' + Т' : ''}`;
+
                     return (
                       <TabsTrigger key={`trigger-${tab.value}`} value={tab.value} className="flex-1">
-                        {tab.label} ({data[tab.value].length})
+                        {tab.label} ({lengthLabel})
                       </TabsTrigger>
                     );
                   })}
@@ -110,7 +128,7 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                         );
                       })}
 
-                      {votedCoaches.length > 0 && votedMembers.length > 0 ? <Separator className="!mt-2" /> : null}
+                      {votedCoaches.length > 0 && votedMembers.length > 0 ? <Separator className="!mt-1" /> : null}
 
                       {votedMembers?.map((item) => {
                         return (
