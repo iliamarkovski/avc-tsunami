@@ -34,11 +34,11 @@ const AppRouter = () => {
 
   const router = createBrowserRouter([
     {
-      element: <Layout />,
+      element: <Layout key={user?.id} />,
       children: [
         {
           path: '/',
-          element: <HomePage key={user?.id} />,
+          element: <HomePage />,
         },
         {
           path: '/team',

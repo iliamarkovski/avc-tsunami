@@ -79,8 +79,8 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
           <TableHeader>
             <TableRow>
               <TableHead>Дата и час</TableHead>
-              <TableHead>Зала</TableHead>
               <TableHead className="w-full">Среща</TableHead>
+              <TableHead>Зала</TableHead>
               <TableHead>Видео</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
@@ -91,7 +91,6 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
-                  <TableCell>{halls ? getNameById(halls, item.hall) : '???'}</TableCell>
                   <TableCell className="w-full">
                     <MatchTitle
                       isHost={item.host}
@@ -100,6 +99,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
                       gamesGuest={item.gamesGuest}
                     />
                   </TableCell>
+                  <TableCell>{halls ? getNameById(halls, item.hall) : '???'}</TableCell>
                   <TableCell className="text-center">{item.recordingLink ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id!} />
