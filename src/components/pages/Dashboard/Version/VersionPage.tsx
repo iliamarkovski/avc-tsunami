@@ -10,6 +10,7 @@ import {
   EditLink,
   Version,
 } from '@/components';
+import { LATEST_VERSION } from '@/constants';
 import { useData } from '@/contexts';
 import { cn } from '@/lib';
 import { QueryKeys } from '@/types';
@@ -50,13 +51,15 @@ const VersionPage = ({ queryKey, title, addBttonLabel }: Props) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Версия</TableHead>
+              <TableHead>Текуща версия</TableHead>
+              <TableHead className="w-full">Последна версия</TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow key={version.id}>
-              <TableCell className="w-full">{version.version}</TableCell>
+              <TableCell>{version.version}</TableCell>
+              <TableCell>{LATEST_VERSION}</TableCell>
               <TableCell className="!px-0">
                 <EditLink to={version.id!} />
               </TableCell>

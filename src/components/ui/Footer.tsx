@@ -1,11 +1,9 @@
 import { buttonVariants } from '@/components';
+import { LATEST_VERSION } from '@/constants';
 import { cn } from '@/lib';
 import { Instagram, Youtube } from 'lucide-react';
-import packageJson from '../../../package.json';
 
 const Footer = () => {
-  const localVersion = packageJson.version;
-
   return (
     <footer className="border-t p-safe">
       <div className="wrapper">
@@ -31,7 +29,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {localVersion ? <p className="text-xs">Версия {localVersion}</p> : null}
+          {LATEST_VERSION ? <p className="text-xs">Версия {LATEST_VERSION}</p> : null}
         </div>
       </div>
     </footer>

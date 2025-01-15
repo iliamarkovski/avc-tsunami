@@ -11,6 +11,7 @@ import {
   FormMessage,
   Input,
 } from '@/components';
+import { LATEST_VERSION } from '@/constants';
 import { toast } from '@/hooks';
 import { cn } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,7 +20,6 @@ import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import packageJson from '../../../package.json';
 
 const formNames = z.object({
   version: z.string().min(1, { message: 'Задължително поле' }),
@@ -75,7 +75,7 @@ const VersionForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Версия</FormLabel>
-              <FormDescription>Текуща версия: {packageJson.version}</FormDescription>
+              <FormDescription>Последна версия: {LATEST_VERSION}</FormDescription>
               <FormControl>
                 <Input {...field} type="number" step={0.01} />
               </FormControl>
