@@ -1,4 +1,4 @@
-import { Matches, Members, Names, Training } from '@/components';
+import { Matches, Members, Names, Training, Version } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
@@ -35,6 +35,7 @@ type SortedData = {
   ivl: Matches[];
   volleymania: Matches[];
   users: EnrichedUser[];
+  version: { version: string; id: string } | null;
 };
 
 type ContextProps = {
@@ -50,6 +51,7 @@ const defaultData: SortedData = {
   ivl: [],
   volleymania: [],
   users: [],
+  version: null,
 };
 
 const DataContext = createContext<ContextProps | undefined>(undefined);
@@ -62,6 +64,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: ivl, loading: ivlLoading } = useLiveData<Matches[]>(QUERY_KEYS.IVL);
   const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
   const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
+  const { data: version, loading: versionLoading } = useLiveData<Version[]>(QUERY_KEYS.VERSION);
 
   const enrichedUsers = useMemo(() => {
     if (!users?.length || !members?.length) return [];
@@ -85,8 +88,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     });
   }, [users, members]);
 
-  const sortedData = useMemo(
-    () => ({
+  const sortedData = useMemo(() => {
+    return {
       teams: [...(teams ?? defaultData.teams)].sort((a, b) => a.name.localeCompare(b.name)),
       halls: [...(halls ?? defaultData.halls)].sort((a, b) => a.name.localeCompare(b.name)),
       members: [...(members ?? defaultData.members)].sort((a, b) => a.names.localeCompare(b.names)),
@@ -100,9 +103,9 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
       ),
       users: [...enrichedUsers].sort((a, b) => a.names?.localeCompare(b.names)),
-    }),
-    [teams, halls, members, training, ivl, volleymania, enrichedUsers]
-  );
+      version: version && version.length > 0 ? { id: version[0].id!, version: version[0].version } : null,
+    };
+  }, [teams, halls, members, training, ivl, volleymania, enrichedUsers, version]);
 
   const isLoading = [
     teamsLoading,
@@ -112,6 +115,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     ivlLoading,
     volleymaniaLoading,
     usersLoading,
+    versionLoading,
   ].some(Boolean);
 
   return <DataContext.Provider value={{ isLoading, data: sortedData }}>{children}</DataContext.Provider>;

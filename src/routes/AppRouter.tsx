@@ -18,6 +18,9 @@ import {
   EditMatchPage,
   UsersPage,
   EditUserPage,
+  VersionPage,
+  EditVersionPage,
+  AddVersionPage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
@@ -285,6 +288,42 @@ const AppRouter = () => {
                       description="Редактирайте информацията на потребителя"
                       parentUrl="/dashboard/users"
                       queryKey={QUERY_KEYS.USERS}
+                    />
+                  ),
+                },
+              ],
+            },
+            {
+              path: 'version',
+              element: (
+                <RequireAccessRoutes hasAccess={user?.isSuperAdmin}>
+                  <Outlet />
+                </RequireAccessRoutes>
+              ),
+              children: [
+                {
+                  index: true,
+                  element: <VersionPage queryKey={QUERY_KEYS.VERSION} title="Версия" addBttonLabel="Добави версия" />,
+                },
+                {
+                  path: 'add',
+                  element: (
+                    <AddVersionPage
+                      title="Добави версия"
+                      description="Добавете версия със стойност 1"
+                      parentUrl="/dashboard/version"
+                      queryKey={QUERY_KEYS.VERSION}
+                    />
+                  ),
+                },
+                {
+                  path: ':id',
+                  element: (
+                    <EditVersionPage
+                      title="Редактиране на версия"
+                      description="Увеличете версията с 1 стъпка"
+                      parentUrl="/dashboard/version"
+                      queryKey={QUERY_KEYS.VERSION}
                     />
                   ),
                 },

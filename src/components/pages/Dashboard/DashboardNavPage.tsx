@@ -34,6 +34,11 @@ const LINKS: { title: string; url: string; requiredSuperAdmin?: true }[] = [
     url: 'users',
     requiredSuperAdmin: true,
   },
+  {
+    title: 'Версия',
+    url: 'version',
+    requiredSuperAdmin: true,
+  },
 ];
 
 const DashboardNavPage = () => {

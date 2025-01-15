@@ -57,6 +57,7 @@ export * from './forms/NameForm';
 export * from './forms/MemberForm';
 export * from './forms/TrainingForm';
 export * from './forms/MatchForm';
+export * from './forms/VersionForm';
 
 //pages
 export * from './pages/HomePage';
@@ -79,3 +80,6 @@ export * from './pages/Dashboard/Match/AddMatchPage';
 export * from './pages/Dashboard/Match/EditMatchPage';
 export * from './pages/Dashboard/Users/UsersPage';
 export * from './pages/Dashboard/Users/EditUserPage';
+export * from './pages/Dashboard/Version/VersionPage';
+export * from './pages/Dashboard/Version/AddVersionPage';
+export * from './pages/Dashboard/Version/EditVersionPage';
