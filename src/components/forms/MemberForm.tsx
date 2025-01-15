@@ -1,3 +1,4 @@
+import { addDocument, updateDocument } from '@/api';
 import {
   Button,
   buttonVariants,
@@ -15,12 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components';
-import { db } from '@/config';
 import { toast } from '@/hooks';
 import { cn } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -57,11 +56,9 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
-        const teamRef = doc(db, queryKey, id);
-        await updateDoc(teamRef, data);
+        await updateDocument(queryKey, id, data);
       } else {
-        const collectionRef = collection(db, queryKey);
-        await addDoc(collectionRef, data);
+        await addDocument(queryKey, data);
       }
     },
     onSuccess: () => {

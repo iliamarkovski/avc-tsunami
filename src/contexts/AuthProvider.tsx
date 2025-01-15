@@ -7,10 +7,11 @@ import {
   UserCredential,
   User,
 } from 'firebase/auth';
-import { collection, doc, query, where, setDoc, getDocs, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/config';
 import { QUERY_KEYS } from '@/constants';
 import { Roles } from '@/types';
+import { setDocument } from '@/api';
 
 export type UserInfo = {
   id?: string;
@@ -43,8 +44,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const createUser = async (email: string, password: string, memberId: string, role?: Roles, customName?: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const userDocRef = doc(db, QUERY_KEYS.USERS, userCredential.user.uid);
-    await setDoc(userDocRef, {
+
+    await setDocument(QUERY_KEYS.USERS, userCredential.user.uid, {
       createdAt: serverTimestamp(),
       email,
       role: role || null,

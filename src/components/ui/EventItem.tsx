@@ -9,12 +9,10 @@ import {
   Matches,
   Training,
 } from '@/components';
-import { db } from '@/config';
 import { useAuth, useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
 import { cn, getDataById } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { ReactNode, useMemo } from 'react';
 import { google, CalendarEvent } from 'calendar-link';
 import { format } from 'date-fns';
@@ -22,6 +20,7 @@ import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
 import { QUERY_KEYS, TEAM_NAME } from '@/constants';
 import { CalendarPlus } from 'lucide-react';
 import ReactDOMServer from 'react-dom/server';
+import { setDocument, updateDocument } from '@/api';
 
 type EventResponseType = {
   responses?: Record<
@@ -108,18 +107,15 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
     mutationFn: async (selectedValue: string) => {
       if (!user) return;
 
-      const eventDocRef = doc(db, queryKey, eventId);
-      const eventDoc = await getDoc(eventDocRef);
-
-      if (eventDoc.exists()) {
-        await updateDoc(eventDocRef, {
+      if (eventResponses) {
+        await updateDocument(queryKey, eventId, {
           responses: {
-            ...eventDoc.data().responses,
+            ...eventResponses.responses,
             [user.id!]: { answer: selectedValue },
           },
         });
       } else {
-        await setDoc(eventDocRef, {
+        await setDocument(queryKey, eventId, {
           responses: {
             [user.id!]: { answer: selectedValue },
           },

@@ -1,3 +1,4 @@
+import { updateDocument } from '@/api';
 import {
   Button,
   buttonVariants,
@@ -15,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components';
-import { db } from '@/config';
 import { OTHER_VALUE, SUPER_ADMIN_ID } from '@/constants';
 import { useData } from '@/contexts';
 import { toast } from '@/hooks';
@@ -23,7 +23,6 @@ import { cn } from '@/lib';
 import { Roles } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -97,8 +96,6 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
-        const userRef = doc(db, queryKey, id);
-
         const mappedData: MappedData = {
           customName: data.names || null,
           isAdmin: data.isAdmin,
@@ -107,7 +104,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           memberId: data.member,
         };
 
-        await updateDoc(userRef, mappedData);
+        await updateDocument(queryKey, id, mappedData);
       }
     },
     onSuccess: () => {

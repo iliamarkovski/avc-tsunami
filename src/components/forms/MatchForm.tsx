@@ -1,3 +1,4 @@
+import { addDocument, updateDocument } from '@/api';
 import {
   Button,
   buttonVariants,
@@ -16,14 +17,12 @@ import {
   Checkbox,
   DateTimePicker,
 } from '@/components';
-import { db } from '@/config';
 import { TEAM_NAME } from '@/constants';
 import { useData } from '@/contexts';
 import { toast } from '@/hooks';
 import { cn, getDateByTimestamp } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -69,11 +68,9 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
-        const docRef = doc(db, queryKey, id);
-        await updateDoc(docRef, data);
+        await updateDocument(queryKey, id, data);
       } else {
-        const collectionRef = collection(db, queryKey);
-        await addDoc(collectionRef, data);
+        await addDocument(queryKey, data);
       }
     },
     onSuccess: () => {
