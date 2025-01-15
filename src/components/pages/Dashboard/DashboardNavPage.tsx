@@ -43,7 +43,7 @@ const DashboardNavPage = () => {
       <Title title="Управление" />
       <nav className="flex flex-col gap-4">
         {LINKS.map((link) => {
-          if (link.requiredSuperAdmin && !user?.isAdmin) {
+          if (link.requiredSuperAdmin && !user?.isSuperAdmin) {
             return null;
           }
 
