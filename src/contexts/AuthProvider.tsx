@@ -88,6 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userData = await getUser(currentUser);
         setUser(userData);
       } else {
+        localStorage.clear();
         setUser(null);
       }
       setIsLoading(false);

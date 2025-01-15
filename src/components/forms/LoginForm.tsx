@@ -74,6 +74,7 @@ const LoginForm = () => {
     },
     onSuccess: () => {
       navigate('/');
+      localStorage.clear();
     },
     onError: (data: FirebaseError) => {
       switch (data.code) {

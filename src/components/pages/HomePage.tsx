@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components';
+import { LOCAL_STORAGE_VIEW } from '@/constants';
 import { useAuth } from '@/contexts';
 import { ReactNode, useState } from 'react';
 
@@ -29,10 +30,13 @@ const ViewComponent: Record<Views, ReactNode> = {
 
 const HomePage = () => {
   const { user } = useAuth();
-  const [value, setValue] = useState<Views>(!!user ? VALUES.LIST : VALUES.TABS);
+
+  const savedView = localStorage.getItem(LOCAL_STORAGE_VIEW) as Views | null;
+  const [value, setValue] = useState<Views>(savedView || (!!user ? VALUES.LIST : VALUES.TABS));
 
   const handleChange = (view: Views) => {
     setValue(view);
+    localStorage.setItem(LOCAL_STORAGE_VIEW, view);
   };
 
   return (

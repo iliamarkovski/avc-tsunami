@@ -30,6 +30,7 @@ const LogoutMenu = () => {
     },
     onSuccess: () => {
       navigate('/');
+      localStorage.clear();
     },
     onError: (error) => {
       console.error('error: ', error);
