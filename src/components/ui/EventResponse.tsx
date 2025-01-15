@@ -108,15 +108,15 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
                 {OPTIONS.map((tab) => {
                   const votedCoaches = useMemo(() => {
                     return data[tab.value]?.filter((item) => item.role === getRoleLabel('coach'));
-                  }, [tab]);
+                  }, [data]);
 
                   const votedMembers = useMemo(() => {
                     return data[tab.value]?.filter((item) => item.isMember && item.role !== getRoleLabel('coach'));
-                  }, [tab]);
+                  }, [data]);
 
                   const votedOthers = useMemo(() => {
                     return data[tab.value]?.filter((item) => !item.isMember);
-                  }, [tab]);
+                  }, [data]);
 
                   return (
                     <TabsContent key={`content-${tab.value}`} value={tab.value} className="mt-3 space-y-1">
