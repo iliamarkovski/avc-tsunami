@@ -72,7 +72,11 @@ const formSchema = z
       message: 'Задължително поле',
       path: ['selectedRole'],
     }
-  );
+  )
+  .refine((data) => data.password !== import.meta.env.VITE_UNI_PASS, {
+    message: 'Моля, изберете друга парола',
+    path: ['password'],
+  });
 
 export type FormSchema = z.infer<typeof formSchema>;
 
