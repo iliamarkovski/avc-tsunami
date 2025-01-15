@@ -78,9 +78,10 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Дата и час</TableHead>
-              <TableHead className="w-full">Среща</TableHead>
-              <TableHead>Зала</TableHead>
+              <TableHead>Дата</TableHead>
+              <TableHead>Час</TableHead>
+              <TableHead>Среща</TableHead>
+              <TableHead className="w-full">Зала</TableHead>
               <TableHead>Видео</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
@@ -90,8 +91,9 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
             {reversedMatches.map((item) => {
               return (
                 <TableRow key={item.id}>
-                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
-                  <TableCell className="w-full">
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy')}</TableCell>
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'HH:mm')}</TableCell>
+                  <TableCell>
                     <MatchTitle
                       isHost={item.host}
                       opponent={getNameById(teams, item.opponent) || ''}

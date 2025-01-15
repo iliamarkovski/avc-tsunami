@@ -74,8 +74,9 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Дата и час</TableHead>
-              <TableHead>Зала</TableHead>
+              <TableHead>Дата</TableHead>
+              <TableHead>Час</TableHead>
+              <TableHead className="w-full">Зала</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
@@ -84,8 +85,9 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
             {reversedTraining.map((item) => {
               return (
                 <TableRow key={item.id}>
-                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
-                  <TableCell className="w-full">{halls ? getNameById(halls, item.hall) : '-'}</TableCell>
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy')}</TableCell>
+                  <TableCell>{format(getDateByTimestamp(item.dateTime), 'HH:mm')}</TableCell>
+                  <TableCell>{halls ? getNameById(halls, item.hall) : '-'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id!} />
                   </TableCell>
