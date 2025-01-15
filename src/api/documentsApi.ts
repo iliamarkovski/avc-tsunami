@@ -1,5 +1,16 @@
 import { db } from '@/config';
-import { collection, deleteDoc, doc, getDoc, getDocs, query, DocumentData, setDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  DocumentData,
+  setDoc,
+  updateDoc,
+  addDoc,
+} from 'firebase/firestore';
 
 /**
  * Fetch all documents from a Firestore collection.
@@ -70,9 +81,40 @@ export const updateDocument = async (
 ): Promise<void> => {
   try {
     const docRef = doc(db, collectionName, id);
-    await setDoc(docRef, data, { merge: true });
+    await updateDoc(docRef, data);
   } catch (error) {
     console.error(`Failed to update document with ID ${id} in ${collectionName}:`, error);
     throw new Error('Failed to update document.');
+  }
+};
+
+/**
+ * Add a document to a Firestore collection.
+ * @param collectionName - Name of the Firestore collection.
+ * @param data - Data to add to the document.
+ */
+export const addDocument = async (collectionName: string, data: Partial<DocumentData>): Promise<void> => {
+  try {
+    const collectionRef = collection(db, collectionName);
+    await addDoc(collectionRef, data);
+  } catch (error) {
+    console.error(`Failed to add document to ${collectionName}:`, error);
+    throw new Error('Failed to add document.');
+  }
+};
+
+/**
+ * Set a document with a custom ID in a Firestore collection.
+ * @param collectionName - Name of the Firestore collection.
+ * @param id - Document ID to set.
+ * @param data - Data to set in the document.
+ */
+export const setDocument = async (collectionName: string, id: string, data: Partial<DocumentData>): Promise<void> => {
+  try {
+    const docRef = doc(db, collectionName, id);
+    await setDoc(docRef, data);
+  } catch (error) {
+    console.error(`Failed to set document with ID ${id} in ${collectionName}:`, error);
+    throw new Error('Failed to set document.');
   }
 };
