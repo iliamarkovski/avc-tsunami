@@ -19,13 +19,13 @@ type Props = {
 const EventsMatchesList = ({ queryKey }: Props) => {
   const { data } = useData();
   const { halls, teams } = data;
-  const events = data[queryKey];
+  const events = data[queryKey] as Matches[];
 
   if (!events || events.length === 0) {
     return <NotFoundEvents />;
   }
 
-  const { pastEvents, futureEvents } = separateEvents(events as Matches[]);
+  const { pastEvents, futureEvents } = separateEvents(events);
 
   return (
     <div className="grid gap-4">
