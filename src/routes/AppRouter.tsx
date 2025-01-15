@@ -21,7 +21,7 @@ import {
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useAuth, useTheme } from '@/contexts';
-import { RequireAdmin } from '@/routes';
+import { RequireAccessRoutes } from '@/routes';
 import { Helmet } from 'react-helmet-async';
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 
@@ -48,9 +48,9 @@ const AppRouter = () => {
         {
           path: '/dashboard',
           element: (
-            <RequireAdmin isAdmin={user?.isAdmin}>
+            <RequireAccessRoutes hasAccess={user?.isAdmin}>
               <Outlet />
-            </RequireAdmin>
+            </RequireAccessRoutes>
           ),
           children: [
             {
@@ -267,7 +267,11 @@ const AppRouter = () => {
             },
             {
               path: 'users',
-              element: <Outlet />,
+              element: (
+                <RequireAccessRoutes hasAccess={user?.isSuperAdmin}>
+                  <Outlet />
+                </RequireAccessRoutes>
+              ),
               children: [
                 {
                   index: true,
