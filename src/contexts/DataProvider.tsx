@@ -3,6 +3,7 @@ import { QUERY_KEYS } from '@/constants';
 import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
 import { Roles } from '@/types';
+import { Timestamp } from 'firebase/firestore';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 
 type Users = {
@@ -13,6 +14,7 @@ type Users = {
   id: string;
   isAdmin: boolean;
   isSuperAdmin: boolean;
+  modifiedAt: Timestamp | null;
 }[];
 
 export type EnrichedUser = {
@@ -25,6 +27,7 @@ export type EnrichedUser = {
   isMember: boolean;
   isAdmin: boolean;
   isSuperAdmin: boolean;
+  modifiedAt: Timestamp;
 };
 
 type SortedData = {
@@ -84,6 +87,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         isMember: !!member,
         isAdmin: u.isAdmin,
         isSuperAdmin: u.isSuperAdmin,
+        modifiedAt: u.modifiedAt,
       } as EnrichedUser;
     });
   }, [users, members]);

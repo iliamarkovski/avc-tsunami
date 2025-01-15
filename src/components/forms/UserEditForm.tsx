@@ -23,6 +23,7 @@ import { cn } from '@/lib';
 import { Roles } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
+import { FieldValue, serverTimestamp } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,6 +35,9 @@ type MappedData = {
   isSuperAdmin: boolean;
   role: Roles | null;
   memberId: string;
+  modifiedAt: {
+    isEqual: (other: FieldValue) => boolean;
+  };
 };
 
 const formNames = z
@@ -102,6 +106,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           isSuperAdmin: data.isSuperAdmin,
           role: (data.role as Roles) || null,
           memberId: data.member,
+          modifiedAt: serverTimestamp(),
         };
 
         await updateDocument(queryKey, id, mappedData);

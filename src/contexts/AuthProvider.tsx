@@ -7,7 +7,7 @@ import {
   UserCredential,
   User,
 } from 'firebase/auth';
-import { collection, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { db, auth } from '@/config';
 import { QUERY_KEYS } from '@/constants';
 import { Roles } from '@/types';
@@ -21,6 +21,7 @@ export type UserInfo = {
   memberId: string;
   isAdmin: boolean;
   isSuperAdmin: boolean;
+  modifiedAt: Timestamp | null;
 };
 
 type AuthContextType = {
@@ -53,6 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       memberId,
       isAdmin: false,
       isSuperAdmin: false,
+      modifiedAt: null,
     } as UserInfo);
 
     return userCredential.user;

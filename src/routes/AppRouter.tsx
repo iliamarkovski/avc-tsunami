@@ -34,7 +34,7 @@ const AppRouter = () => {
 
   const router = createBrowserRouter([
     {
-      element: <Layout key={user?.id} />,
+      element: <Layout key={user?.modifiedAt?.toString()} />,
       children: [
         {
           path: '/',
