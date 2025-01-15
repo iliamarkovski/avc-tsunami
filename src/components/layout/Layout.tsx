@@ -26,11 +26,11 @@ const Layout = () => {
     return <PageLoader />;
   }
 
-  if (Number(localVersion) !== Number(version?.version)) {
+  if (Number(version?.version) > Number(localVersion)) {
     return (
       <div className="flex min-h-svh w-full flex-col">
         <main className="wrapper flex flex-1 flex-col items-center justify-center gap-4 p-safe">
-          <Title title="Нова версия е налична " />
+          <Title title="Налична е нова версия" />
           <Button type="button" variant="outline" onClick={handleRefresh}>
             <RotateCw />
             Презареди
