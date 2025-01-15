@@ -18,6 +18,7 @@ import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -30,6 +31,8 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { toast } = useToast();
   const { data } = useData();
   const { halls, training } = data;
+
+  const reversedTraining = useMemo(() => training?.slice().reverse() || [], [training]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -78,7 +81,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {training.map((item) => {
+            {reversedTraining.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>

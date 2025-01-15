@@ -20,6 +20,7 @@ import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { ArrowLeft, Plus } from 'lucide-react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -34,6 +35,8 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
   const { data } = useData();
   const { halls, teams } = data;
   const matches = data[queryKey] as Matches[];
+
+  const reversedMatches = useMemo(() => matches?.slice().reverse() || [], [matches]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -84,7 +87,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {matches.map((item) => {
+            {reversedMatches.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy HH:mm')}</TableCell>
