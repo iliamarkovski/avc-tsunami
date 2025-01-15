@@ -50,8 +50,8 @@ const UsersPage = ({ title, addBttonLabel }: Props) => {
   }, [users]);
 
   return (
-    <section className="flex flex-col gap-6">
-      <div className="flex flex-col items-start gap-2">
+    <section className="flex flex-col gap-4">
+      <div className="flex flex-col items-start gap-4">
         <Link to="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>
           <ArrowLeft />
           Назад
