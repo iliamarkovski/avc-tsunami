@@ -1,7 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { Button, Footer, Header, PageLoader, Title } from '@/components';
+import { Footer, Header, PageLoader, ReloadBlock } from '@/components';
 import { useAuth, useData } from '@/contexts';
-import { RotateCw } from 'lucide-react';
 import { LATEST_VERSION } from '@/constants';
 
 const Layout = () => {
@@ -9,33 +8,12 @@ const Layout = () => {
   const { data, isLoading: isDataLoading } = useData();
   const { version } = data;
 
-  const handleRefresh = () => {
-    // Clear cache and refresh the page
-    if ('caches' in window) {
-      caches.keys().then((names) => {
-        names.forEach((name) => caches.delete(name));
-      });
-    }
-
-    window.location.reload();
-  };
-
   if (isAuthLoading || isDataLoading) {
     return <PageLoader />;
   }
 
   if (Number(version?.version) > Number(LATEST_VERSION)) {
-    return (
-      <div className="flex min-h-svh w-full flex-col">
-        <main className="wrapper flex flex-1 flex-col items-center justify-center gap-4 p-safe">
-          <Title title="Налична е нова версия" />
-          <Button type="button" variant="outline" onClick={handleRefresh}>
-            <RotateCw />
-            Презареди
-          </Button>
-        </main>
-      </div>
-    );
+    return <ReloadBlock />;
   }
 
   return (

@@ -50,6 +50,7 @@ export * from './ui/DateTimePicker';
 export * from './ui/FormCard';
 export * from './ui/Textarea';
 export * from './ui/Blockquote';
+export * from './ui/ReloadBlock';
 
 //forms
 export * from './forms/LoginForm';
