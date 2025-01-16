@@ -11,7 +11,7 @@ import {
   Matches,
   Training,
 } from '@/components';
-import { useData } from '@/contexts';
+import { useAuth, useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
 import { cn, getDataById } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
@@ -63,22 +63,26 @@ const suffix: Record<EventType, string> = {
 const getEventInfo = ({
   title,
   location,
-  dateTime,
+  warmupTime,
+  startTime,
   eventType,
 }: {
   title: string;
   location: string;
-  dateTime: Date;
+  warmupTime: Date;
+  startTime: Date;
   eventType: EventType;
 }): CalendarEvent => ({
   title: prefix[eventType] + title + suffix[eventType],
   location: `зала ${location}`,
-  start: dateTime,
-  duration: [2, 'hour'],
+  start: warmupTime,
+  duration: [eventType === QUERY_KEYS.TRAINING ? 2.25 : 2.75, 'hour'],
+  description: `Загрявка: ${format(warmupTime, 'HH:mm')}ч. <br/> Начало: ${format(startTime, 'HH:mm')}ч.`,
 });
 
 const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const { data } = useData();
   const { loggedInUser } = data;
 
@@ -95,7 +99,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const answer = loggedInUser ? eventResponses?.responses?.[loggedInUser.id!]?.answer : undefined;
   const formattedDate = format(dateTime, 'dd.MM.yyyy');
   const time = format(dateTime, 'HH:mm');
-  const timeDiff = queryKey === QUERY_KEYS.TRAINING ? subMinutes(dateTime, 30) : subMinutes(dateTime, 45);
+  const timeDiff = queryKey === QUERY_KEYS.TRAINING ? subMinutes(dateTime, 15) : subMinutes(dateTime, 45);
   const warmupTime = format(timeDiff, 'HH:mm');
   const dayOfWeek = format(dateTime, 'EEEE', { locale: bg });
 
@@ -161,7 +165,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
           </div>
         ) : null}
 
-        {isCurrent ? (
+        {!!user && isCurrent ? (
           <>
             <CardDescription>
               Дата: {formattedDate}г. ({dayOfWeek})
@@ -197,7 +201,13 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
             <a
               className={cn(buttonVariants())}
               href={google(
-                getEventInfo({ title: calendarTitle, location: hall, dateTime, eventType: queryKey as EventType })
+                getEventInfo({
+                  title: calendarTitle,
+                  location: hall,
+                  warmupTime: timeDiff,
+                  startTime: dateTime,
+                  eventType: queryKey as EventType,
+                })
               )}
               target="_blank"
               rel="noopener noreferrer">
