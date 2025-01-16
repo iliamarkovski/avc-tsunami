@@ -23,7 +23,19 @@ const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <MatchForm {...event} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <MatchForm
+        dateTime={event.dateTime}
+        gamesGuest={event.gamesGuest}
+        gamesHost={event.gamesHost}
+        hall={event.hall}
+        host={event.host}
+        message={event.message}
+        opponent={event.opponent}
+        recordingLink={event.recordingLink}
+        id={id}
+        parentUrl={parentUrl}
+        queryKey={queryKey}
+      />
     </FormCard>
   );
 };

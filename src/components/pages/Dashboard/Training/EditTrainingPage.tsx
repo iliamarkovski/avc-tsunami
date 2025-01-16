@@ -23,7 +23,14 @@ const EditTrainingPage = ({ queryKey, title, description, parentUrl }: Props) =>
 
   return (
     <FormCard title={title} description={description}>
-      <TrainingForm {...event} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <TrainingForm
+        dateTime={event.dateTime}
+        hall={event.hall}
+        message={event.message}
+        id={id}
+        parentUrl={parentUrl}
+        queryKey={queryKey}
+      />
     </FormCard>
   );
 };

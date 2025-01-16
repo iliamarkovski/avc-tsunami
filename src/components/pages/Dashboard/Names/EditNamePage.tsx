@@ -23,7 +23,7 @@ const EditNamePage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <NameForm {...name} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <NameForm name={name.name} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

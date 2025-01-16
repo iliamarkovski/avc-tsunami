@@ -22,7 +22,7 @@ const EditVersionPage = ({ queryKey, title, description, parentUrl }: Props) => 
 
   return (
     <FormCard title={title} description={description}>
-      <VersionForm {...version} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <VersionForm version={version.version} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

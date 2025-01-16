@@ -59,13 +59,29 @@ const FutureEventsList = () => {
         const dateTime = getDateByTimestamp(event.dateTime!);
 
         if (event.tag === QUERY_KEYS.TRAINING) {
-          return <EventTrainingItem {...event} key={event.id} id={event.id!} dateTime={dateTime} hall={hall} />;
+          return (
+            <EventTrainingItem
+              badge={event.badge}
+              isCurrent={event.isCurrent}
+              message={event.message}
+              key={event.id}
+              id={event.id!}
+              dateTime={dateTime}
+              hall={hall}
+            />
+          );
         }
 
         const opponent = getNameById(teams, event.opponent!);
         return (
           <EventMatchItem
-            {...event}
+            badge={event.badge}
+            gamesGuest={event.gamesGuest}
+            gamesHost={event.gamesHost}
+            isCurrent={event.isCurrent}
+            message={event.message}
+            recordingUrl={event.recordingUrl}
+            statisticsUrl={event.statisticsUrl}
             key={event.id}
             id={event.id!}
             queryKey={event.tag!}

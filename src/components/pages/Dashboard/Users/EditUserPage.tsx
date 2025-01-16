@@ -23,7 +23,16 @@ const EditUserPage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <UserEditForm {...user} id={id} parentUrl={parentUrl} queryKey={queryKey} />
+      <UserEditForm
+        isAdmin={user.isAdmin}
+        isSuperAdmin={user.isSuperAdmin}
+        member={user.memberId}
+        names={user.names}
+        role={user.role}
+        id={id}
+        parentUrl={parentUrl}
+        queryKey={queryKey}
+      />
     </FormCard>
   );
 };
