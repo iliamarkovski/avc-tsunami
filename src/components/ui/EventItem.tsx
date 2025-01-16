@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Badge,
   buttonVariants,
   Card,
@@ -42,6 +44,7 @@ type Props = {
   title: ReactNode;
   hall: string;
   badge?: string;
+  message?: string;
 };
 
 const prefix: Record<EventType, string> = {
@@ -73,7 +76,8 @@ const getEventInfo = ({
   duration: [2, 'hour'],
 });
 
-const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge }: Props) => {
+const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
+  console.log('message: ', message);
   const { toast } = useToast();
   const { data } = useData();
   const { loggedInUser } = data;
@@ -158,6 +162,15 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
         </CardDescription>
         <CardTitle>{title}</CardTitle>
         <CardDescription>зала {hall}</CardDescription>
+
+        {isCurrent && message ? (
+          <Alert className="!mt-5 w-auto self-center">
+            <AlertTitle className="mb-0 flex items-center justify-center gap-2">
+              <span className="animate-pulse">⚠️</span> <span className="italic">{message}</span>{' '}
+              <span className="animate-pulse">⚠️</span>
+            </AlertTitle>
+          </Alert>
+        ) : null}
 
         {children}
 

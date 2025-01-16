@@ -19,7 +19,14 @@ const EventsTrainingsList = () => {
         const dateTime = getDateByTimestamp(event.dateTime);
 
         return (
-          <EventTrainingItem key={event.id} id={event.id!} dateTime={dateTime} hall={hall} isCurrent={index === 0} />
+          <EventTrainingItem
+            key={event.id}
+            id={event.id!}
+            dateTime={dateTime}
+            hall={hall}
+            isCurrent={index === 0}
+            message={event.message}
+          />
         );
       })}
     </div>

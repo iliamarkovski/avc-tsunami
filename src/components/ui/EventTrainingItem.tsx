@@ -7,9 +7,10 @@ type Props = {
   dateTime: Date;
   isCurrent?: boolean;
   badge?: string;
+  message?: string;
 };
 
-const EventTrainingItem = ({ hall, dateTime, id, isCurrent, badge }: Props) => {
+const EventTrainingItem = ({ hall, dateTime, id, isCurrent, badge, message }: Props) => {
   return (
     <EventItem
       eventId={id}
@@ -19,6 +20,7 @@ const EventTrainingItem = ({ hall, dateTime, id, isCurrent, badge }: Props) => {
       hall={hall}
       dateTime={dateTime}
       badge={badge}
+      message={message}
     />
   );
 };

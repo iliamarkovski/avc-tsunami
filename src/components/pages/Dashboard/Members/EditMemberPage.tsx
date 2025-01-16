@@ -24,16 +24,7 @@ const EditMemberPage = ({ queryKey, title, description, parentUrl }: Props) => {
 
   return (
     <FormCard title={title} description={description}>
-      <MemberForm
-        active={member.active}
-        captain={member.captain}
-        names={member.names}
-        number={member.number}
-        role={member.role}
-        id={id}
-        parentUrl={parentUrl}
-        queryKey={queryKey}
-      />
+      <MemberForm {...member} id={id} parentUrl={parentUrl} queryKey={queryKey} />
     </FormCard>
   );
 };

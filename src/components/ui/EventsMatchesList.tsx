@@ -54,6 +54,7 @@ const EventsMatchesList = ({ queryKey }: Props) => {
                   recordingUrl={event.recordingLink}
                   // statisticsUrl={event.statistics?.url || null}
                   queryKey={queryKey}
+                  message={event.message}
                 />
               );
             })}

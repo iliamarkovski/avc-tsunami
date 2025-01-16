@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
   DateTimePicker,
+  Textarea,
 } from '@/components';
 import { DEFAULT_HALL_ID } from '@/constants';
 import { useData } from '@/contexts';
@@ -32,6 +33,7 @@ const formSchema = z.object({
   }),
   hall: z.string().min(1, { message: 'Задължително поле' }),
   id: z.string().optional(),
+  message: z.string().optional(),
 });
 
 export type Training = z.infer<typeof formSchema>;
@@ -50,6 +52,7 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     defaultValues: {
       dateTime: props.dateTime ? getDateByTimestamp(props.dateTime) : undefined,
       hall: props.hall ?? DEFAULT_HALL_ID,
+      message: props.message ?? '',
     },
   });
 
@@ -105,6 +108,20 @@ const TrainingForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   })}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Съобщение</FormLabel>
+              <FormControl>
+                <Textarea {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

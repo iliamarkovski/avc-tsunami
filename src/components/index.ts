@@ -48,6 +48,8 @@ export * from './ui/TimePickerInput';
 export * from './ui/MatchTitle';
 export * from './ui/DateTimePicker';
 export * from './ui/FormCard';
+export * from './ui/Textarea';
+export * from './ui/Blockquote';
 
 //forms
 export * from './forms/LoginForm';

@@ -17,6 +17,7 @@ export type EventMatchProps = {
   isCurrent?: boolean;
   queryKey: QueryKeys;
   badge?: string;
+  message?: string;
 };
 
 const EventMatchItem = ({
@@ -32,6 +33,7 @@ const EventMatchItem = ({
   isCurrent,
   queryKey,
   badge,
+  message,
 }: EventMatchProps) => {
   const { data } = useData();
   const { loggedInUser } = data;
@@ -44,7 +46,8 @@ const EventMatchItem = ({
       dateTime={dateTime}
       title={<MatchTitle isHost={isHost} opponent={opponent} gamesHost={gamesHost} gamesGuest={gamesGuest} />}
       hall={hall}
-      badge={badge}>
+      badge={badge}
+      message={message}>
       {recordingUrl || (statisticsUrl && !!loggedInUser) ? (
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
           {recordingUrl ? (

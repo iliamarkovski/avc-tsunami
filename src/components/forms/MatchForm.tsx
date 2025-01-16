@@ -16,6 +16,7 @@ import {
   Input,
   Checkbox,
   DateTimePicker,
+  Textarea,
 } from '@/components';
 import { TEAM_NAME } from '@/constants';
 import { useData } from '@/contexts';
@@ -39,6 +40,7 @@ const formSchema = z.object({
   gamesGuest: z.string(),
   recordingLink: z.string(),
   id: z.string().optional(),
+  message: z.string().optional(),
 });
 
 export type Matches = z.infer<typeof formSchema>;
@@ -62,6 +64,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       gamesHost: props.gamesHost ?? '',
       gamesGuest: props.gamesGuest ?? '',
       recordingLink: props.recordingLink ?? '',
+      message: props.message ?? '',
     },
   });
 
@@ -200,6 +203,20 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
               <FormLabel>Видео запис</FormLabel>
               <FormControl>
                 <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Съобщение</FormLabel>
+              <FormControl>
+                <Textarea {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
