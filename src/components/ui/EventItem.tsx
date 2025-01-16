@@ -17,12 +17,13 @@ import { cn, getDataById } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
 import { ReactNode, useMemo } from 'react';
 import { google, CalendarEvent } from 'calendar-link';
-import { format } from 'date-fns';
+import { format, subMinutes } from 'date-fns';
 import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
 import { QUERY_KEYS, TEAM_NAME } from '@/constants';
 import { CalendarPlus } from 'lucide-react';
 import ReactDOMServer from 'react-dom/server';
 import { setDocument, updateDocument } from '@/api';
+import { bg } from 'date-fns/locale';
 
 type EventResponseType = {
   responses?: Record<
@@ -77,7 +78,6 @@ const getEventInfo = ({
 });
 
 const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
-  console.log('message: ', message);
   const { toast } = useToast();
   const { data } = useData();
   const { loggedInUser } = data;
@@ -95,6 +95,9 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const answer = loggedInUser ? eventResponses?.responses?.[loggedInUser.id!]?.answer : undefined;
   const formattedDate = format(dateTime, 'dd.MM.yyyy');
   const time = format(dateTime, 'HH:mm');
+  const timeDiff = queryKey === QUERY_KEYS.TRAINING ? subMinutes(dateTime, 30) : subMinutes(dateTime, 45);
+  const warmupTime = format(timeDiff, 'HH:mm');
+  const dayOfWeek = format(dateTime, 'EEEE', { locale: bg });
 
   const isUserActive = loggedInUser?.isActive;
   const userRole = loggedInUser?.role;
@@ -157,9 +160,22 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
             {badge && <Badge variant="outline">{badge}</Badge>}
           </div>
         ) : null}
-        <CardDescription>
-          {formattedDate} | {time}
-        </CardDescription>
+
+        {isCurrent ? (
+          <>
+            <CardDescription>
+              Дата: {formattedDate}г. ({dayOfWeek})
+            </CardDescription>
+            <CardDescription>Загрявка: {warmupTime}ч.</CardDescription>
+            <CardDescription>Начало: {time}ч.</CardDescription>
+          </>
+        ) : (
+          <>
+            <CardDescription>
+              {formattedDate}г. | {time}ч.
+            </CardDescription>
+          </>
+        )}
         <CardTitle>{title}</CardTitle>
         <CardDescription>зала {hall}</CardDescription>
 
