@@ -164,7 +164,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
         <CardDescription>зала {hall}</CardDescription>
 
         {canVote && message ? (
-          <Alert className="!mt-5 w-auto self-center">
+          <Alert className="!mt-5 w-auto self-center border-secondary">
             <AlertTitle className="mb-0 flex items-center justify-center gap-2">
               <span className="animate-pulse">⚠️</span> <span className="italic">{message}</span>{' '}
               <span className="animate-pulse">⚠️</span>
