@@ -9,7 +9,7 @@ import {
   Matches,
   Training,
 } from '@/components';
-import { useAuth, useData } from '@/contexts';
+import { useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
 import { cn, getDataById } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
@@ -74,10 +74,9 @@ const getEventInfo = ({
 });
 
 const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge }: Props) => {
-  const { user } = useAuth();
   const { toast } = useToast();
   const { data } = useData();
-  const { users } = data;
+  const { loggedInUser } = data;
 
   const eventResponses = getDataById(data[queryKey] as Training[] | Matches[], eventId) as
     | EventResponseType
@@ -89,35 +88,35 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
     [title]
   );
 
-  const answer = user ? eventResponses?.responses?.[user.id!]?.answer : undefined;
+  const answer = loggedInUser ? eventResponses?.responses?.[loggedInUser.id!]?.answer : undefined;
   const formattedDate = format(dateTime, 'dd.MM.yyyy');
   const time = format(dateTime, 'HH:mm');
 
-  const userInfo = !!user ? users.find((u) => u.id === user.id) : undefined;
-  const isUserActive = userInfo?.isActive;
-  const userRole = userInfo?.role;
+  const isUserActive = loggedInUser?.isActive;
+  const userRole = loggedInUser?.role;
 
   const canVote = useMemo(
-    () => isCurrent && !!user && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
-    [isCurrent, user, queryKey]
+    () =>
+      isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
+    [isCurrent, loggedInUser, queryKey]
   );
 
   const saveResponseMutation = useMutation({
     mutationKey: ['saveResponse', eventId],
     mutationFn: async (selectedValue: string) => {
-      if (!user) return;
+      if (!loggedInUser) return;
 
       if (eventResponses) {
         await updateDocument(queryKey, eventId, {
           responses: {
             ...eventResponses.responses,
-            [user.id!]: { answer: selectedValue },
+            [loggedInUser.id!]: { answer: selectedValue },
           },
         });
       } else {
         await setDocument(queryKey, eventId, {
           responses: {
-            [user.id!]: { answer: selectedValue },
+            [loggedInUser.id!]: { answer: selectedValue },
           },
         });
       }

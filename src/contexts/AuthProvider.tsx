@@ -37,7 +37,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<AuthContextType['user']>(null);
 
   const login = async (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);

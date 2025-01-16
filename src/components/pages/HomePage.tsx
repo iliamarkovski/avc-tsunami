@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@/components';
 import { LOCAL_STORAGE_VIEW } from '@/constants';
-import { useAuth } from '@/contexts';
+import { useData } from '@/contexts';
 import { ReactNode, useState } from 'react';
 
 type Views = 'list' | 'tabs';
@@ -29,10 +29,11 @@ const ViewComponent: Record<Views, ReactNode> = {
 };
 
 const HomePage = () => {
-  const { user } = useAuth();
+  const { data } = useData();
+  const { loggedInUser } = data;
 
   const savedView = localStorage.getItem(LOCAL_STORAGE_VIEW) as Views | null;
-  const [value, setValue] = useState<Views>(savedView || (!!user ? VALUES.LIST : VALUES.TABS));
+  const [value, setValue] = useState<Views>(savedView || (!!loggedInUser ? VALUES.LIST : VALUES.TABS));
 
   const handleChange = (view: Views) => {
     setValue(view);
@@ -41,7 +42,7 @@ const HomePage = () => {
 
   return (
     <div className="grid gap-4">
-      {!!user ? (
+      {!!loggedInUser ? (
         <Select value={value} onValueChange={(view) => handleChange(view as Views)}>
           <SelectTrigger className="w-[180px]">
             Изглед: <SelectValue />

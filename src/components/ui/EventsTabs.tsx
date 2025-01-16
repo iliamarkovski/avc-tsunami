@@ -1,6 +1,6 @@
 import { EventsMatchesList, EventsTrainingsList, TabsContent, TabsList, TabsTrigger } from '@/components';
 import { LOCAL_STORAGE_TAB, QUERY_KEYS } from '@/constants';
-import { useAuth } from '@/contexts';
+import { useData } from '@/contexts';
 import { QueryKeys } from '@/types';
 import { Tabs } from '@radix-ui/react-tabs';
 
@@ -24,8 +24,9 @@ const tabs: Tabs = [
   },
 ];
 
-const EventsTabs = ({}) => {
-  const { user } = useAuth();
+const EventsTabs = () => {
+  const { data } = useData();
+  const { loggedInUser } = data;
 
   const savedTab = localStorage.getItem(LOCAL_STORAGE_TAB) as QueryKeys | null;
 
@@ -37,7 +38,7 @@ const EventsTabs = ({}) => {
     <Tabs defaultValue={savedTab || tabs[0].value} onValueChange={(e) => handleTabChange(e as QueryKeys)}>
       <TabsList className="flex w-full">
         {tabs.map((tab) => {
-          if (!user && tab.value === QUERY_KEYS.TRAINING) {
+          if (!loggedInUser && tab.value === QUERY_KEYS.TRAINING) {
             return;
           }
 
@@ -49,7 +50,7 @@ const EventsTabs = ({}) => {
         })}
       </TabsList>
       {tabs.map((tab) => {
-        if (!user && tab.value === QUERY_KEYS.TRAINING) {
+        if (!loggedInUser && tab.value === QUERY_KEYS.TRAINING) {
           return;
         }
 

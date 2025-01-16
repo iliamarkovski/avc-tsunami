@@ -2,14 +2,12 @@ import { Outlet } from 'react-router-dom';
 import { Button, Footer, Header, PageLoader, Title } from '@/components';
 import { useAuth, useData } from '@/contexts';
 import { RotateCw } from 'lucide-react';
-import packageJosn from '../../../package.json';
+import { LATEST_VERSION } from '@/constants';
 
 const Layout = () => {
   const { isLoading: isAuthLoading } = useAuth();
   const { data, isLoading: isDataLoading } = useData();
   const { version } = data;
-
-  const localVersion = packageJosn.version;
 
   const handleRefresh = () => {
     // Clear cache and refresh the page
@@ -26,7 +24,7 @@ const Layout = () => {
     return <PageLoader />;
   }
 
-  if (Number(version?.version) > Number(localVersion)) {
+  if (Number(version?.version) > Number(LATEST_VERSION)) {
     return (
       <div className="flex min-h-svh w-full flex-col">
         <main className="wrapper flex flex-1 flex-col items-center justify-center gap-4 p-safe">

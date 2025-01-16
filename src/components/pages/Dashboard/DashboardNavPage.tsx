@@ -1,6 +1,6 @@
 import { Title } from '@/components';
 import { buttonVariants } from '@/components/ui/Button';
-import { useAuth } from '@/contexts';
+import { useData } from '@/contexts';
 import { cn } from '@/lib';
 import { Link } from 'react-router-dom';
 
@@ -42,13 +42,15 @@ const LINKS: { title: string; url: string; requiredSuperAdmin?: true }[] = [
 ];
 
 const DashboardNavPage = () => {
-  const { user } = useAuth();
+  const { data } = useData();
+  const { loggedInUser } = data;
+
   return (
     <section className="flex flex-col gap-4">
       <Title title="Управление" />
       <nav className="flex flex-col gap-4">
         {LINKS.map((link) => {
-          if (link.requiredSuperAdmin && !user?.isSuperAdmin) {
+          if (link.requiredSuperAdmin && !loggedInUser?.isSuperAdmin) {
             return null;
           }
 

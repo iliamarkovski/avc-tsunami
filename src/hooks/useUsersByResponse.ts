@@ -20,29 +20,27 @@ export const useUsersByResponse = (
   }
 
   const { data } = useData();
-  const { users } = data;
+  const { loggedInUser } = data;
 
-  if (!users) {
+  if (!loggedInUser) {
     return initialResponses;
   }
 
   const mappedResponses: Record<EventOptions, UserResponse[]> = { ...initialResponses };
 
   for (const [userId, { answer }] of Object.entries(responses)) {
-    const userData = users.find((user) => user.id === userId);
-
     // Safely check if userData exists
-    if (!userData) {
+    if (!loggedInUser) {
       console.warn(`User with ID ${userId} not found in the data.`);
       continue;
     }
 
-    const roleLabel = getRoleLabel(userData.role as Roles);
+    const roleLabel = getRoleLabel(loggedInUser.role as Roles);
     const userResponse: UserResponse = {
-      names: userData.names,
+      names: loggedInUser.names,
       role: roleLabel,
       id: userId,
-      isMember: userData.isMember,
+      isMember: loggedInUser.isMember,
     };
 
     mappedResponses[answer]?.push(userResponse);

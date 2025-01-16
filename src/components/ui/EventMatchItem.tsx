@@ -1,7 +1,7 @@
 import { buttonVariants, EventItem, MatchTitle } from '@/components';
 import { cn } from '@/lib';
 import { SquarePlay, FileText } from 'lucide-react';
-import { useAuth } from '@/contexts';
+import { useData } from '@/contexts';
 import { QueryKeys } from '@/types';
 
 export type EventMatchProps = {
@@ -33,7 +33,8 @@ const EventMatchItem = ({
   queryKey,
   badge,
 }: EventMatchProps) => {
-  const { user } = useAuth();
+  const { data } = useData();
+  const { loggedInUser } = data;
 
   return (
     <EventItem
@@ -44,7 +45,7 @@ const EventMatchItem = ({
       title={<MatchTitle isHost={isHost} opponent={opponent} gamesHost={gamesHost} gamesGuest={gamesGuest} />}
       hall={hall}
       badge={badge}>
-      {recordingUrl || (statisticsUrl && !!user) ? (
+      {recordingUrl || (statisticsUrl && !!loggedInUser) ? (
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
           {recordingUrl ? (
             <a href={recordingUrl} target="_blank" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
@@ -52,7 +53,7 @@ const EventMatchItem = ({
             </a>
           ) : null}
 
-          {statisticsUrl && !!user ? (
+          {statisticsUrl && !!loggedInUser ? (
             <a href={statisticsUrl} target="_blank" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
               <FileText className="text-red-600" /> Статистика
             </a>

@@ -23,18 +23,19 @@ import {
   AddVersionPage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
-import { useAuth, useTheme } from '@/contexts';
+import { useData, useTheme } from '@/contexts';
 import { RequireAccessRoutes } from '@/routes';
 import { Helmet } from 'react-helmet-async';
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 
 const AppRouter = () => {
-  const { user } = useAuth();
+  const { data } = useData();
+  const { loggedInUser } = data;
   const { theme } = useTheme();
 
   const router = createBrowserRouter([
     {
-      element: <Layout key={user?.modifiedAt?.toString()} />,
+      element: <Layout key={loggedInUser?.modifiedAt?.toString()} />,
       children: [
         {
           path: '/',
@@ -46,12 +47,12 @@ const AppRouter = () => {
         },
         {
           path: '/login',
-          element: !user ? <LoginPage /> : <Navigate to="/" replace />,
+          element: !loggedInUser ? <LoginPage /> : <Navigate to="/" replace />,
         },
         {
           path: '/dashboard',
           element: (
-            <RequireAccessRoutes hasAccess={user?.isAdmin}>
+            <RequireAccessRoutes hasAccess={loggedInUser?.isAdmin}>
               <Outlet />
             </RequireAccessRoutes>
           ),
@@ -271,7 +272,7 @@ const AppRouter = () => {
             {
               path: 'users',
               element: (
-                <RequireAccessRoutes hasAccess={user?.isSuperAdmin}>
+                <RequireAccessRoutes hasAccess={loggedInUser?.isSuperAdmin}>
                   <Outlet />
                 </RequireAccessRoutes>
               ),
@@ -296,7 +297,7 @@ const AppRouter = () => {
             {
               path: 'version',
               element: (
-                <RequireAccessRoutes hasAccess={user?.isSuperAdmin}>
+                <RequireAccessRoutes hasAccess={loggedInUser?.isSuperAdmin}>
                   <Outlet />
                 </RequireAccessRoutes>
               ),

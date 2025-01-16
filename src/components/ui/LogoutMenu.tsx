@@ -16,13 +16,11 @@ import { useMutation } from '@tanstack/react-query';
 import { LogOut, Wrench } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 const LogoutMenu = () => {
-  const { logout, user } = useAuth();
+  const { logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const { data } = useData();
-  const { users } = data;
-
-  const userData = users.find((u) => u.id === user?.id);
+  const { loggedInUser } = data;
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -50,12 +48,12 @@ const LogoutMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" title="menu button">
-          {getFirstChars(userData?.names || '')}
+          {getFirstChars(loggedInUser?.names || '')}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>{userData?.names}</DropdownMenuLabel>
-        {user?.isAdmin ? (
+        <DropdownMenuLabel>{loggedInUser?.names}</DropdownMenuLabel>
+        {loggedInUser?.isAdmin ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

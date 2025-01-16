@@ -1,5 +1,6 @@
 import { Matches, Members, Names, Training, Version } from '@/components';
 import { QUERY_KEYS } from '@/constants';
+import { useAuth } from '@/contexts';
 import { useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
 import { Roles } from '@/types';
@@ -38,7 +39,8 @@ type SortedData = {
   ivl: Matches[];
   volleymania: Matches[];
   users: EnrichedUser[];
-  version: { version: string; id: string } | null;
+  version: { version: string; id: string } | undefined;
+  loggedInUser: EnrichedUser | undefined;
 };
 
 type ContextProps = {
@@ -54,12 +56,14 @@ const defaultData: SortedData = {
   ivl: [],
   volleymania: [],
   users: [],
-  version: null,
+  version: undefined,
+  loggedInUser: undefined,
 };
 
 const DataContext = createContext<ContextProps | undefined>(undefined);
 
 const DataProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const { data: teams, loading: teamsLoading } = useLiveData<Names[]>(QUERY_KEYS.TEAMS);
   const { data: halls, loading: hallsLoading } = useLiveData<Names[]>(QUERY_KEYS.HALLS);
   const { data: members, loading: membersLoading } = useLiveData<Members[]>(QUERY_KEYS.MEMBERS);
@@ -92,6 +96,12 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     });
   }, [users, members]);
 
+  const loggedInUser = useMemo(() => {
+    if (!enrichedUsers?.length) return undefined;
+
+    return enrichedUsers?.find((enrichedUser) => enrichedUser.id === user?.id);
+  }, [enrichedUsers, user]);
+
   const sortedData = useMemo(() => {
     return {
       teams: [...(teams ?? defaultData.teams)].sort((a, b) => a.name.localeCompare(b.name)),
@@ -107,9 +117,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
       ),
       users: [...enrichedUsers].sort((a, b) => a.names?.localeCompare(b.names)),
-      version: version && version.length > 0 ? { id: version[0].id!, version: version[0].version } : null,
+      version: version && version.length > 0 ? { id: version[0].id!, version: version[0].version } : undefined,
+      loggedInUser,
     };
-  }, [teams, halls, members, training, ivl, volleymania, enrichedUsers, version]);
+  }, [teams, halls, members, training, ivl, volleymania, enrichedUsers, version, loggedInUser]);
 
   const isLoading = [
     teamsLoading,
