@@ -11,7 +11,7 @@ import {
   Matches,
   Training,
 } from '@/components';
-import { useAuth, useData } from '@/contexts';
+import { useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
 import { cn, getDataById } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
@@ -77,12 +77,11 @@ const getEventInfo = ({
   location: `зала ${location}`,
   start: warmupTime,
   duration: [eventType === QUERY_KEYS.TRAINING ? 2.25 : 2.75, 'hour'],
-  description: `Загрявка: ${format(warmupTime, 'HH:mm')}ч. <br/> Начало: ${format(startTime, 'HH:mm')}ч.`,
+  description: `Загрявка: ${format(warmupTime, 'HH:mm')}ч.; Начало: ${format(startTime, 'HH:mm')}ч.`,
 });
 
 const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
   const { toast } = useToast();
-  const { user } = useAuth();
   const { data } = useData();
   const { loggedInUser } = data;
 
@@ -165,7 +164,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
           </div>
         ) : null}
 
-        {!!user && isCurrent ? (
+        {canVote ? (
           <>
             <CardDescription>
               Дата: {formattedDate}г. ({dayOfWeek})
