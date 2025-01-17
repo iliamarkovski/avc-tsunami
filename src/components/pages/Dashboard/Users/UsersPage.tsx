@@ -77,8 +77,8 @@ const UsersPage = ({ title, addBttonLabel }: Props) => {
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Имейл</TableHead>
               <TableHead>Имена</TableHead>
+              <TableHead className="w-full">Имейл</TableHead>
               <TableHead>Тип</TableHead>
               <TableHead>ID</TableHead>
               <TableHead className="!px-0"></TableHead>
@@ -89,8 +89,8 @@ const UsersPage = ({ title, addBttonLabel }: Props) => {
               const userType = user.role === 'coach' ? 'Т' : user.isMember ? (user.isActive ? 'К' : 'Н') : 'Д';
               return (
                 <TableRow key={user.id}>
+                  <TableCell>{user.names}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell className="w-full">{user.names}</TableCell>
                   <TableCell className="text-center">{userType}</TableCell>
                   <TableCell>{user.id}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
