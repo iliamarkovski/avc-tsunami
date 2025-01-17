@@ -40,7 +40,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        'whitespace-nowrap px-2 pb-1 text-left align-middle font-medium text-muted-foreground sm:px-3 sm:pb-2 [&:has([role=checkbox])]:pr-0',
+        'whitespace-nowrap px-1 pb-1 text-left align-middle font-medium text-muted-foreground sm:px-3 sm:pb-2 [&:has([role=checkbox])]:pr-0',
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, React.TdHTMLAttributes<
     <td
       ref={ref}
       className={cn(
-        'whitespace-nowrap px-2 py-1 align-middle sm:px-3 sm:py-2 [&:has([role=checkbox])]:pr-0',
+        'whitespace-nowrap px-1 py-1 align-middle sm:px-3 sm:py-2 [&:has([role=checkbox])]:pr-0',
         className
       )}
       {...props}
