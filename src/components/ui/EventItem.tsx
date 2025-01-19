@@ -76,7 +76,7 @@ const getEventInfo = ({
   title: prefix[eventType] + title + suffix[eventType],
   location: `зала ${location}`,
   start: warmupTime,
-  duration: [eventType === QUERY_KEYS.TRAINING ? 2.25 : 2.75, 'hour'],
+  duration: [eventType === QUERY_KEYS.TRAINING ? 2 : 2.75, 'hour'],
   description: `Загрявка: ${format(warmupTime, 'HH:mm')}ч; Начало: ${format(startTime, 'HH:mm')}ч.`,
 });
 
