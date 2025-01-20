@@ -171,7 +171,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Геймове домакин</FormLabel>
               <FormControl>
-                <Input {...field} type="tel" />
+                <Input {...field} type="number" min={0} max={3} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -185,7 +185,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Геймове гост</FormLabel>
               <FormControl>
-                <Input {...field} type="tel" />
+                <Input {...field} type="number" min={0} max={3} />
               </FormControl>
               <FormMessage />
             </FormItem>

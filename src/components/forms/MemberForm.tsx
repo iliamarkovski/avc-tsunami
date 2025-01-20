@@ -129,7 +129,7 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Номер</FormLabel>
               <FormControl>
-                <Input {...field} type="tel" />
+                <Input {...field} type="number" />
               </FormControl>
               <FormMessage />
             </FormItem>
