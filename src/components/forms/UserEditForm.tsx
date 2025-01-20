@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -212,14 +213,10 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           control={form.control}
           name="isAdmin"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Админ</FormLabel>
-              </div>
-            </FormItem>
+            <Label className="flex cursor-pointer flex-row items-center gap-2 rounded-md border p-4">
+              <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
+              Админ
+            </Label>
           )}
         />
 
@@ -227,14 +224,10 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
           control={form.control}
           name="isSuperAdmin"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Суперадмин</FormLabel>
-              </div>
-            </FormItem>
+            <Label className="flex cursor-pointer flex-row items-center gap-2 rounded-md border p-4">
+              <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={id === SUPER_ADMIN_ID} />
+              Суперадмин
+            </Label>
           )}
         />
 

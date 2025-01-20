@@ -17,6 +17,7 @@ import {
   Checkbox,
   DateTimePicker,
   Textarea,
+  Label,
 } from '@/components';
 import { TEAM_NAME } from '@/constants';
 import { useData } from '@/contexts';
@@ -156,14 +157,10 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           control={form.control}
           name="host"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>{TEAM_NAME} домакин</FormLabel>
-              </div>
-            </FormItem>
+            <Label className="flex cursor-pointer flex-row items-center gap-2 rounded-md border p-4">
+              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              {TEAM_NAME} домакин
+            </Label>
           )}
         />
 

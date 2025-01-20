@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -139,14 +140,10 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           control={form.control}
           name="active"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Картотекиран</FormLabel>
-              </div>
-            </FormItem>
+            <Label className="flex cursor-pointer flex-row items-center gap-2 rounded-md border p-4">
+              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              Картотекиран
+            </Label>
           )}
         />
 
@@ -154,14 +151,10 @@ const MemberForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           control={form.control}
           name="captain"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>Капитан</FormLabel>
-              </div>
-            </FormItem>
+            <Label className="flex cursor-pointer flex-row items-center gap-2 rounded-md border p-4">
+              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+              Капитан
+            </Label>
           )}
         />
 
