@@ -37,8 +37,18 @@ const formSchema = z.object({
   hall: z.string().min(1, { message: 'Задължително поле' }),
   opponent: z.string().min(1, { message: 'Задължително поле' }),
   host: z.boolean().default(false),
-  gamesHost: z.string(),
-  gamesGuest: z.string(),
+  gamesHost: z
+    .string()
+    .optional()
+    .refine((value) => value === undefined || (Number(value) >= 0 && Number(value) <= 3), {
+      message: 'Стойността трябва да е между 0 и 3',
+    }),
+  gamesGuest: z
+    .string()
+    .optional()
+    .refine((value) => value === undefined || (Number(value) >= 0 && Number(value) <= 3), {
+      message: 'Стойността трябва да е между 0 и 3',
+    }),
   recordingLink: z.string(),
   id: z.string().optional(),
   message: z.string().optional(),
@@ -171,7 +181,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Геймове домакин</FormLabel>
               <FormControl>
-                <Input {...field} type="number" min={0} max={3} />
+                <Input {...field} type="number" pattern="[0-9]" inputMode="numeric" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -185,7 +195,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Геймове гост</FormLabel>
               <FormControl>
-                <Input {...field} type="number" min={0} max={3} />
+                <Input {...field} type="number" pattern="[0-9]" inputMode="numeric" />
               </FormControl>
               <FormMessage />
             </FormItem>
