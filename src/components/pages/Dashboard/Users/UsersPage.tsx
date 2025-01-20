@@ -8,7 +8,6 @@ import {
   TableRow,
   Title,
   EditLink,
-  TableCaption,
 } from '@/components';
 import { EnrichedUser, useData } from '@/contexts';
 import { cn } from '@/lib';
@@ -70,37 +69,40 @@ const UsersPage = ({ title, addBttonLabel }: Props) => {
       </div>
 
       {users?.length > 0 ? (
-        <Table>
-          <TableCaption>
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Имена</TableHead>
+                <TableHead className="w-full">Имейл</TableHead>
+                <TableHead>Тип</TableHead>
+                <TableHead>ID</TableHead>
+                <TableHead className="!px-0"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => {
+                const userType = user.role === 'coach' ? 'Т' : user.isMember ? (user.isActive ? 'К' : 'Н') : 'Д';
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.names}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="text-center">{userType}</TableCell>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell className="sticky right-0 !px-0">
+                      <EditLink to={user.id!} />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+
+          <p className="text-center text-sm text-muted-foreground">
             Общо ({users.length}): Картотекирани: {usersTypes.active || 0} / {activeMembers.length}, Некартотекирани:{' '}
             {usersTypes.notActive || 0}, Треньор: {usersTypes.coach || 0}, Други: {usersTypes.other || 0}
-          </TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Имена</TableHead>
-              <TableHead className="w-full">Имейл</TableHead>
-              <TableHead>Тип</TableHead>
-              <TableHead>ID</TableHead>
-              <TableHead className="!px-0"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => {
-              const userType = user.role === 'coach' ? 'Т' : user.isMember ? (user.isActive ? 'К' : 'Н') : 'Д';
-              return (
-                <TableRow key={user.id}>
-                  <TableCell>{user.names}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell className="text-center">{userType}</TableCell>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell className="sticky right-0 !px-0">
-                    <EditLink to={user.id!} />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+          </p>
+        </>
       ) : null}
     </section>
   );

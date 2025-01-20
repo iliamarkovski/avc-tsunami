@@ -29,7 +29,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {LATEST_VERSION ? <p className="text-xs">Версия {LATEST_VERSION}</p> : null}
+          {LATEST_VERSION ? <p className="text-xs">Версия {Number(LATEST_VERSION).toFixed(2)}</p> : null}
         </div>
       </div>
     </footer>

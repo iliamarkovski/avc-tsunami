@@ -58,8 +58,8 @@ const VersionPage = ({ queryKey, title, addBttonLabel }: Props) => {
           </TableHeader>
           <TableBody>
             <TableRow key={version.id}>
-              <TableCell>{version.version}</TableCell>
-              <TableCell>{LATEST_VERSION}</TableCell>
+              <TableCell>{Number(version.version).toFixed(2)}</TableCell>
+              <TableCell>{Number(LATEST_VERSION).toFixed(2)}</TableCell>
               <TableCell className="!px-0">
                 <EditLink to={version.id!} />
               </TableCell>
