@@ -29,6 +29,9 @@ import { Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+const storage = getStorage();
 
 const formSchema = z.object({
   dateTime: z.date({
@@ -51,6 +54,8 @@ const formSchema = z.object({
     }),
   recordingLink: z.string(),
   id: z.string().optional(),
+  statisticsDoc: z.instanceof(File).optional(),
+  statisticsDocUrl: z.string().optional(),
   message: z.string().optional(),
 });
 
@@ -76,6 +81,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       gamesGuest: props.gamesGuest ?? '',
       recordingLink: props.recordingLink ?? '',
       message: props.message ?? '',
+      statisticsDocUrl: props.statisticsDocUrl,
     },
   });
 
@@ -101,7 +107,30 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   });
 
   const handleSubmit = async (value: FormValues) => {
-    mutate(value);
+    const { statisticsDoc, ...otherValues } = value;
+
+    try {
+      let statisticsDocUrl: string | undefined = undefined;
+
+      if (statisticsDoc instanceof File) {
+        // Upload file to Firebase Storage
+        const storageRef = ref(storage, `statistics/${Date.now()}-${statisticsDoc.name}`);
+        const snapshot = await uploadBytes(storageRef, statisticsDoc);
+
+        // Get the file's download URL
+        statisticsDocUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      // Save the form data with the file URL
+      await mutate({ ...otherValues, statisticsDocUrl });
+    } catch (error) {
+      console.error('Error uploading file or saving data:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Възникна грешка',
+        description: 'Моля, опитайте отново по-късно.',
+      });
+    }
   };
 
   return (
@@ -211,6 +240,36 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="statisticsDoc"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Статистика</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    field.onChange(file ?? undefined);
+                  }}
+                  onBlur={field.onBlur}
+                />
+              </FormControl>
+
+              {props.statisticsDocUrl && (
+                <div className="mt-2">
+                  <a href={props.statisticsDocUrl} target="_blank" rel="noopener noreferrer">
+                    View Existing File
+                  </a>
+                </div>
+              )}
               <FormMessage />
             </FormItem>
           )}

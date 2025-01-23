@@ -35,6 +35,7 @@ const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
         id={id}
         parentUrl={parentUrl}
         queryKey={queryKey}
+        statisticsDocUrl={event.statisticsDocUrl}
       />
     </FormCard>
   );
