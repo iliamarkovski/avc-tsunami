@@ -89,6 +89,7 @@ const FutureEventsList = () => {
             hall={hall}
             opponent={opponent}
             isHost={event.isHost!}
+            isFuture
           />
         );
       })}

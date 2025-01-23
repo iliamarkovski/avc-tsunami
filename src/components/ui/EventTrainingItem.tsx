@@ -21,6 +21,7 @@ const EventTrainingItem = ({ hall, dateTime, id, isCurrent, badge, message }: Pr
       dateTime={dateTime}
       badge={badge}
       message={message}
+      isFuture
     />
   );
 };

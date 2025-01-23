@@ -38,6 +38,7 @@ type EventResponseType = {
 
 type Props = {
   isCurrent?: boolean;
+  isFuture?: boolean;
   children?: ReactNode;
   queryKey: QueryKeys;
   eventId: string;
@@ -84,7 +85,18 @@ const getEventInfo = ({
     : undefined,
 });
 
-const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
+const EventItem = ({
+  isCurrent,
+  children,
+  queryKey,
+  eventId,
+  dateTime,
+  title,
+  hall,
+  badge,
+  message,
+  isFuture,
+}: Props) => {
   const { toast } = useToast();
   const { data } = useData();
   const { loggedInUser } = data;
@@ -116,7 +128,8 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   );
 
   const canSeeDetails = useMemo(
-    () => !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
+    () =>
+      isFuture && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
     [isCurrent, loggedInUser, queryKey]
   );
 
@@ -202,26 +215,30 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
 
         {children}
 
-        <div className="flex flex-col items-center">
-          {canVote ? <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} /> : null}
+        {isFuture ? (
+          <div className="flex flex-col items-center">
+            {canVote ? <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} /> : null}
 
-          <a
-            className={cn(buttonVariants(), 'mt-5')}
-            href={google(
-              getEventInfo({
-                title: calendarTitle,
-                location: hall,
-                warmupTime: timeDiff,
-                startTime: dateTime,
-                eventType: queryKey as EventType,
-                canSeeDetails,
-              })
-            )}
-            target="_blank"
-            rel="noopener noreferrer">
-            <CalendarPlus /> Добави в календар
-          </a>
-        </div>
+            {isFuture ? (
+              <a
+                className={cn(buttonVariants(), 'mt-5')}
+                href={google(
+                  getEventInfo({
+                    title: calendarTitle,
+                    location: hall,
+                    warmupTime: timeDiff,
+                    startTime: dateTime,
+                    eventType: queryKey as EventType,
+                    canSeeDetails: !!canSeeDetails,
+                  })
+                )}
+                target="_blank"
+                rel="noopener noreferrer">
+                <CalendarPlus /> Добави в календар
+              </a>
+            ) : null}
+          </div>
+        ) : null}
       </CardHeader>
     </Card>
   );
