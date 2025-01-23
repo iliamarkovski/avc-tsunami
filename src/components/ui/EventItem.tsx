@@ -66,18 +66,22 @@ const getEventInfo = ({
   warmupTime,
   startTime,
   eventType,
+  canSeeDetails,
 }: {
   title: string;
   location: string;
   warmupTime: Date;
   startTime: Date;
   eventType: EventType;
+  canSeeDetails: boolean;
 }): CalendarEvent => ({
   title: prefix[eventType] + title + suffix[eventType],
   location: `зала ${location}`,
-  start: warmupTime,
-  duration: [eventType === QUERY_KEYS.TRAINING ? 2 : 2.75, 'hour'],
-  description: `Загрявка: ${format(warmupTime, 'HH:mm')}ч; Начало: ${format(startTime, 'HH:mm')}ч.`,
+  start: canSeeDetails ? warmupTime : startTime,
+  duration: [eventType === QUERY_KEYS.TRAINING ? (canSeeDetails ? 2 : 1.75) : canSeeDetails ? 2.75 : 2, 'hour'],
+  description: canSeeDetails
+    ? `Загрявка: ${format(warmupTime, 'HH:mm')}ч; Начало: ${format(startTime, 'HH:mm')}ч.`
+    : undefined,
 });
 
 const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, hall, badge, message }: Props) => {
@@ -108,6 +112,11 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
   const canVote = useMemo(
     () =>
       isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
+    [isCurrent, loggedInUser, queryKey]
+  );
+
+  const canSeeDetails = useMemo(
+    () => !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
     [isCurrent, loggedInUser, queryKey]
   );
 
@@ -164,7 +173,7 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
           </div>
         ) : null}
 
-        {canVote ? (
+        {canSeeDetails ? (
           <>
             <CardDescription>
               Дата: {formattedDate}г. ({dayOfWeek})
@@ -193,27 +202,26 @@ const EventItem = ({ isCurrent, children, queryKey, eventId, dateTime, title, ha
 
         {children}
 
-        {canVote && (
-          <div className="flex flex-col items-center gap-5">
-            <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} />
+        <div className="flex flex-col items-center">
+          {canVote ? <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} /> : null}
 
-            <a
-              className={cn(buttonVariants())}
-              href={google(
-                getEventInfo({
-                  title: calendarTitle,
-                  location: hall,
-                  warmupTime: timeDiff,
-                  startTime: dateTime,
-                  eventType: queryKey as EventType,
-                })
-              )}
-              target="_blank"
-              rel="noopener noreferrer">
-              <CalendarPlus /> Добави в календар
-            </a>
-          </div>
-        )}
+          <a
+            className={cn(buttonVariants(), 'mt-5')}
+            href={google(
+              getEventInfo({
+                title: calendarTitle,
+                location: hall,
+                warmupTime: timeDiff,
+                startTime: dateTime,
+                eventType: queryKey as EventType,
+                canSeeDetails,
+              })
+            )}
+            target="_blank"
+            rel="noopener noreferrer">
+            <CalendarPlus /> Добави в календар
+          </a>
+        </div>
       </CardHeader>
     </Card>
   );
