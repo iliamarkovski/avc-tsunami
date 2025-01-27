@@ -26,7 +26,7 @@ import { toast } from '@/hooks';
 import { cn, getDateByTimestamp, getFileNameFromUrl } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Loader2, SquarePlay, Trash2 } from 'lucide-react';
+import { FileText, Loader2, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -272,7 +272,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
 
               {statisticsUrl && statisticsDocName ? (
                 <div className="flex gap-2">
-                  <IconLink href={statisticsUrl} title={statisticsDocName} icon={SquarePlay} />
+                  <IconLink href={statisticsUrl} title={statisticsDocName} icon={FileText} />
                   <Button size="icon" variant="ghost" title="Изтрий" onClick={handleDelete}>
                     <Trash2 className="text-destructive" />
                   </Button>
