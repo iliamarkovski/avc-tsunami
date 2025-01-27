@@ -206,9 +206,8 @@ const EventItem = ({
 
         {canVote && message ? (
           <Alert className="!mt-5 w-auto self-center border-secondary">
-            <AlertTitle className="mb-0 flex items-center justify-center gap-2">
-              <span className="animate-pulse">⚠️</span> <span className="italic">{message}</span>{' '}
-              <span className="animate-pulse">⚠️</span>
+            <AlertTitle className="mb-0 font-light italic">
+              <span className="animate-pulse not-italic">⚠️</span> {message}{' '}
             </AlertTitle>
           </Alert>
         ) : null}
