@@ -112,7 +112,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     try {
       let statisticsDocUrl: string | undefined = undefined;
 
-      if (statisticsDoc instanceof File) {
+      if (statisticsDoc && statisticsDoc instanceof File) {
         // Upload file to Firebase Storage
         const storageRef = ref(storage, `statistics/${Date.now()}-${statisticsDoc.name}`);
         const snapshot = await uploadBytes(storageRef, statisticsDoc);
@@ -122,7 +122,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       }
 
       // Save the form data with the file URL
-      await mutate({ ...otherValues, statisticsDocUrl });
+      await mutate({ ...otherValues, statisticsDocUrl: statisticsDocUrl || '' });
     } catch (error) {
       console.error('Error uploading file or saving data:', error);
       toast({
