@@ -24,10 +24,11 @@ import { Link } from 'react-router-dom';
 type Props = {
   queryKey: QueryKeys;
   title: string;
-  addBttonLabel: string;
+  addButtonLabel: string;
+  parentUrl?: string;
 };
 
-const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
+const TrainingPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }: Props) => {
   const { toast } = useToast();
   const { data } = useData();
   const { halls, training } = data;
@@ -55,7 +56,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col items-start gap-4">
-        <Link to="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>
+        <Link to={parentUrl} className={cn(buttonVariants({ variant: 'outline' }))}>
           <ArrowLeft />
           Назад
         </Link>
@@ -65,7 +66,7 @@ const TrainingPage = ({ queryKey, title, addBttonLabel }: Props) => {
 
           <Link to="add" className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'px-0 sm:px-4')}>
             <Plus />
-            <span className="hidden sm:block">{addBttonLabel}</span>
+            <span className="hidden sm:block">{addButtonLabel}</span>
           </Link>
         </div>
       </div>

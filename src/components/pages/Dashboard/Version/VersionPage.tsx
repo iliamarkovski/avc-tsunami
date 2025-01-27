@@ -20,17 +20,18 @@ import { Link } from 'react-router-dom';
 type Props = {
   queryKey: QueryKeys;
   title: string;
-  addBttonLabel: string;
+  addButtonLabel: string;
+  parentUrl?: string;
 };
 
-const VersionPage = ({ queryKey, title, addBttonLabel }: Props) => {
+const VersionPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }: Props) => {
   const { data } = useData();
   const version = data[queryKey] as Version;
 
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col items-start gap-4">
-        <Link to="/dashboard" className={cn(buttonVariants({ variant: 'outline' }))}>
+        <Link to={parentUrl} className={cn(buttonVariants({ variant: 'outline' }))}>
           <ArrowLeft />
           Назад
         </Link>
@@ -41,7 +42,7 @@ const VersionPage = ({ queryKey, title, addBttonLabel }: Props) => {
           {!version ? (
             <Link to="add" className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'px-0 sm:px-4')}>
               <Plus />
-              <span className="hidden sm:block">{addBttonLabel}</span>
+              <span className="hidden sm:block">{addButtonLabel}</span>
             </Link>
           ) : null}
         </div>
