@@ -65,7 +65,7 @@ const MembersPage = ({ parentUrl = '/dashboard', title, addButtonLabel }: Props)
             {sortedMembers.map((member) => {
               return (
                 <TableRow key={member.id}>
-                  <TableCell className="w-min text-center">{member.number}</TableCell>
+                  <TableCell className="w-min text-center">{+member.number < 0 ? '-' : member.number}</TableCell>
                   <TableCell className="w-full">
                     {member.names} {member.captain ? '(к)' : null}
                   </TableCell>

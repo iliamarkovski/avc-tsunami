@@ -33,6 +33,7 @@ const formSchema = z.object({
   active: z.boolean().default(false).optional(),
   captain: z.boolean().default(false).optional(),
   id: z.string().optional(),
+  image: z.string().optional(),
 });
 
 export type Members = z.infer<typeof formSchema>;

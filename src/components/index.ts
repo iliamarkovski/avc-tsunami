@@ -62,12 +62,13 @@ export * from './forms/MemberForm';
 export * from './forms/TrainingForm';
 export * from './forms/MatchForm';
 export * from './forms/VersionForm';
+export * from './forms/ProfileForm';
 
 //pages
 export * from './pages/HomePage';
 export * from './pages/ActiveMembersPage';
 export * from './pages/LoginPage';
-
+export * from './pages/ProfilePage';
 export * from './pages/Dashboard/DashboardNavPage';
 export * from './forms/NameForm';
 export * from './pages/Dashboard/Names/NamesPage';

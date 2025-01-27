@@ -1,4 +1,7 @@
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Button,
   buttonVariants,
   DropdownMenu,
@@ -13,7 +16,7 @@ import { useAuth, useData } from '@/contexts';
 import { useToast } from '@/hooks';
 import { cn, getFirstChars } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
-import { LogOut, Wrench } from 'lucide-react';
+import { LogOut, UserPen, Wrench } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 const LogoutMenu = () => {
   const { logout } = useAuth();
@@ -47,17 +50,37 @@ const LogoutMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" title="menu button">
-          {getFirstChars(loggedInUser?.names || '')}
+        <Button variant="outline" size="icon" title="menu button" className="relative overflow-hidden">
+          <Avatar className="absolute inset-0 h-full w-full rounded-none">
+            <AvatarImage src={loggedInUser?.image!} className="h-full w-full object-cover" />
+            <AvatarFallback className="h-full w-full rounded-none bg-transparent leading-none">
+              {getFirstChars(loggedInUser?.names || '')}
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{loggedInUser?.names}</DropdownMenuLabel>
+        {!!loggedInUser ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link
+                to="/profile"
+                className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'w-full justify-start')}>
+                <UserPen />
+                Профил
+              </Link>
+            </DropdownMenuItem>
+          </>
+        ) : null}
         {loggedInUser?.isAdmin ? (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/dashboard" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }))}>
+              <Link
+                to="/dashboard"
+                className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'w-full justify-start')}>
                 <Wrench />
                 Управление
               </Link>

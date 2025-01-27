@@ -22,12 +22,13 @@ import {
   EditVersionPage,
   AddVersionPage,
   DashboardSeasonsNavPage,
+  ProfilePage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData, useTheme } from '@/contexts';
 import { RequireAccessRoutes } from '@/routes';
 import { Helmet } from 'react-helmet-async';
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 const AppRouter = () => {
   const { data } = useData();
@@ -48,7 +49,31 @@ const AppRouter = () => {
         },
         {
           path: '/login',
-          element: !loggedInUser ? <LoginPage /> : <Navigate to="/" replace />,
+          element: (
+            <RequireAccessRoutes hasAccess={!loggedInUser}>
+              <Outlet />
+            </RequireAccessRoutes>
+          ),
+          children: [
+            {
+              index: true,
+              element: <LoginPage />,
+            },
+          ],
+        },
+        {
+          path: '/profile',
+          element: (
+            <RequireAccessRoutes hasAccess={!!loggedInUser}>
+              <Outlet />
+            </RequireAccessRoutes>
+          ),
+          children: [
+            {
+              index: true,
+              element: <ProfilePage />,
+            },
+          ],
         },
         {
           path: '/dashboard',
