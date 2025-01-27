@@ -83,6 +83,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
               <TableHead>Среща</TableHead>
               <TableHead className="w-full">Зала</TableHead>
               <TableHead>Видео</TableHead>
+              <TableHead>Статистика</TableHead>
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
@@ -103,6 +104,7 @@ const MatchesPage = ({ queryKey, title, addBttonLabel }: Props) => {
                   </TableCell>
                   <TableCell>{halls ? getNameById(halls, item.hall) : '???'}</TableCell>
                   <TableCell className="text-center">{item.recordingLink ? 'Да' : 'Не'}</TableCell>
+                  <TableCell className="text-center">{item.statisticsDocUrl ? 'Да' : 'Не'}</TableCell>
                   <TableCell className="sticky right-0 !px-0">
                     <EditLink to={item.id!} />
                   </TableCell>

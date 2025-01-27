@@ -18,18 +18,20 @@ import {
   DateTimePicker,
   Textarea,
   Label,
+  IconLink,
 } from '@/components';
 import { TEAM_NAME } from '@/constants';
 import { useData } from '@/contexts';
 import { toast } from '@/hooks';
-import { cn, getDateByTimestamp } from '@/lib';
+import { cn, getDateByTimestamp, getFileNameFromUrl } from '@/lib';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+import { Loader2, SquarePlay, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { useState } from 'react';
 
 const storage = getStorage();
 
@@ -65,10 +67,15 @@ type FormValues = Omit<Matches, 'id'>;
 type Props = Partial<Matches> & { parentUrl: string; queryKey: string };
 
 const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const { data } = useData();
   const { halls, teams } = data;
+
+  const [statisticsUrl, setStatisticsUrl] = useState<string | undefined>(props.statisticsDocUrl);
+
+  const statisticsDocName = getFileNameFromUrl(statisticsUrl);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -81,7 +88,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       gamesGuest: props.gamesGuest ?? '',
       recordingLink: props.recordingLink ?? '',
       message: props.message ?? '',
-      statisticsDocUrl: props.statisticsDocUrl,
+      statisticsDocUrl: statisticsUrl ?? '',
     },
   });
 
@@ -107,22 +114,27 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   });
 
   const handleSubmit = async (value: FormValues) => {
-    const { statisticsDoc, ...otherValues } = value;
+    setIsLoading(true);
+    const { statisticsDoc, statisticsDocUrl, ...otherValues } = value;
 
     try {
-      let statisticsDocUrl: string | undefined = undefined;
+      let newStatisticsDocUrl: string | undefined = undefined;
 
       if (statisticsDoc && statisticsDoc instanceof File) {
-        // Upload file to Firebase Storage
+        // Upload the new file to Firebase Storage
         const storageRef = ref(storage, `statistics/${Date.now()}-${statisticsDoc.name}`);
         const snapshot = await uploadBytes(storageRef, statisticsDoc);
 
         // Get the file's download URL
-        statisticsDocUrl = await getDownloadURL(snapshot.ref);
+        newStatisticsDocUrl = await getDownloadURL(snapshot.ref);
+      } else if (!statisticsDoc && statisticsDocUrl) {
+        // Delete the existing file from Firebase Storage
+        const fileRef = ref(storage, statisticsDocUrl);
+        await deleteObject(fileRef);
       }
 
-      // Save the form data with the file URL
-      await mutate({ ...otherValues, statisticsDocUrl: statisticsDocUrl || '' });
+      // Save the form data with the updated file URL (or empty URL)
+      await mutate({ ...otherValues, statisticsDocUrl: newStatisticsDocUrl || '' });
     } catch (error) {
       console.error('Error uploading file or saving data:', error);
       toast({
@@ -130,7 +142,13 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
         title: 'Възникна грешка',
         description: 'Моля, опитайте отново по-късно.',
       });
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleDelete = () => {
+    setStatisticsUrl(undefined);
   };
 
   return (
@@ -251,24 +269,26 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Статистика</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    field.onChange(file ?? undefined);
-                  }}
-                  onBlur={field.onBlur}
-                />
-              </FormControl>
 
-              {props.statisticsDocUrl && (
-                <div className="mt-2">
-                  <a href={props.statisticsDocUrl} target="_blank" rel="noopener noreferrer">
-                    View Existing File
-                  </a>
+              {statisticsUrl && statisticsDocName ? (
+                <div className="flex gap-2">
+                  <IconLink href={statisticsUrl} title={statisticsDocName} icon={SquarePlay} />
+                  <Button size="icon" variant="ghost" title="Изтрий" onClick={handleDelete}>
+                    <Trash2 className="text-destructive" />
+                  </Button>
                 </div>
+              ) : (
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      field.onChange(file ?? undefined);
+                    }}
+                    onBlur={field.onBlur}
+                  />
+                </FormControl>
               )}
               <FormMessage />
             </FormItem>
@@ -294,8 +314,8 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             Отказ
           </Link>
 
-          <Button type="submit" disabled={isPending} className="w-full">
-            {isPending ? <Loader2 className="animate-spin" /> : null}
+          <Button type="submit" disabled={isLoading || isPending} className="w-full">
+            {isLoading || isPending ? <Loader2 className="animate-spin" /> : null}
             {id ? 'Промени' : 'Добави'}
           </Button>
         </div>

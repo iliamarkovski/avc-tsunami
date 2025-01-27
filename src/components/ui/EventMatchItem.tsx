@@ -1,5 +1,4 @@
-import { buttonVariants, EventItem, MatchTitle } from '@/components';
-import { cn } from '@/lib';
+import { EventItem, IconLink, MatchTitle } from '@/components';
 import { SquarePlay, FileText } from 'lucide-react';
 import { useData } from '@/contexts';
 import { QueryKeys } from '@/types';
@@ -53,16 +52,10 @@ const EventMatchItem = ({
       isFuture={isFuture}>
       {recordingUrl || (statisticsUrl && !!loggedInUser) ? (
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
-          {recordingUrl ? (
-            <a href={recordingUrl} target="_blank" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
-              <SquarePlay className="text-red-600" /> Видео
-            </a>
-          ) : null}
+          {recordingUrl ? <IconLink href={recordingUrl} title="Видео" icon={SquarePlay} /> : null}
 
           {statisticsUrl && !!loggedInUser ? (
-            <a href={statisticsUrl} target="_blank" className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}>
-              <FileText className="text-red-600" /> Статистика
-            </a>
+            <IconLink href={statisticsUrl} title="Статистика" icon={FileText} />
           ) : null}
         </div>
       ) : null}

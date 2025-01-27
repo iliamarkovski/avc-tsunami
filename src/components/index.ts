@@ -51,6 +51,7 @@ export * from './ui/FormCard';
 export * from './ui/Textarea';
 export * from './ui/Blockquote';
 export * from './ui/ReloadBlock';
+export * from './ui/IconLink';
 
 //forms
 export * from './forms/LoginForm';
