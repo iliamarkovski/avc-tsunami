@@ -21,6 +21,7 @@ import {
   VersionPage,
   EditVersionPage,
   AddVersionPage,
+  DashboardSeasonsNavPage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData, useTheme } from '@/contexts';
@@ -67,7 +68,7 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <NamesPage queryKey={QUERY_KEYS.TEAMS} title="Всички отбори" addBttonLabel="Добави нов" />,
+                  element: <NamesPage queryKey={QUERY_KEYS.TEAMS} title="Всички отбори" addButtonLabel="Добави нов" />,
                 },
                 {
                   path: 'add',
@@ -103,7 +104,7 @@ const AppRouter = () => {
                     <MatchesPage
                       queryKey={QUERY_KEYS.VOLLEYMANIA}
                       title="Всички срещи от Volley Mania"
-                      addBttonLabel="Добави нова"
+                      addButtonLabel="Добави нова"
                     />
                   ),
                 },
@@ -138,7 +139,7 @@ const AppRouter = () => {
                 {
                   index: true,
                   element: (
-                    <MatchesPage queryKey={QUERY_KEYS.IVL} title="Всички срещи от IVL" addBttonLabel="Добави нова" />
+                    <MatchesPage queryKey={QUERY_KEYS.IVL} title="Всички срещи от IVL" addButtonLabel="Добави нова" />
                   ),
                 },
                 {
@@ -175,7 +176,7 @@ const AppRouter = () => {
                     <TrainingPage
                       queryKey={QUERY_KEYS.TRAINING}
                       title="Всички тренировки"
-                      addBttonLabel="Добави нова"
+                      addButtonLabel="Добави нова"
                     />
                   ),
                 },
@@ -209,7 +210,7 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <NamesPage queryKey={QUERY_KEYS.HALLS} title="Всички зали" addBttonLabel="Добави нова" />,
+                  element: <NamesPage queryKey={QUERY_KEYS.HALLS} title="Всички зали" addButtonLabel="Добави нова" />,
                 },
                 {
                   path: 'add',
@@ -242,7 +243,7 @@ const AppRouter = () => {
                 {
                   index: true,
                   element: (
-                    <MembersPage queryKey={QUERY_KEYS.MEMBERS} title="Всички състезатели" addBttonLabel="Добави нов" />
+                    <MembersPage queryKey={QUERY_KEYS.MEMBERS} title="Всички състезатели" addButtonLabel="Добави нов" />
                   ),
                 },
                 {
@@ -295,6 +296,92 @@ const AppRouter = () => {
               ],
             },
             {
+              path: 'seasons',
+              element: <Outlet />,
+              children: [
+                {
+                  index: true,
+                  element: <DashboardSeasonsNavPage />,
+                },
+                {
+                  path: 'volleymania',
+                  element: <Outlet />,
+                  children: [
+                    {
+                      index: true,
+                      element: (
+                        <NamesPage
+                          queryKey={QUERY_KEYS.SEASONS}
+                          title="Всички сезони във Volley Mania"
+                          addButtonLabel="Добави нов"
+                        />
+                      ),
+                    },
+                    {
+                      path: 'add',
+                      element: (
+                        <AddNamePage
+                          title="Добави сезон"
+                          description="Моля, проверете дали сезонът вече не е добавен"
+                          parentUrl="/dashboard/seasons/volleymania"
+                          queryKey={QUERY_KEYS.SEASONS}
+                        />
+                      ),
+                    },
+                    {
+                      path: ':id',
+                      element: (
+                        <EditNamePage
+                          title="Редактиране на сезон"
+                          description="Редактирайте името на сезона"
+                          parentUrl="/dashboard/seasons/volleymania"
+                          queryKey={QUERY_KEYS.SEASONS}
+                        />
+                      ),
+                    },
+                  ],
+                },
+                {
+                  path: 'ivl',
+                  element: <Outlet />,
+                  children: [
+                    {
+                      index: true,
+                      element: (
+                        <NamesPage
+                          queryKey={QUERY_KEYS.SEASONS}
+                          title="Всички сезони във IVL"
+                          addButtonLabel="Добави нов"
+                        />
+                      ),
+                    },
+                    {
+                      path: 'add',
+                      element: (
+                        <AddNamePage
+                          title="Добави сезон"
+                          description="Моля, проверете дали сезонът вече не е добавен"
+                          parentUrl="/dashboard/seasons/ivl"
+                          queryKey={QUERY_KEYS.SEASONS}
+                        />
+                      ),
+                    },
+                    {
+                      path: ':id',
+                      element: (
+                        <EditNamePage
+                          title="Редактиране на сезон"
+                          description="Редактирайте името на сезона"
+                          parentUrl="/dashboard/seasons/ivl"
+                          queryKey={QUERY_KEYS.SEASONS}
+                        />
+                      ),
+                    },
+                  ],
+                },
+              ],
+            },
+            {
               path: 'version',
               element: (
                 <RequireAccessRoutes hasAccess={loggedInUser?.isSuperAdmin}>
@@ -304,7 +391,7 @@ const AppRouter = () => {
               children: [
                 {
                   index: true,
-                  element: <VersionPage queryKey={QUERY_KEYS.VERSION} title="Версия" addBttonLabel="Добави версия" />,
+                  element: <VersionPage queryKey={QUERY_KEYS.VERSION} title="Версия" addButtonLabel="Добави версия" />,
                 },
                 {
                   path: 'add',

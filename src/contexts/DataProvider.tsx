@@ -41,6 +41,7 @@ type SortedData = {
   users: EnrichedUser[];
   version: { version: string; id: string } | undefined;
   loggedInUser: EnrichedUser | undefined;
+  seasons: Names[];
 };
 
 type ContextProps = {
@@ -58,6 +59,7 @@ const defaultData: SortedData = {
   users: [],
   version: undefined,
   loggedInUser: undefined,
+  seasons: [],
 };
 
 const DataContext = createContext<ContextProps | undefined>(undefined);
@@ -72,6 +74,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
   const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
   const { data: version, loading: versionLoading } = useLiveData<Version[]>(QUERY_KEYS.VERSION);
+  const { data: seasons, loading: seasonsLoading } = useLiveData<Names[]>(QUERY_KEYS.SEASONS);
 
   const enrichedUsers = useMemo(() => {
     if (!users?.length || !members?.length) return [];
@@ -119,6 +122,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
       users: [...enrichedUsers].sort((a, b) => a.names?.localeCompare(b.names)),
       version: version && version.length > 0 ? { id: version[0].id!, version: version[0].version } : undefined,
       loggedInUser,
+      seasons: [...(seasons ?? defaultData.seasons)].sort((a, b) => a.name.localeCompare(b.name)),
     };
   }, [teams, halls, members, training, ivl, volleymania, enrichedUsers, version, loggedInUser]);
 
@@ -131,6 +135,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     volleymaniaLoading,
     usersLoading,
     versionLoading,
+    seasonsLoading,
   ].some(Boolean);
 
   return <DataContext.Provider value={{ isLoading, data: sortedData }}>{children}</DataContext.Provider>;

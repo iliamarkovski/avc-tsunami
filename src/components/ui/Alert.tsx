@@ -28,7 +28,7 @@ Alert.displayName = 'Alert';
 
 const AlertTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h5 ref={ref} className={cn('mb-1 text-sm font-medium leading-tight md:text-base', className)} {...props} />
+    <h5 ref={ref} className={cn('mb-1 text-base font-medium leading-tight', className)} {...props} />
   )
 );
 AlertTitle.displayName = 'AlertTitle';

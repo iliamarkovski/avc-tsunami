@@ -9,6 +9,7 @@ export const QUERY_KEYS: {
   IVL: QueryKeys;
   USERS: QueryKeys;
   VERSION: QueryKeys;
+  SEASONS: QueryKeys;
 } = {
   TEAMS: 'teams',
   HALLS: 'halls',
@@ -18,4 +19,5 @@ export const QUERY_KEYS: {
   IVL: 'ivl',
   USERS: 'users',
   VERSION: 'version',
+  SEASONS: 'seasons',
 } as const;

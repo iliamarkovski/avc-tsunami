@@ -35,6 +35,10 @@ const LINKS: { title: string; url: string; requiredSuperAdmin?: true }[] = [
     requiredSuperAdmin: true,
   },
   {
+    title: 'Сезони',
+    url: 'seasons',
+  },
+  {
     title: 'Версия',
     url: 'version',
     requiredSuperAdmin: true,
@@ -46,9 +50,9 @@ const DashboardNavPage = () => {
   const { loggedInUser } = data;
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col items-start gap-4">
       <Title title="Управление" />
-      <nav className="flex flex-col gap-4">
+      <nav className="flex w-full flex-col gap-4">
         {LINKS.map((link) => {
           if (link.requiredSuperAdmin && !loggedInUser?.isSuperAdmin) {
             return null;
