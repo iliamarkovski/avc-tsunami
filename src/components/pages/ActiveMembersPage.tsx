@@ -21,7 +21,7 @@ const ActiveMembersPage = () => {
           <Card key={member.id} className="flex flex-col">
             <CardHeader className="grow items-center gap-2 p-4 text-center">
               <Avatar className="aspect-square h-auto w-5/6 border">
-                <AvatarImage src={undefined} className="object-cover" />
+                <AvatarImage src={member.image} className="object-cover" />
                 <AvatarFallback>
                   <User className="h-3/5 w-3/5 text-background" />
                 </AvatarFallback>

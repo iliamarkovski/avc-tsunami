@@ -16,6 +16,7 @@ type Users = {
   isAdmin: boolean;
   isSuperAdmin: boolean;
   modifiedAt: Timestamp | null;
+  image?: string | null;
 }[];
 
 export type EnrichedUser = {
@@ -29,6 +30,7 @@ export type EnrichedUser = {
   isAdmin: boolean;
   isSuperAdmin: boolean;
   modifiedAt: Timestamp;
+  image?: string | null;
 };
 
 type SortedData = {
@@ -95,6 +97,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
         isAdmin: u.isAdmin,
         isSuperAdmin: u.isSuperAdmin,
         modifiedAt: u.modifiedAt,
+        image: member?.image || null,
       } as EnrichedUser;
     });
   }, [users, members]);
