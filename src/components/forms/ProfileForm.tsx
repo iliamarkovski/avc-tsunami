@@ -49,7 +49,6 @@ const ProfileForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const memberUser = members.find((member) => member.id === loggedInUser?.memberId);
-  console.log('memberUser: ', memberUser);
 
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(loggedInUser?.image);
   const isOtherMember = loggedInUser?.memberId === OTHER_VALUE;
