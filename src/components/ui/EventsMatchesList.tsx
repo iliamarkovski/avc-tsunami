@@ -54,7 +54,6 @@ const EventsMatchesList = ({ queryKey }: Props) => {
                   recordingUrl={event.recordingLink}
                   statisticsUrl={event.statisticsDocUrl || null}
                   queryKey={queryKey}
-                  message={event.message}
                 />
               );
             })}
@@ -81,10 +80,11 @@ const EventsMatchesList = ({ queryKey }: Props) => {
                 gamesHost={event.gamesHost}
                 gamesGuest={event.gamesGuest}
                 recordingUrl={event.recordingLink}
-                // statisticsUrl={event.statistics?.url || null}
+                statisticsUrl={event.statisticsDocUrl || null}
                 isCurrent={index === 0}
                 isFuture
                 queryKey={queryKey}
+                message={event.message}
               />
             );
           })}
