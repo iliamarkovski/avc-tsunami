@@ -1,13 +1,12 @@
-import { EventMatchItem, EventTrainingItem, NotFoundEvents } from '@/components';
+import { EventMatchItem, EventTrainingItem, Matches, NotFoundEvents, Training } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData } from '@/contexts';
 import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
 import { useMemo } from 'react';
-import { EventMatchProps } from '@/components';
 import { QueryKeys } from '@/types';
 
-type TagAndBadge = { tag: QueryKeys; badge: string };
-type TaggedMatchProps = EventMatchProps & TagAndBadge;
+type CommonProps = { badge: string; isCurrent: boolean };
+type EventProps = ({ tag: 'training' } & Training & CommonProps) | ({ tag: 'match' } & Matches & CommonProps);
 
 const FutureEventsList = () => {
   const { data } = useData();
@@ -15,7 +14,12 @@ const FutureEventsList = () => {
 
   const taggedFutureIvl = useMemo(() => {
     const { futureEvents: futureIvl } = separateEvents(ivl);
-    return futureIvl.map((event, index) => ({ ...event, tag: QUERY_KEYS.IVL, badge: 'IVL', isCurrent: index === 0 }));
+    return futureIvl.map((event, index) => ({
+      ...event,
+      tag: QUERY_KEYS.IVL,
+      badge: 'IVL',
+      isCurrent: index === 0,
+    }));
   }, [ivl]);
 
   const taggedFutureVolleyMania = useMemo(() => {
@@ -40,11 +44,11 @@ const FutureEventsList = () => {
 
   const taggedEvents = useMemo(() => {
     return [...taggedFutureIvl, ...taggedFutureVolleyMania, ...taggedFutureTraining];
-  }, [taggedFutureIvl, taggedFutureVolleyMania, taggedFutureTraining]) as Partial<TaggedMatchProps>[];
+  }, [taggedFutureIvl, taggedFutureVolleyMania, taggedFutureTraining]) as EventProps[];
 
   const sortedEvents = useMemo(() => {
     return [...taggedEvents].sort(
-      (a, b) => getDateByTimestamp(a.dateTime!).getTime() - getDateByTimestamp(b.dateTime!).getTime()
+      (a, b) => getDateByTimestamp(a.dateTime).getTime() - getDateByTimestamp(b.dateTime).getTime()
     );
   }, [taggedEvents]);
 
@@ -55,10 +59,10 @@ const FutureEventsList = () => {
   return (
     <div className="grid gap-4">
       {sortedEvents.map((event) => {
-        const hall = getNameById(halls, event.hall!);
-        const dateTime = getDateByTimestamp(event.dateTime!);
+        const hall = getNameById(halls, event.hall);
+        const dateTime = getDateByTimestamp(event.dateTime);
 
-        if (event.tag === QUERY_KEYS.TRAINING) {
+        if (event.tag === 'training') {
           return (
             <EventTrainingItem
               badge={event.badge}
@@ -72,23 +76,23 @@ const FutureEventsList = () => {
           );
         }
 
-        const opponent = getNameById(teams, event.opponent!);
+        const opponent = getNameById(teams, event.opponent);
         return (
           <EventMatchItem
+            key={event.id}
             badge={event.badge}
             gamesGuest={event.gamesGuest}
             gamesHost={event.gamesHost}
             isCurrent={event.isCurrent}
             message={event.message}
-            recordingUrl={event.recordingUrl}
-            statisticsUrl={event.statisticsUrl}
-            key={event.id}
+            recordingUrl={event.recordingLink}
+            statisticsUrl={event.statisticsDocUrl}
             id={event.id!}
-            queryKey={event.tag!}
+            queryKey={event.tag as QueryKeys}
             dateTime={dateTime}
             hall={hall}
             opponent={opponent}
-            isHost={event.isHost!}
+            isHost={event.host}
             isFuture
           />
         );
