@@ -13,7 +13,7 @@ import {
 } from '@/components';
 import { useData } from '@/contexts';
 import { useToast, useUsersByResponse } from '@/hooks';
-import { cn, getDataById } from '@/lib';
+import { cn, getDataById, wrapUrlsInLinks } from '@/lib';
 import { useMutation } from '@tanstack/react-query';
 import { ReactNode, useMemo } from 'react';
 import { google, CalendarEvent } from 'calendar-link';
@@ -206,8 +206,9 @@ const EventItem = ({
 
         {canVote && message ? (
           <Alert className="!mt-5 w-auto self-center border-secondary">
-            <AlertTitle className="mb-0 font-light italic">
-              <span className="animate-pulse not-italic">⚠️</span> {message}{' '}
+            <AlertTitle className="break-word mb-0 font-light italic">
+              <span className="animate-pulse not-italic">⚠️</span>{' '}
+              <span dangerouslySetInnerHTML={{ __html: wrapUrlsInLinks(message) }}></span>
             </AlertTitle>
           </Alert>
         ) : null}

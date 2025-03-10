@@ -8,3 +8,4 @@ export * from './separateEvents';
 export * from './timePicker';
 export * from './getDataById';
 export * from './getFileNameFromUrl';
+export * from './wrapUrlsInLinks';
