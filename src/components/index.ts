@@ -63,6 +63,7 @@ export * from './forms/TrainingForm';
 export * from './forms/MatchForm';
 export * from './forms/VersionForm';
 export * from './forms/ProfileForm';
+export * from './forms/NewPasswordForm';
 
 //pages
 export * from './pages/HomePage';
@@ -89,3 +90,4 @@ export * from './pages/Dashboard/Version/VersionPage';
 export * from './pages/Dashboard/Version/AddVersionPage';
 export * from './pages/Dashboard/Version/EditVersionPage';
 export * from './pages/Dashboard/Seasons/DashboardSeasonsNavPage';
+export * from './pages/NewPasswordPage';
