@@ -2,7 +2,7 @@ import { FormCard, NewPasswordForm } from '@/components';
 
 const NewPasswordPage = () => {
   return (
-    <FormCard title="Нова парола" description="Въведете имейлът, с който сте се регистрирали">
+    <FormCard title="Нова парола" description="Въведете имейла, с който сте се регистрирали">
       <NewPasswordForm />
     </FormCard>
   );
