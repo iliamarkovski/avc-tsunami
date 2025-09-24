@@ -17,7 +17,7 @@ import { UserRegistrationForm } from '@/components';
 import { useState } from 'react';
 import { useToast } from '@/hooks';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FirebaseError } from 'firebase/app';
 import { Loader2 } from 'lucide-react';
 
@@ -158,6 +158,12 @@ const LoginForm = () => {
           {isLoading ? <Loader2 className="animate-spin" /> : null}
           Вход
         </Button>
+
+        <div className="flex justify-end">
+          <Button asChild variant="link" size="link">
+            <Link to="/new-password">Заяви нова парола</Link>
+          </Button>
+        </div>
       </form>
     </Form>
   );
