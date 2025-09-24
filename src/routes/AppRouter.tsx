@@ -23,6 +23,7 @@ import {
   AddVersionPage,
   DashboardSeasonsNavPage,
   ProfilePage,
+  NewPasswordPage,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData, useTheme } from '@/contexts';
@@ -58,6 +59,20 @@ const AppRouter = () => {
             {
               index: true,
               element: <LoginPage />,
+            },
+          ],
+        },
+        {
+          path: '/new-password',
+          element: (
+            <RequireAccessRoutes hasAccess={!loggedInUser}>
+              <Outlet />
+            </RequireAccessRoutes>
+          ),
+          children: [
+            {
+              index: true,
+              element: <NewPasswordPage />,
             },
           ],
         },
