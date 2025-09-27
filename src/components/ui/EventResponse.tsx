@@ -26,6 +26,7 @@ type Props = {
   onChange: (value: string) => void;
   selectedValue: EventOptions | undefined;
   data: Record<EventOptions, { names: string; role: string; id: string; isMember: boolean }[]>;
+  hideSelection?: boolean;
 };
 
 const OPTIONS: {
@@ -42,9 +43,7 @@ const OPTIONS: {
   },
 ];
 
-// const votedYesTotalLabel =
-
-const EventResponse = ({ onChange, selectedValue, data }: Props) => {
+const EventResponse = ({ onChange, selectedValue, data, hideSelection = false }: Props) => {
   const votedCoachesWithYes = useMemo(() => {
     return data?.yes?.filter((item) => item.role === getRoleLabel('coach'));
   }, [data]);
@@ -57,22 +56,24 @@ const EventResponse = ({ onChange, selectedValue, data }: Props) => {
   const lenghtVotedNoLabel = `${data.no.length - votedCoachesWithNo.length}${votedCoachesWithNo.length > 0 ? ' + Т' : ''}`;
   return (
     <div className="!mt-4 flex flex-col items-center gap-4">
-      <Select onValueChange={onChange} value={selectedValue}>
-        <SelectTrigger
-          className={cn('w-max gap-2', {
-            'text-green-600': selectedValue === 'yes',
-            'text-red-600': selectedValue === 'no',
-          })}>
-          {selectedValue ? 'Ще присъствам:' : null} <SelectValue placeholder="Потвърди присъствие" />
-        </SelectTrigger>
-        <SelectContent>
-          {OPTIONS.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {!hideSelection ? (
+        <Select onValueChange={onChange} value={selectedValue}>
+          <SelectTrigger
+            className={cn('w-max gap-2', {
+              'text-green-600': selectedValue === 'yes',
+              'text-red-600': selectedValue === 'no',
+            })}>
+            {selectedValue ? 'Ще присъствам:' : null} <SelectValue placeholder="Потвърди присъствие" />
+          </SelectTrigger>
+          <SelectContent>
+            {OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      ) : null}
 
       <div className="flex h-5 items-center space-x-4 text-sm">
         <span className="flex items-center gap-1 text-green-600">ДА : {lenghtVotedYesLabel}</span>
