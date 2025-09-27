@@ -12,8 +12,8 @@ import {
 import { EnrichedUser, useData } from '@/contexts';
 import { cn } from '@/lib';
 import { QueryKeys } from '@/types';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
+import { ArrowLeft, ArrowUpDown, Plus } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -37,17 +37,42 @@ const getUserTypeCounts = (users: EnrichedUser[]) => {
   );
 };
 
+// 🧭 Helper: consistent label + numeric order for sorting
+const getUserTypeLabel = (user: EnrichedUser) => {
+  if (user.role === 'coach') return { label: 'Треньор', order: 1 };
+  if (user.isMember && user.isActive) return { label: 'Картотекиран', order: 2 };
+  if (user.isMember && !user.isActive) return { label: 'Некартотекиран', order: 3 };
+  return { label: 'Друг', order: 4 };
+};
+
 const UsersPage = ({ parentUrl = '/dashboard', title, addButtonLabel }: Props) => {
   const { data } = useData();
   const { users, members } = data;
 
-  const usersTypes = useMemo(() => {
-    return getUserTypeCounts(users);
-  }, [users]);
+  const usersTypes = useMemo(() => getUserTypeCounts(users), [users]);
+  const activeMembers = useMemo(() => members.filter((m) => m.active), [members]);
 
-  const activeMembers = useMemo(() => {
-    return members.filter((member) => member.active);
-  }, [users]);
+  const [sortConfig, setSortConfig] = useState<{
+    column: 'type';
+    direction: 'asc' | 'desc';
+  }>({ column: 'type', direction: 'asc' });
+
+  const sortedUsers = useMemo(() => {
+    const sorted = [...users];
+    sorted.sort((a, b) => {
+      const typeA = getUserTypeLabel(a).order;
+      const typeB = getUserTypeLabel(b).order;
+      return sortConfig.direction === 'asc' ? typeA - typeB : typeB - typeA;
+    });
+    return sorted;
+  }, [users, sortConfig]);
+
+  const handleSortByType = () => {
+    setSortConfig((prev) => ({
+      column: 'type',
+      direction: prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
 
   return (
     <section className="flex flex-col gap-4">
@@ -59,7 +84,6 @@ const UsersPage = ({ parentUrl = '/dashboard', title, addButtonLabel }: Props) =
 
         <div className="flex w-full items-center justify-between gap-4">
           <Title title={title} />
-
           {addButtonLabel ? (
             <Link to="add" className={cn(buttonVariants({ variant: 'outline', size: 'icon' }), 'px-0 sm:px-4')}>
               <Plus />
@@ -76,19 +100,27 @@ const UsersPage = ({ parentUrl = '/dashboard', title, addButtonLabel }: Props) =
               <TableRow>
                 <TableHead>Имена</TableHead>
                 <TableHead className="w-full">Имейл</TableHead>
-                <TableHead>Тип</TableHead>
+
+                <TableHead onClick={handleSortByType} className="flex cursor-pointer select-none items-center gap-1">
+                  Тип
+                  <ArrowUpDown
+                    className={cn('h-4 w-4 transition-transform', sortConfig.direction === 'asc' ? 'rotate-180' : '')}
+                  />
+                </TableHead>
+
                 <TableHead>ID</TableHead>
                 <TableHead className="!px-0"></TableHead>
               </TableRow>
             </TableHeader>
+
             <TableBody>
-              {users.map((user) => {
-                const userType = user.role === 'coach' ? 'Т' : user.isMember ? (user.isActive ? 'К' : 'Н') : 'Д';
+              {sortedUsers.map((user) => {
+                const { label: userType } = getUserTypeLabel(user);
                 return (
                   <TableRow key={user.id}>
                     <TableCell>{user.names}</TableCell>
                     <TableCell>{user.email}</TableCell>
-                    <TableCell className="text-center">{userType}</TableCell>
+                    <TableCell>{userType}</TableCell>
                     <TableCell>{user.id}</TableCell>
                     <TableCell className="sticky right-0 !px-0">
                       <EditLink to={user.id!} />
@@ -100,8 +132,9 @@ const UsersPage = ({ parentUrl = '/dashboard', title, addButtonLabel }: Props) =
           </Table>
 
           <p className="text-center text-sm text-muted-foreground">
-            Общо ({users.length}): Картотекирани: {usersTypes.active || 0} / {activeMembers.length}, Некартотекирани:{' '}
-            {usersTypes.notActive || 0}, Треньор: {usersTypes.coach || 0}, Други: {usersTypes.other || 0}
+            Общо ({users.length}): Картотекирани: {usersTypes.active || 0} (регистрирани) / {activeMembers.length}{' '}
+            (общо), Некартотекирани: {usersTypes.notActive || 0}, Треньор: {usersTypes.coach || 0}, Други:{' '}
+            {usersTypes.other || 0}
           </p>
         </>
       ) : null}
