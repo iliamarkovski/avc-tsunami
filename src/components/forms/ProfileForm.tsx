@@ -1,7 +1,5 @@
 import { updateDocument } from '@/api';
 import {
-  Avatar,
-  AvatarImage,
   Button,
   buttonVariants,
   Checkbox,
