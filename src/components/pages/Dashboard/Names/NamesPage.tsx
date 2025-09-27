@@ -31,6 +31,7 @@ type Props = {
 const NamesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }: Props) => {
   const { data } = useData();
   const names = data[queryKey] as Names[];
+  const isSuperAdmin = data.loggedInUser?.isSuperAdmin;
 
   const { toast } = useToast();
   const { mutate, isPending } = useMutation({
@@ -74,6 +75,7 @@ const NamesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }
           <TableHeader>
             <TableRow>
               <TableHead>Име</TableHead>
+              {isSuperAdmin ? <TableHead>ID</TableHead> : null}
               <TableHead className="!px-0"></TableHead>
               <TableHead className="!px-0"></TableHead>
             </TableRow>
@@ -83,6 +85,7 @@ const NamesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }
               return (
                 <TableRow key={item.id}>
                   <TableCell className="w-full">{item.name}</TableCell>
+                  {isSuperAdmin ? <TableCell>{item.id}</TableCell> : null}
                   <TableCell className="!px-0">
                     <EditLink to={item.id!} />
                   </TableCell>
