@@ -38,8 +38,7 @@ const EventMatchItem = ({
 }: EventMatchProps) => {
   const { data } = useData();
   const { loggedInUser } = data;
-  const isAdmin = loggedInUser?.isAdmin || loggedInUser?.isSuperAdmin;
-  const canSeeStatistics = statisticsUrl && !!loggedInUser && (isAdmin || loggedInUser.isMember);
+  const canSeeStatistics = statisticsUrl && !!loggedInUser;
 
   return (
     <EventItem
