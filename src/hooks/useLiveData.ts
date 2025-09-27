@@ -1,14 +1,26 @@
 import { db } from '@/config';
 import { useToast } from '@/hooks/useToast';
-import { doc, collection, onSnapshot, query } from 'firebase/firestore';
+import { doc, collection, onSnapshot, query, where, type WhereFilterOp } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+
+type Filter = {
+  field: string;
+  operator: WhereFilterOp;
+  value: unknown;
+};
 
 type LiveDataResult<T> = {
   data: T | undefined;
   loading: boolean;
 };
 
-export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDataResult<T> => {
+/**
+ * Live listener hook for Firestore collections or single documents
+ * @param collectionName Firestore collection name
+ * @param eventId Optional document ID (fetches a single doc if provided)
+ * @param filter Optional filter object (applies only to collection queries)
+ */
+export const useLiveData = <T>(collectionName: string, eventId?: string, filter?: Filter): LiveDataResult<T> => {
   const [data, setData] = useState<T | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -20,39 +32,40 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
     let unsubscribe: (() => void) | undefined;
 
     try {
       if (eventId) {
-        // Fetch a single document
+        // ✅ Single document listener
         const eventDocRef = doc(db, collectionName, eventId);
 
         unsubscribe = onSnapshot(
           eventDocRef,
           (docSnap) => {
-            if (docSnap.exists()) {
-              setData(docSnap.data() as T);
-            } else {
-              setData(undefined);
-            }
-            setLoading(false); // Stop loading after fetching the document
+            setData(docSnap.exists() ? (docSnap.data() as T) : undefined);
+            setLoading(false);
           },
           (error) => handleError(error, 'Error fetching single document')
         );
       } else {
-        // Fetch the entire collection
+        // ✅ Collection listener (with optional filter)
         const collectionRef = collection(db, collectionName);
-        const collectionQuery = query(collectionRef);
+        const q = filter
+          ? query(collectionRef, where(filter.field, filter.operator, filter.value))
+          : query(collectionRef);
 
         unsubscribe = onSnapshot(
-          collectionQuery,
+          q,
           (querySnapshot) => {
-            const docsData = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+            const docsData = querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
             setData(docsData as T);
-            setLoading(false); // Stop loading after fetching the collection
+            setLoading(false);
           },
-          (error) => handleError(error, 'Error fetching the entire collection')
+          (error) => handleError(error, 'Error fetching collection')
         );
       }
     } catch (error) {
@@ -63,7 +76,7 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
     return () => {
       unsubscribe?.();
     };
-  }, [collectionName, eventId, toast]);
+  }, [collectionName, eventId, filter?.field, filter?.operator, filter?.value, toast]);
 
   const handleError = (error: unknown, message: string) => {
     console.error(message, error);
@@ -72,7 +85,7 @@ export const useLiveData = <T>(collectionName: string, eventId?: string): LiveDa
       title: 'Възникна грешка',
       description: 'Моля, опитайте отново по-късно.',
     });
-    setLoading(false); // Ensure loading is false on error
+    setLoading(false);
   };
 
   return { data, loading };
