@@ -5,6 +5,7 @@ import {
   Button,
   buttonVariants,
   Checkbox,
+  CircularImageCrop,
   Form,
   FormControl,
   FormField,
@@ -21,14 +22,11 @@ import { cn, getRoleLabel } from '@/lib';
 import { Roles } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import { Loader2, Trash2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-
-const storage = getStorage();
 
 const formNames = z.object({
   names: z.string().optional(),
@@ -36,8 +34,7 @@ const formNames = z.object({
   number: z.string().optional(),
   active: z.boolean().default(false).optional(),
   captain: z.boolean().default(false).optional(),
-  imageFile: z.instanceof(File).optional(),
-  imageUrl: z.string().optional(),
+  profileImage: z.string().nullable().optional(),
 });
 
 type User = z.infer<typeof formNames>;
@@ -50,7 +47,6 @@ const ProfileForm = () => {
 
   const memberUser = members.find((member) => member.id === loggedInUser?.memberId);
 
-  const [imageUrl, setImageUrl] = useState<string | null | undefined>(loggedInUser?.image);
   const isOtherMember = loggedInUser?.memberId === OTHER_VALUE;
 
   const form = useForm<User>({
@@ -58,16 +54,16 @@ const ProfileForm = () => {
     defaultValues: {
       names: isOtherMember ? loggedInUser.names : memberUser?.names,
       role: isOtherMember ? getRoleLabel(loggedInUser.role) : getRoleLabel(memberUser?.role as Roles),
-      imageUrl: loggedInUser?.image || '',
       active: isOtherMember ? false : memberUser?.active,
       captain: isOtherMember ? false : memberUser?.captain,
       number: isOtherMember ? '' : memberUser?.number && +memberUser.number < 0 ? '' : memberUser?.number,
+      profileImage: loggedInUser?.image || '',
     },
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: User) => {
-      await updateDocument(QUERY_KEYS.MEMBERS, loggedInUser?.memberId!, { image: data.imageUrl || null });
+    mutationFn: async (image: string) => {
+      await updateDocument(QUERY_KEYS.MEMBERS, loggedInUser?.memberId!, { image });
     },
     onSuccess: () => {
       navigate('/');
@@ -82,42 +78,10 @@ const ProfileForm = () => {
     },
   });
 
-  const handleSubmit = async (value: User) => {
+  const handleSubmit = async (data: User) => {
     setIsLoading(true);
-    const { imageFile, imageUrl, ...otherValues } = value;
 
-    try {
-      let newImageUrl: string | undefined = undefined;
-
-      if (imageFile && imageFile instanceof File) {
-        // Upload the new file to Firebase Storage
-        const storageRef = ref(storage, `profileImages/${Date.now()}-${imageFile.name}`);
-        const snapshot = await uploadBytes(storageRef, imageFile);
-
-        // Get the file's download URL
-        newImageUrl = await getDownloadURL(snapshot.ref);
-      } else if (!imageFile && imageUrl) {
-        // Delete the existing file from Firebase Storage
-        const fileRef = ref(storage, imageUrl);
-        await deleteObject(fileRef);
-      }
-
-      // Save the form data with the updated file URL (or empty URL)
-      await mutate({ ...otherValues, imageUrl: newImageUrl || '' });
-    } catch (error) {
-      console.error('Error uploading file or saving data:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Възникна грешка',
-        description: 'Моля, опитайте отново по-късно.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDelete = () => {
-    setImageUrl(undefined);
+    await mutate(data.profileImage || '');
   };
 
   return (
@@ -125,37 +89,17 @@ const ProfileForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
-          name="imageFile"
+          name="profileImage"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Снимка</FormLabel>
-
-              {imageUrl ? (
-                <div className="flex items-center gap-2">
-                  <Avatar className="aspect-square h-auto w-36 rounded-md border sm:w-40">
-                    <AvatarImage src={imageUrl} className="object-cover" />
-                  </Avatar>
-                  <Button size="icon" variant="ghost" title="Изтрий" onClick={handleDelete}>
-                    <Trash2 className="text-destructive" />
-                  </Button>
-                </div>
-              ) : (
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file ?? undefined);
-                    }}
-                    onBlur={field.onBlur}
-                  />
-                </FormControl>
-              )}
+            <FormItem className="flex flex-col">
+              <FormControl>
+                <CircularImageCrop onChange={field.onChange} value={field.value} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="names"
