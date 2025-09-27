@@ -52,6 +52,8 @@ export * from './ui/Textarea';
 export * from './ui/Blockquote';
 export * from './ui/ReloadBlock';
 export * from './ui/IconLink';
+export * from './ui/ImageCrop';
+export * from './ui/CircularImageCrop';
 
 //forms
 export * from './forms/LoginForm';
