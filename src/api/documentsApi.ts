@@ -1,57 +1,5 @@
 import { db } from '@/config';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  DocumentData,
-  setDoc,
-  updateDoc,
-  addDoc,
-} from 'firebase/firestore';
-
-/**
- * Fetch all documents from a Firestore collection.
- * @param collectionName - Name of the Firestore collection.
- * @returns An array of documents with their IDs.
- */
-export const fetchAllDocuments = async <T = DocumentData>(collectionName: string): Promise<(T & { id: string })[]> => {
-  try {
-    const q = query(collection(db, collectionName));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })) as (T & { id: string })[];
-  } catch (error) {
-    console.error(`Failed to fetch documents from ${collectionName}:`, error);
-    throw new Error('Failed to fetch documents.');
-  }
-};
-
-/**
- * Fetch a single document by ID from a Firestore collection.
- * @param collectionName - Name of the Firestore collection.
- * @param id - Document ID to fetch.
- * @returns The document data with its ID.
- */
-export const fetchDocument = async <T = DocumentData>(
-  collectionName: string,
-  id: string
-): Promise<T & { id: string }> => {
-  try {
-    const docRef = doc(db, collectionName, id);
-    const response = await getDoc(docRef);
-
-    if (response.exists()) {
-      return { ...response.data(), id: response.id } as T & { id: string };
-    } else {
-      throw new Error(`Document not found in ${collectionName} with ID ${id}`);
-    }
-  } catch (error) {
-    console.error(`Failed to fetch document with ID ${id} from ${collectionName}:`, error);
-    throw new Error('Failed to fetch document.');
-  }
-};
+import { collection, deleteDoc, doc, DocumentData, setDoc, updateDoc, addDoc } from 'firebase/firestore';
 
 /**
  * Delete a document by ID from a Firestore collection.
