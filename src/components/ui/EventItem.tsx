@@ -125,7 +125,12 @@ const EventItem = ({
   const isAdmin = loggedInUser?.isAdmin || loggedInUser?.isSuperAdmin;
 
   const canVote = useMemo(
-    () => isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && isVolleyMania) || isAdmin),
+    () => isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && isVolleyMania)),
+    [isCurrent, loggedInUser, queryKey]
+  );
+
+  const canSeeResultsOnly = useMemo(
+    () => isCurrent && !!loggedInUser && isAdmin && !isUserActive && isVolleyMania,
     [isCurrent, loggedInUser, queryKey]
   );
 
@@ -205,7 +210,7 @@ const EventItem = ({
         <CardTitle>{title}</CardTitle>
         <CardDescription>зала {hall}</CardDescription>
 
-        {canVote && message ? (
+        {(canVote || canSeeResultsOnly) && message ? (
           <Alert className="!mt-5 w-auto self-center border-secondary">
             <AlertTitle className="break-word mb-0 font-light italic">
               <span className="animate-pulse not-italic">⚠️</span>{' '}
@@ -218,12 +223,12 @@ const EventItem = ({
 
         {isFuture ? (
           <div className="flex flex-col items-center">
-            {canVote ? (
+            {canVote || canSeeResultsOnly ? (
               <EventResponse
                 onChange={handleChange}
                 data={responsesData}
                 selectedValue={answer}
-                hideSelection={!isUserActive && isAdmin && isVolleyMania}
+                hideSelection={canSeeResultsOnly}
               />
             ) : null}
 
