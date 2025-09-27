@@ -120,16 +120,17 @@ const EventItem = ({
 
   const isUserActive = loggedInUser?.isActive;
   const userRole = loggedInUser?.role;
+  const isVolleyMania = queryKey === QUERY_KEYS.VOLLEYMANIA;
+
+  const isAdmin = loggedInUser?.isAdmin || loggedInUser?.isSuperAdmin;
 
   const canVote = useMemo(
-    () =>
-      isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
+    () => isCurrent && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && isVolleyMania) || isAdmin),
     [isCurrent, loggedInUser, queryKey]
   );
 
   const canSeeDetails = useMemo(
-    () =>
-      isFuture && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && queryKey === QUERY_KEYS.VOLLEYMANIA)),
+    () => isFuture && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && isVolleyMania) || isAdmin),
     [isCurrent, loggedInUser, queryKey]
   );
 
@@ -217,7 +218,14 @@ const EventItem = ({
 
         {isFuture ? (
           <div className="flex flex-col items-center">
-            {canVote ? <EventResponse onChange={handleChange} data={responsesData} selectedValue={answer} /> : null}
+            {canVote ? (
+              <EventResponse
+                onChange={handleChange}
+                data={responsesData}
+                selectedValue={answer}
+                hideSelection={!isUserActive && isAdmin && isVolleyMania}
+              />
+            ) : null}
 
             {isFuture ? (
               <a
