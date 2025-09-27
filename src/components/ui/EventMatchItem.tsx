@@ -38,6 +38,8 @@ const EventMatchItem = ({
 }: EventMatchProps) => {
   const { data } = useData();
   const { loggedInUser } = data;
+  const isAdmin = loggedInUser?.isAdmin || loggedInUser?.isSuperAdmin;
+  const canSeeStatistics = statisticsUrl && !!loggedInUser && (isAdmin || loggedInUser.isMember);
 
   return (
     <EventItem
@@ -54,9 +56,7 @@ const EventMatchItem = ({
         <div className="!mt-6 flex flex-wrap items-center justify-center gap-3">
           {recordingUrl ? <IconLink href={recordingUrl} title="Видео" icon={SquarePlay} /> : null}
 
-          {statisticsUrl && !!loggedInUser ? (
-            <IconLink href={statisticsUrl} title="Статистика" icon={FileText} />
-          ) : null}
+          {canSeeStatistics ? <IconLink href={statisticsUrl} title="Статистика" icon={FileText} /> : null}
         </div>
       ) : null}
     </EventItem>
