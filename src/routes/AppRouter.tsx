@@ -351,7 +351,7 @@ const AppRouter = () => {
                       index: true,
                       element: (
                         <NamesPage
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
                           title="Всички сезони във Volley Mania"
                           addButtonLabel="Добави нов"
                         />
@@ -364,7 +364,7 @@ const AppRouter = () => {
                           title="Добави сезон"
                           description="Моля, проверете дали сезонът вече не е добавен"
                           parentUrl="/dashboard/seasons/volleymania"
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
                         />
                       ),
                     },
@@ -375,7 +375,7 @@ const AppRouter = () => {
                           title="Редактиране на сезон"
                           description="Редактирайте името на сезона"
                           parentUrl="/dashboard/seasons/volleymania"
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
                         />
                       ),
                     },
@@ -389,7 +389,7 @@ const AppRouter = () => {
                       index: true,
                       element: (
                         <NamesPage
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_IVL}
                           title="Всички сезони във IVL"
                           addButtonLabel="Добави нов"
                         />
@@ -402,7 +402,7 @@ const AppRouter = () => {
                           title="Добави сезон"
                           description="Моля, проверете дали сезонът вече не е добавен"
                           parentUrl="/dashboard/seasons/ivl"
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_IVL}
                         />
                       ),
                     },
@@ -413,7 +413,7 @@ const AppRouter = () => {
                           title="Редактиране на сезон"
                           description="Редактирайте името на сезона"
                           parentUrl="/dashboard/seasons/ivl"
-                          queryKey={QUERY_KEYS.SEASONS}
+                          queryKey={QUERY_KEYS.SEASONS_IVL}
                         />
                       ),
                     },
