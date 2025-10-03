@@ -9,3 +9,4 @@ export * from './timePicker';
 export * from './getDataById';
 export * from './getFileNameFromUrl';
 export * from './wrapUrlsInLinks';
+export * from './versionToNumber';
