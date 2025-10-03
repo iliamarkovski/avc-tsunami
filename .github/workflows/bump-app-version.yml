@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g pnpm@9.12.3
+          npm install -g pnpm@9.10.0
           pnpm install
 
       - name: Run build script
