@@ -8,7 +8,7 @@ import {
   TableRow,
   Title,
   EditLink,
-  VersionFormProps,
+  Version,
 } from '@/components';
 import { LATEST_VERSION } from '@/constants';
 import { useData } from '@/contexts';
@@ -26,7 +26,7 @@ type Props = {
 
 const VersionPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel }: Props) => {
   const { data } = useData();
-  const version = data[queryKey] as VersionFormProps;
+  const version = data[queryKey] as Version;
 
   return (
     <section className="flex flex-col gap-4">
