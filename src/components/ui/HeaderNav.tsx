@@ -4,7 +4,7 @@ import { cn } from '@/lib';
 
 const LINKS = [
   {
-    title: 'График',
+    title: 'Графиk',
     url: '/',
   },
   {
