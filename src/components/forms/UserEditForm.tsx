@@ -98,6 +98,8 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
     },
   });
 
+  const isDirty = form.formState.isDirty;
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
@@ -236,7 +238,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
             Отказ
           </Link>
 
-          <Button type="submit" disabled={isPending} className="w-full">
+          <Button type="submit" disabled={isPending || !isDirty} className="w-full">
             {isPending ? <Loader2 className="animate-spin" /> : null}
             {id ? 'Промени' : 'Добави'}
           </Button>

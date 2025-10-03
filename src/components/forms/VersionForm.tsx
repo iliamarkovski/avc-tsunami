@@ -55,6 +55,8 @@ const VersionForm = ({ id, parentUrl, queryKey, version }: Props) => {
     },
   });
 
+  const isDirty = form.formState.isDirty;
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       const combinedVersion = `${data.major}.${data.minor}.${data.patch}`;
@@ -139,7 +141,7 @@ const VersionForm = ({ id, parentUrl, queryKey, version }: Props) => {
             Отказ
           </Link>
 
-          <Button type="submit" disabled={isPending} className="w-full">
+          <Button type="submit" disabled={isPending || !isDirty} className="w-full">
             {isPending ? <Loader2 className="animate-spin" /> : null}
             {id ? 'Промени' : 'Добави'}
           </Button>
