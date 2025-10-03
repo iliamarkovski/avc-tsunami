@@ -55,5 +55,5 @@ jobs:
       - name: 'cat package.json'
         run: cat ./package.json
 
-          - name: Trigger Vercel redeploy
+      - name: Trigger Vercel redeploy
         run: curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
