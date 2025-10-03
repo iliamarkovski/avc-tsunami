@@ -21,32 +21,43 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-const formNames = z.object({
-  version: z.string().min(1, { message: 'Задължително поле' }),
-  id: z.string().optional(),
+const formSchema = z.object({
+  major: z.string().min(1, { message: 'Задължително поле' }).regex(/^\d+$/, { message: 'Само числа' }),
+  minor: z.string().min(1, { message: 'Задължително поле' }).regex(/^\d+$/, { message: 'Само числа' }),
+  patch: z.string().min(1, { message: 'Задължително поле' }).regex(/^\d+$/, { message: 'Само числа' }),
 });
 
-export type Version = z.infer<typeof formNames>;
-type FormValues = Omit<Version, 'id'>;
+type FormValues = z.infer<typeof formSchema>;
 
-type Props = Partial<Version> & { id?: string; parentUrl: string; queryKey: string };
+export type VersionFormProps = {
+  id?: string;
+  parentUrl: string;
+  queryKey: string;
+  version?: string;
+};
 
-const VersionForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
+const VersionForm = ({ id, parentUrl, queryKey, version }: VersionFormProps) => {
   const navigate = useNavigate();
 
+  const [major = '1', minor = '0', patch = '0'] = version?.split('.') ?? [];
+
   const form = useForm<FormValues>({
-    resolver: zodResolver(formNames),
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      version: props.version ?? '',
+      major,
+      minor,
+      patch,
     },
   });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
+      const combinedVersion = `${data.major}.${data.minor}.${data.patch}`;
+
       if (id) {
-        await updateDocument(queryKey, id, data);
+        await updateDocument(queryKey, id, { version: combinedVersion });
       } else {
-        await addDocument(queryKey, data);
+        await addDocument(queryKey, { version: combinedVersion });
       }
     },
     onSuccess: () => {
@@ -69,20 +80,54 @@ const VersionForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="version"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Версия</FormLabel>
-              <FormDescription>Последна версия: {LATEST_VERSION}</FormDescription>
-              <FormControl>
-                <Input {...field} type="number" step={0.01} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div>
+          <FormLabel>Версия</FormLabel>
+          <FormDescription>Последна версия: {LATEST_VERSION}</FormDescription>
+        </div>
+
+        <div className="flex gap-4">
+          <FormField
+            control={form.control}
+            name="major"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Major</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" min={0} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="minor"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Minor</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" min={0} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="patch"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Patch</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" min={0} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="!mt-8 flex gap-4">
           <Link to={parentUrl} className={cn(buttonVariants({ variant: 'outline' }))}>
