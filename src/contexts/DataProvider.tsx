@@ -1,7 +1,7 @@
 import { Matches, Members, Names, Training, Version } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useAuth } from '@/contexts';
-import { useLiveData } from '@/hooks';
+import { Filter, useLiveData } from '@/hooks';
 import { getDateByTimestamp } from '@/lib';
 import { Roles } from '@/types';
 import { Timestamp } from 'firebase/firestore';
@@ -70,12 +70,36 @@ const DataContext = createContext<ContextProps | undefined>(undefined);
 
 const DataProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
+
+  const todayStart = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
+
+  const dateFilter: Filter = useMemo(
+    () => ({
+      field: 'dateTime',
+      operator: '>=',
+      value: todayStart,
+    }),
+    [todayStart]
+  );
+
   const { data: teams, loading: teamsLoading } = useLiveData<Names[]>(QUERY_KEYS.TEAMS);
   const { data: halls, loading: hallsLoading } = useLiveData<Names[]>(QUERY_KEYS.HALLS);
   const { data: members, loading: membersLoading } = useLiveData<Members[]>(QUERY_KEYS.MEMBERS);
-  const { data: training, loading: trainingLoading } = useLiveData<Training[]>(QUERY_KEYS.TRAINING, undefined);
-  const { data: ivl, loading: ivlLoading } = useLiveData<Matches[]>(QUERY_KEYS.IVL);
-  const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(QUERY_KEYS.VOLLEYMANIA);
+  const { data: training, loading: trainingLoading } = useLiveData<Training[]>(
+    QUERY_KEYS.TRAINING,
+    undefined,
+    dateFilter
+  );
+  const { data: ivl, loading: ivlLoading } = useLiveData<Matches[]>(QUERY_KEYS.IVL, undefined, dateFilter);
+  const { data: volleymania, loading: volleymaniaLoading } = useLiveData<Matches[]>(
+    QUERY_KEYS.VOLLEYMANIA,
+    undefined,
+    dateFilter
+  );
   const { data: users, loading: usersLoading } = useLiveData<Users>(QUERY_KEYS.USERS);
   const { data: version, loading: versionLoading } = useLiveData<Version[]>(QUERY_KEYS.VERSION);
   const { data: seasonsVolleymania, loading: seasonsVolleymaniaLoading } = useLiveData<Names[]>(
