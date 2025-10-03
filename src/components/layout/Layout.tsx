@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Footer, Header, PageLoader, ReloadBlock } from '@/components';
 import { useAuth, useData } from '@/contexts';
 import { LATEST_VERSION } from '@/constants';
+import { versionToNumber } from '@/lib';
 
 const Layout = () => {
   const { isLoading: isAuthLoading } = useAuth();
@@ -12,7 +13,7 @@ const Layout = () => {
     return <PageLoader />;
   }
 
-  if (Number(version?.version) > Number(LATEST_VERSION)) {
+  if (versionToNumber(version?.version || '1.0.0') > versionToNumber(LATEST_VERSION)) {
     return <ReloadBlock />;
   }
 
