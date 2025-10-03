@@ -3,7 +3,7 @@ import { useToast } from '@/hooks/useToast';
 import { doc, collection, onSnapshot, query, where, type WhereFilterOp } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
-type Filter = {
+export type Filter = {
   field: string;
   operator: WhereFilterOp;
   value: unknown;
