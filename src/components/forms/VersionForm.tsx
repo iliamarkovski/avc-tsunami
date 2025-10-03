@@ -29,14 +29,19 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export type VersionFormProps = {
+type Props = {
   id?: string;
   parentUrl: string;
   queryKey: string;
   version?: string;
 };
 
-const VersionForm = ({ id, parentUrl, queryKey, version }: VersionFormProps) => {
+export type Version = {
+  id: string;
+  version: string;
+};
+
+const VersionForm = ({ id, parentUrl, queryKey, version }: Props) => {
   const navigate = useNavigate();
 
   const [major = '1', minor = '0', patch = '0'] = version?.split('.') ?? [];
