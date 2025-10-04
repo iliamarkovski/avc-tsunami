@@ -20,7 +20,7 @@ import { google, CalendarEvent } from 'calendar-link';
 import { format, subMinutes } from 'date-fns';
 import { EventOptions, EventType, QueryKeys, Roles } from '@/types';
 import { QUERY_KEYS, TEAM_NAME } from '@/constants';
-import { CalendarPlus } from 'lucide-react';
+import { CalendarPlus, Volleyball } from 'lucide-react';
 import ReactDOMServer from 'react-dom/server';
 import { setDocument, updateDocument } from '@/api';
 import { bg } from 'date-fns/locale';
@@ -118,6 +118,9 @@ const EventItem = ({
   const warmupTime = format(timeDiff, 'HH:mm');
   const dayOfWeek = format(dateTime, 'EEEE', { locale: bg });
 
+  const isWarmUpStarted = new Date() >= timeDiff;
+  const isEventStarted = new Date() >= dateTime;
+
   const isUserActive = loggedInUser?.isActive;
   const userRole = loggedInUser?.role;
   const isVolleyMania = queryKey === QUERY_KEYS.VOLLEYMANIA;
@@ -135,7 +138,11 @@ const EventItem = ({
   );
 
   const canSeeDetails = useMemo(
-    () => isFuture && !!loggedInUser && (userRole === 'coach' || !(!isUserActive && isVolleyMania) || isAdmin),
+    () =>
+      isFuture &&
+      !!loggedInUser &&
+      !isEventStarted &&
+      (userRole === 'coach' || !(!isUserActive && isVolleyMania) || isAdmin),
     [isCurrent, loggedInUser, queryKey]
   );
 
@@ -183,12 +190,17 @@ const EventItem = ({
       <CardHeader>
         {(canVote && !answer) || badge ? (
           <div className="mb-2 flex flex-wrap items-center justify-center gap-2">
-            {canVote && !answer && (
+            {canVote && !answer && !isWarmUpStarted && (
               <Badge variant="destructive" className="animate-pulse">
                 НЕПОТВЪРДЕНО ПРИСЪСТВИЕ
               </Badge>
             )}
-            {badge && <Badge variant="outline">{badge}</Badge>}
+            {badge && (
+              <Badge variant="outline" className="flex items-center gap-1 font-bold">
+                <Volleyball className="size-4" />
+                {badge}
+              </Badge>
+            )}
           </div>
         ) : null}
 
@@ -228,7 +240,7 @@ const EventItem = ({
                 onChange={handleChange}
                 data={responsesData}
                 selectedValue={answer}
-                hideSelection={canSeeResultsOnly}
+                hideSelection={canSeeResultsOnly || isWarmUpStarted}
               />
             ) : null}
 
