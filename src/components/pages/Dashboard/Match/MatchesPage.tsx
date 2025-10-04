@@ -14,13 +14,12 @@ import {
   MatchTitle,
 } from '@/components';
 import { useData } from '@/contexts';
-import { useToast } from '@/hooks';
+import { useLiveData, useToast } from '@/hooks';
 import { cn, getDateByTimestamp, getNameById } from '@/lib';
 import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { useMemo } from 'react';
+import { ArrowLeft, Loader2, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -35,9 +34,15 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
 
   const { data } = useData();
   const { halls, teams } = data;
-  const matches = data[queryKey] as Matches[];
 
-  const reversedMatches = useMemo(() => matches?.slice().reverse() || [], [matches]);
+  const { data: matches, loading: matchesLoading } = useLiveData<Matches[]>(queryKey);
+
+  const sortedMatches = matches?.sort((a, b) => {
+    const dateA = getDateByTimestamp(a.dateTime).getTime();
+    const dateB = getDateByTimestamp(b.dateTime).getTime();
+
+    return dateB - dateA;
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -57,6 +62,10 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
     mutate(id);
   };
 
+  if (matchesLoading) {
+    return <Loader2 className="animate-spin" />;
+  }
+
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col items-start gap-4">
@@ -75,7 +84,7 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
         </div>
       </div>
 
-      {matches?.length > 0 ? (
+      {sortedMatches && sortedMatches?.length > 0 ? (
         <Table>
           <TableHeader>
             <TableRow>
@@ -90,7 +99,7 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
             </TableRow>
           </TableHeader>
           <TableBody>
-            {reversedMatches.map((item) => {
+            {sortedMatches.map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy')}</TableCell>
