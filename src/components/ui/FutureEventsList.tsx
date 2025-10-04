@@ -1,7 +1,7 @@
 import { EventMatchItem, EventTrainingItem, Matches, NotFoundEvents, Training } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData } from '@/contexts';
-import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
+import { getDateByTimestamp, getNameById } from '@/lib';
 import { useMemo } from 'react';
 import { QueryKeys } from '@/types';
 
@@ -12,9 +12,8 @@ const FutureEventsList = () => {
   const { data } = useData();
   const { ivl, volleymania, training, halls, teams } = data;
 
-  const taggedFutureIvl = useMemo(() => {
-    const { futureEvents: futureIvl } = separateEvents(ivl);
-    return futureIvl.map((event, index) => ({
+  const taggedIvl = useMemo(() => {
+    return ivl.map((event, index) => ({
       ...event,
       tag: QUERY_KEYS.IVL,
       badge: 'IVL',
@@ -22,9 +21,8 @@ const FutureEventsList = () => {
     }));
   }, [ivl]);
 
-  const taggedFutureVolleyMania = useMemo(() => {
-    const { futureEvents: futureVolleyMania } = separateEvents(volleymania);
-    return futureVolleyMania.map((event, index) => ({
+  const taggedVolleyMania = useMemo(() => {
+    return volleymania.map((event, index) => ({
       ...event,
       tag: QUERY_KEYS.VOLLEYMANIA,
       badge: 'Volley Mania',
@@ -32,9 +30,8 @@ const FutureEventsList = () => {
     }));
   }, [volleymania]);
 
-  const taggedFutureTraining = useMemo(() => {
-    const { futureEvents: futureTraining } = separateEvents(training);
-    return futureTraining.map((event, index) => ({
+  const taggedTraining = useMemo(() => {
+    return training.map((event, index) => ({
       ...event,
       tag: QUERY_KEYS.TRAINING,
       badge: 'Тренировка',
@@ -43,8 +40,8 @@ const FutureEventsList = () => {
   }, [training]);
 
   const taggedEvents = useMemo(() => {
-    return [...taggedFutureIvl, ...taggedFutureVolleyMania, ...taggedFutureTraining];
-  }, [taggedFutureIvl, taggedFutureVolleyMania, taggedFutureTraining]) as EventProps[];
+    return [...taggedIvl, ...taggedVolleyMania, ...taggedTraining];
+  }, [taggedIvl, taggedVolleyMania, taggedTraining]) as EventProps[];
 
   const sortedEvents = useMemo(() => {
     return [...taggedEvents].sort(
