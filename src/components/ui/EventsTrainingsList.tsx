@@ -1,6 +1,6 @@
 import { EventTrainingItem, NotFoundEvents } from '@/components';
 import { useData } from '@/contexts';
-import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
+import { getDateByTimestamp, getNameById } from '@/lib';
 
 const EventsTrainingsList = () => {
   const { data } = useData();
@@ -10,11 +10,9 @@ const EventsTrainingsList = () => {
     return <NotFoundEvents />;
   }
 
-  const { futureEvents } = separateEvents(training);
-
   return (
     <div className="grid gap-4">
-      {futureEvents.map((event, index) => {
+      {training.map((event, index) => {
         const hall = getNameById(halls, event.hall);
         const dateTime = getDateByTimestamp(event.dateTime);
 
