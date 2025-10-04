@@ -76,6 +76,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
   const [statisticsUrl, setStatisticsUrl] = useState<string | undefined>(props.statisticsDocUrl);
 
   const statisticsDocName = getFileNameFromUrl(statisticsUrl);
+  const [isUrlMode, setIsUrlMode] = useState(!statisticsDocName);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -88,7 +89,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
       gamesGuest: props.gamesGuest ?? '',
       recordingLink: props.recordingLink ?? '',
       message: props.message ?? '',
-      statisticsDocUrl: statisticsUrl ?? '',
+      statisticsDocUrl: props.statisticsDocUrl ?? '',
     },
   });
 
@@ -120,23 +121,28 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     try {
       let newStatisticsDocUrl: string | undefined = undefined;
 
-      if (statisticsDoc && statisticsDoc instanceof File) {
-        // Upload the new file to Firebase Storage
+      // URL mode
+      if (isUrlMode && statisticsDocUrl) {
+        newStatisticsDocUrl = statisticsDocUrl;
+      }
+      // File upload mode
+      else if (statisticsDoc && statisticsDoc instanceof File) {
         const storageRef = ref(storage, `statistics/${Date.now()}-${statisticsDoc.name}`);
         const snapshot = await uploadBytes(storageRef, statisticsDoc);
-
-        // Get the file's download URL
         newStatisticsDocUrl = await getDownloadURL(snapshot.ref);
-      } else if (!statisticsDoc && statisticsDocUrl) {
-        // Delete the existing file from Firebase Storage
-        const fileRef = ref(storage, statisticsDocUrl);
+      }
+      // Deleted file
+      else if (!statisticsDoc && !statisticsDocUrl && statisticsUrl) {
+        const fileRef = ref(storage, statisticsUrl);
         await deleteObject(fileRef);
       }
 
-      // Save the form data with the updated file URL (or empty URL)
-      await mutate({ ...otherValues, statisticsDocUrl: newStatisticsDocUrl || '' });
+      await mutate({
+        ...otherValues,
+        statisticsDocUrl: newStatisticsDocUrl || '',
+      });
     } catch (error) {
-      console.error('Error uploading file or saving data:', error);
+      console.error('Error uploading or saving data:', error);
       toast({
         variant: 'destructive',
         title: 'Възникна грешка',
@@ -169,13 +175,11 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {halls.map((hall) => {
-                    return (
-                      <SelectItem key={hall.id} value={hall.id!}>
-                        {hall.name}
-                      </SelectItem>
-                    );
-                  })}
+                  {halls.map((hall) => (
+                    <SelectItem key={hall.id} value={hall.id!}>
+                      {hall.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -196,13 +200,11 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {teams.map((team) => {
-                    return (
-                      <SelectItem key={team.id} value={team.id!}>
-                        {team.name}
-                      </SelectItem>
-                    );
-                  })}
+                  {teams.map((team) => (
+                    <SelectItem key={team.id} value={team.id!}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -263,6 +265,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
           )}
         />
 
+        {/* Statistics Field */}
         <FormField
           control={form.control}
           name="statisticsDoc"
@@ -270,26 +273,52 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             <FormItem>
               <FormLabel>Статистика</FormLabel>
 
-              {statisticsUrl && statisticsDocName ? (
-                <div className="flex gap-2">
+              {statisticsUrl && statisticsDocName && !isUrlMode ? (
+                <div className="flex items-center gap-2">
                   <IconLink href={statisticsUrl} title={statisticsDocName} icon={FileText} />
-                  <Button size="icon" variant="ghost" title="Изтрий" onClick={handleDelete}>
+                  <Button size="icon" variant="ghost" title="Изтрий" type="button" onClick={handleDelete}>
                     <Trash2 className="text-destructive" />
                   </Button>
                 </div>
               ) : (
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file ?? undefined);
-                    }}
-                    onBlur={field.onBlur}
-                  />
-                </FormControl>
+                <>
+                  {isUrlMode ? (
+                    <FormField
+                      control={form.control}
+                      name="statisticsDocUrl"
+                      render={({ field }) => (
+                        <FormControl>
+                          <Input placeholder="Въведете линк към PDF" {...field} />
+                        </FormControl>
+                      )}
+                    />
+                  ) : (
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          field.onChange(file ?? undefined);
+                        }}
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  )}
+                </>
               )}
+              <Button
+                type="button"
+                variant="link"
+                className="mt-2 p-0 text-sm"
+                onClick={() => {
+                  setIsUrlMode((prev) => !prev);
+                  form.setValue('statisticsDoc', undefined);
+                  form.setValue('statisticsDocUrl', '');
+                }}>
+                {isUrlMode ? 'Качи файл вместо линк' : 'Използвай линк вместо файл'}
+              </Button>
+
               <FormMessage />
             </FormItem>
           )}
