@@ -4,7 +4,7 @@ export * from './getRoleLabel';
 export * from './getFirstChars';
 export * from './getNameById';
 export * from './getDateByTimestamp';
-export * from './separateEvents';
+export * from './getNextEvent';
 export * from './timePicker';
 export * from './getDataById';
 export * from './getFileNameFromUrl';
