@@ -21,7 +21,6 @@ import {
   VersionPage,
   EditVersionPage,
   AddVersionPage,
-  DashboardSeasonsNavPage,
   ProfilePage,
   NewPasswordPage,
 } from '@/components';
@@ -332,92 +331,6 @@ const AppRouter = () => {
                       queryKey={QUERY_KEYS.USERS}
                     />
                   ),
-                },
-              ],
-            },
-            {
-              path: 'seasons',
-              element: <Outlet />,
-              children: [
-                {
-                  index: true,
-                  element: <DashboardSeasonsNavPage />,
-                },
-                {
-                  path: 'volleymania',
-                  element: <Outlet />,
-                  children: [
-                    {
-                      index: true,
-                      element: (
-                        <NamesPage
-                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
-                          title="Всички сезони във Volley Mania"
-                          addButtonLabel="Добави нов"
-                        />
-                      ),
-                    },
-                    {
-                      path: 'add',
-                      element: (
-                        <AddNamePage
-                          title="Добави сезон"
-                          description="Моля, проверете дали сезонът вече не е добавен"
-                          parentUrl="/dashboard/seasons/volleymania"
-                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
-                        />
-                      ),
-                    },
-                    {
-                      path: ':id',
-                      element: (
-                        <EditNamePage
-                          title="Редактиране на сезон"
-                          description="Редактирайте името на сезона"
-                          parentUrl="/dashboard/seasons/volleymania"
-                          queryKey={QUERY_KEYS.SEASONS_VOLLEYMANIA}
-                        />
-                      ),
-                    },
-                  ],
-                },
-                {
-                  path: 'ivl',
-                  element: <Outlet />,
-                  children: [
-                    {
-                      index: true,
-                      element: (
-                        <NamesPage
-                          queryKey={QUERY_KEYS.SEASONS_IVL}
-                          title="Всички сезони във IVL"
-                          addButtonLabel="Добави нов"
-                        />
-                      ),
-                    },
-                    {
-                      path: 'add',
-                      element: (
-                        <AddNamePage
-                          title="Добави сезон"
-                          description="Моля, проверете дали сезонът вече не е добавен"
-                          parentUrl="/dashboard/seasons/ivl"
-                          queryKey={QUERY_KEYS.SEASONS_IVL}
-                        />
-                      ),
-                    },
-                    {
-                      path: ':id',
-                      element: (
-                        <EditNamePage
-                          title="Редактиране на сезон"
-                          description="Редактирайте името на сезона"
-                          parentUrl="/dashboard/seasons/ivl"
-                          queryKey={QUERY_KEYS.SEASONS_IVL}
-                        />
-                      ),
-                    },
-                  ],
                 },
               ],
             },

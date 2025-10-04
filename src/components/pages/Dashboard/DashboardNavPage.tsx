@@ -35,10 +35,6 @@ const LINKS: { title: string; url: string; requiredSuperAdmin?: true }[] = [
     requiredSuperAdmin: true,
   },
   {
-    title: 'Сезони',
-    url: 'seasons',
-  },
-  {
     title: 'Версия',
     url: 'version',
     requiredSuperAdmin: true,

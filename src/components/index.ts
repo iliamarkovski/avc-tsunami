@@ -93,5 +93,4 @@ export * from './pages/Dashboard/Users/EditUserPage';
 export * from './pages/Dashboard/Version/VersionPage';
 export * from './pages/Dashboard/Version/AddVersionPage';
 export * from './pages/Dashboard/Version/EditVersionPage';
-export * from './pages/Dashboard/Seasons/DashboardSeasonsNavPage';
 export * from './pages/NewPasswordPage';
