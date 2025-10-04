@@ -23,6 +23,7 @@ import {
   AddVersionPage,
   ProfilePage,
   NewPasswordPage,
+  LoginLayout,
 } from '@/components';
 import { QUERY_KEYS } from '@/constants';
 import { useData, useTheme } from '@/contexts';
@@ -37,20 +38,12 @@ const AppRouter = () => {
 
   const router = createBrowserRouter([
     {
-      element: <Layout key={loggedInUser?.modifiedAt?.toString()} />,
+      element: <LoginLayout />,
       children: [
-        {
-          path: '/',
-          element: <HomePage />,
-        },
-        {
-          path: '/team',
-          element: <ActiveMembersPage />,
-        },
         {
           path: '/login',
           element: (
-            <RequireAccessRoutes hasAccess={!loggedInUser}>
+            <RequireAccessRoutes hasAccess={!loggedInUser} redirectPath="/">
               <Outlet />
             </RequireAccessRoutes>
           ),
@@ -64,7 +57,7 @@ const AppRouter = () => {
         {
           path: '/new-password',
           element: (
-            <RequireAccessRoutes hasAccess={!loggedInUser}>
+            <RequireAccessRoutes hasAccess={!loggedInUser} redirectPath="/">
               <Outlet />
             </RequireAccessRoutes>
           ),
@@ -72,6 +65,40 @@ const AppRouter = () => {
             {
               index: true,
               element: <NewPasswordPage />,
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      element: <Layout />,
+      children: [
+        {
+          path: '/',
+          element: (
+            <RequireAccessRoutes hasAccess={!!loggedInUser}>
+              <Outlet />
+            </RequireAccessRoutes>
+          ),
+          children: [
+            {
+              index: true,
+              element: <HomePage />,
+            },
+          ],
+        },
+        {
+          path: '/team',
+          element: (
+            <RequireAccessRoutes hasAccess={!!loggedInUser}>
+              <Outlet />
+            </RequireAccessRoutes>
+          ),
+          children: [
+            {
+              index: true,
+              element: <ActiveMembersPage />,
             },
           ],
         },
