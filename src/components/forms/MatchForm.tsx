@@ -345,7 +345,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
 
           <Button type="submit" disabled={isLoading || isPending} className="w-full">
             {isLoading || isPending ? <Loader2 className="animate-spin" /> : null}
-            {id ? 'Промени' : 'Добави'}
+            {id ? 'Запази' : 'Добави'}
           </Button>
         </div>
       </form>

@@ -141,7 +141,7 @@ const VersionForm = ({ id, parentUrl, queryKey, version }: Props) => {
 
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? <Loader2 className="animate-spin" /> : null}
-            {id ? 'Промени' : 'Добави'}
+            {id ? 'Запази' : 'Добави'}
           </Button>
         </div>
       </form>

@@ -238,7 +238,7 @@ const UserEditForm = ({ id, parentUrl, queryKey, member, names, role, isAdmin, i
 
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending ? <Loader2 className="animate-spin" /> : null}
-            {id ? 'Промени' : 'Добави'}
+            {id ? 'Запази' : 'Добави'}
           </Button>
         </div>
       </form>
