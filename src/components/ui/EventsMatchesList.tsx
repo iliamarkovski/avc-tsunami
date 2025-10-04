@@ -1,4 +1,5 @@
 import {
+  ArchivedEvents,
   Button,
   Collapsible,
   CollapsibleContent,
@@ -8,7 +9,7 @@ import {
   NotFoundEvents,
 } from '@/components';
 import { useData } from '@/contexts';
-import { getDateByTimestamp, getNameById, separateEvents } from '@/lib';
+import { getDateByTimestamp, getNameById } from '@/lib';
 import { QueryKeys } from '@/types';
 import { Archive } from 'lucide-react';
 
@@ -25,47 +26,24 @@ const EventsMatchesList = ({ queryKey }: Props) => {
     return <NotFoundEvents />;
   }
 
-  const { pastEvents, futureEvents } = separateEvents(events);
-
   return (
     <div className="grid gap-4">
-      {pastEvents.length > 0 && (
-        <Collapsible className="space-y-4">
-          <CollapsibleTrigger asChild>
-            <Button variant="outline">
-              <Archive /> Архив
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="grid gap-4">
-            {pastEvents.map((event) => {
-              const hall = getNameById(halls, event.hall);
-              const opponent = getNameById(teams, event.opponent);
-              const dateTime = getDateByTimestamp(event.dateTime);
-              return (
-                <EventMatchItem
-                  key={event.id}
-                  id={event.id!}
-                  dateTime={dateTime}
-                  hall={hall}
-                  isHost={event.host}
-                  opponent={opponent}
-                  gamesHost={event.gamesHost}
-                  gamesGuest={event.gamesGuest}
-                  recordingUrl={event.recordingLink}
-                  statisticsUrl={event.statisticsDocUrl || null}
-                  queryKey={queryKey}
-                />
-              );
-            })}
-          </CollapsibleContent>
-        </Collapsible>
-      )}
+      <Collapsible className="space-y-4">
+        <CollapsibleTrigger asChild>
+          <Button variant="outline">
+            <Archive /> Архив
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="grid gap-4">
+          <ArchivedEvents queryKey={queryKey} halls={halls} teams={teams} />
+        </CollapsibleContent>
+      </Collapsible>
 
-      {!futureEvents || futureEvents.length === 0 ? (
+      {events.length === 0 ? (
         <NotFoundEvents />
       ) : (
         <>
-          {futureEvents.map((event, index) => {
+          {events.map((event, index) => {
             const hall = getNameById(halls, event.hall);
             const opponent = getNameById(teams, event.opponent);
             const dateTime = getDateByTimestamp(event.dateTime);
