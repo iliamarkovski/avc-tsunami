@@ -1,8 +1,7 @@
 import { Card, CardDescription, CardHeader, CardTitle, EventMatchItem, Matches, Names, Skeleton } from '@/components';
-import { Filter } from '@/hooks';
-import { getAllDocuments, getDateByTimestamp, getNameById } from '@/lib';
+import { Filter, useLiveData } from '@/hooks';
+import { getDateByTimestamp, getNameById } from '@/lib';
 import { QueryKeys } from '@/types';
-import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 type Props = {
@@ -27,11 +26,7 @@ const ArchivedEvents = ({ queryKey, halls, teams }: Props) => {
     [todayStart]
   );
 
-  const { data: events, isLoading } = useQuery({
-    queryKey: [queryKey],
-    queryFn: () => getAllDocuments<Matches>(queryKey, dateFilter),
-    staleTime: 1000 * 60 * 5,
-  });
+  const { data: events, loading: isLoading } = useLiveData<Matches[]>(queryKey, undefined, dateFilter);
 
   const sortedEvents = events?.sort((a, b) => {
     const dateA = getDateByTimestamp(a.dateTime).getTime();
