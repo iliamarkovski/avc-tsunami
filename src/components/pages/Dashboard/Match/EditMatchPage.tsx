@@ -1,7 +1,8 @@
 import { MatchForm, FormCard, Matches } from '@/components';
-import { useData } from '@/contexts';
+import { useLiveData } from '@/hooks/useLiveData';
 import { getDataById } from '@/lib';
 import { QueryKeys } from '@/types';
+import { Loader2 } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 
 type Props = {
@@ -14,28 +15,28 @@ type Props = {
 const EditMatchPage = ({ queryKey, title, description, parentUrl }: Props) => {
   const { id } = useParams();
 
-  const { data } = useData();
-  const event = getDataById<Matches>(data[queryKey] as Matches[], id);
+  const { data: matches, loading: matchesLoading } = useLiveData<Matches[]>(queryKey);
+  const event = getDataById<Matches>(matches, id);
 
-  if (!event) {
-    return <p>Not Found</p>;
+  if (matchesLoading) {
+    return <Loader2 className="animate-spin" />;
   }
 
   return (
     <FormCard title={title} description={description}>
       <MatchForm
-        dateTime={event.dateTime}
-        gamesGuest={event.gamesGuest}
-        gamesHost={event.gamesHost}
-        hall={event.hall}
-        host={event.host}
-        message={event.message}
-        opponent={event.opponent}
-        recordingLink={event.recordingLink}
+        dateTime={event?.dateTime}
+        gamesGuest={event?.gamesGuest}
+        gamesHost={event?.gamesHost}
+        hall={event?.hall}
+        host={event?.host}
+        message={event?.message}
+        opponent={event?.opponent}
+        recordingLink={event?.recordingLink}
         id={id}
         parentUrl={parentUrl}
         queryKey={queryKey}
-        statisticsDocUrl={event.statisticsDocUrl}
+        statisticsDocUrl={event?.statisticsDocUrl}
       />
     </FormCard>
   );
