@@ -15,11 +15,11 @@ import {
 } from '@/components';
 import { useData } from '@/contexts';
 import { useLiveData, useToast } from '@/hooks';
-import { cn, getDateByTimestamp, getNameById } from '@/lib';
+import { cn, getDateByTimestamp, getNameById, getNextEvent } from '@/lib';
 import { QueryKeys } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { ArrowLeft, Loader2, Plus } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Volleyball } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type Props = {
@@ -43,6 +43,8 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
 
     return dateB - dateA;
   });
+
+  const nextEvent = getNextEvent(sortedMatches || []);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (id: string) => {
@@ -88,6 +90,7 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead />
               <TableHead>Дата</TableHead>
               <TableHead>Час</TableHead>
               <TableHead>Среща</TableHead>
@@ -100,8 +103,10 @@ const MatchesPage = ({ parentUrl = '/dashboard', queryKey, title, addButtonLabel
           </TableHeader>
           <TableBody>
             {sortedMatches.map((item) => {
+              const isNextEvent = item.id === nextEvent?.id;
               return (
                 <TableRow key={item.id}>
+                  <TableCell className="!px-0">{isNextEvent ? <Volleyball /> : null}</TableCell>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'dd.MM.yyyy')}</TableCell>
                   <TableCell>{format(getDateByTimestamp(item.dateTime), 'HH:mm')}</TableCell>
                   <TableCell>
