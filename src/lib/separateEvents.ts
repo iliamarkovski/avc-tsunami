@@ -1,5 +1,5 @@
 import { getDateByTimestamp } from './getDateByTimestamp';
-import { isBefore, sub } from 'date-fns';
+import { isBefore, startOfToday, startOfDay } from 'date-fns';
 
 type EventBase = {
   dateTime: Date;
@@ -8,15 +8,15 @@ type EventBase = {
 };
 
 export const separateEvents = <T extends EventBase>(events: T[]) => {
-  const threeHoursAgo = sub(new Date(), { hours: 3 });
+  const today = startOfToday();
 
   const pastEvents: T[] = [];
   const futureEvents: T[] = [];
 
   events.forEach((event) => {
-    const eventTime = getDateByTimestamp(event.dateTime);
+    const eventTime = startOfDay(getDateByTimestamp(event.dateTime)); // compare by date only
 
-    if ((event.gamesHost && event.gamesGuest) || isBefore(eventTime, threeHoursAgo)) {
+    if (isBefore(eventTime, today)) {
       pastEvents.push(event);
     } else {
       futureEvents.push(event);
