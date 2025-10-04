@@ -1,13 +1,19 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Footer, Header, PageLoader, ReloadBlock } from '@/components';
 import { useAuth, useData } from '@/contexts';
 import { LATEST_VERSION } from '@/constants';
 import { versionToNumber } from '@/lib';
+import { useEffect } from 'react';
 
 const Layout = () => {
+  const navigate = useNavigate();
   const { isLoading: isAuthLoading } = useAuth();
   const { data, isLoading: isDataLoading } = useData();
   const { version } = data;
+
+  useEffect(() => {
+    navigate('/'); // Redirect to root on refresh
+  }, [navigate]);
 
   if (isAuthLoading || isDataLoading) {
     return <PageLoader />;
