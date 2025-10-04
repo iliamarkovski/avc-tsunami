@@ -1,5 +1,6 @@
 //layout
 export * from './layout/Layout';
+export * from './layout/LoginLayout';
 
 //ui
 export * from './ui/Button';
