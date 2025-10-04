@@ -92,8 +92,6 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
     },
   });
 
-  const isDirty = form.formState.isDirty;
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
       if (id) {
@@ -316,7 +314,7 @@ const MatchForm = ({ id, parentUrl, queryKey, ...props }: Props) => {
             Отказ
           </Link>
 
-          <Button type="submit" disabled={isLoading || isPending || !isDirty} className="w-full">
+          <Button type="submit" disabled={isLoading || isPending} className="w-full">
             {isLoading || isPending ? <Loader2 className="animate-spin" /> : null}
             {id ? 'Промени' : 'Добави'}
           </Button>
